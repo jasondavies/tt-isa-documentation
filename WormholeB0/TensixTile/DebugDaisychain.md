@@ -148,6 +148,28 @@ Set `DaisySel == 7` and set `SignalSel` according to the desired RISCV and desir
 |125|1|`true` if the FIFO before the T<sub>i</sub> MOP Expander is full, `false` otherwise|
 |126|2|Reserved|
 
+## Tensix Frontend
+
+Set `DaisySel == 1` and set `SignalSel` according to the desired Tensix thread:
+
+|`SignalSel`|Contents of 128 bits comes from|
+|--:|---|
+|**`12`**|Tensix thread T0|
+|**`8`**|Tensix thread T1|
+|**`4`**|Tensix thread T2|
+
+The layout of the 128 bits is then:
+
+|First&nbsp;bit|#&nbsp;Bits|Contents|
+|--:|--:|---|
+|0|55|Reserved|
+|55|32|If the FIFO between the T<sub>i</sub> Replay Expander and the T<sub>i</sub> Wait Gate contains any instructions, the instruction that is waiting to proceed through the Wait Gate. Guaranteed to be valid when bit 87 is unset. If bit 87 is set, these bits always contain zero.|
+|87|1|`true` if the FIFO between the T<sub>i</sub> Replay Expander and the T<sub>i</sub> Wait Gate is empty, `false` otherwise|
+|88|1|Reserved|
+|89|1|`true` if the FIFO before the T<sub>i</sub> Replay Expander is full, `false` otherwise|
+|90|1|`true` if the FIFO before the T<sub>i</sub> Replay Expander is empty, `false` otherwise|
+|91|37|Reserved|
+
 ## ADCs
 
 Some [ADC values](TensixCoprocessor/ADCs.md) can be presented on the debug daisychain when `DaisySel == 6`:
