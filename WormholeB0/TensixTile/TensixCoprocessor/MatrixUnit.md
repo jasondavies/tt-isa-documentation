@@ -31,7 +31,9 @@ Note that instructions in _other units_ can also interact with `Dst`, `SrcA`, an
 
 ## Legacy instructions
 
-The `MFCONV3S1`, `CONV3S1`, `CONV3S2`, `MPOOL3S1`, `MPOOL3S2`, `APOOL3S1`, and `APOOL3S2` instructions theoretically exist, and count as Matrix Unit (FPU) instructions for the purpose of [`STALLWAIT`](STALLWAIT.md), but all they do is compute `Dst += 0`. They did something more interesting in earlier architectures, but were neutered for Wormhole rather than being fully removed.
+The `MFCONV3S1`, `CONV3S1`, `CONV3S2`, `APOOL3S1`, and `APOOL3S2` instructions theoretically exist, and count as Matrix Unit (FPU) instructions for the purpose of [`STALLWAIT`](STALLWAIT.md), but all they do is compute `Dst += 0`. They did something more interesting in earlier architectures, but were neutered for Wormhole rather than being fully removed.
+
+A similar remark applies to `MPOOL3S1` and `MPOOL3S2`, albeit instead of computing `Dst += 0` they do something similar to what `GMPOOL` would do if `SrcA` was entirely zero. In any case, they are not useful instructions.
 
 ## Performance
 
