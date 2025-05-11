@@ -3,7 +3,7 @@
 The Sync Unit contains mutexes and semaphores to help coordinate the three Tensix threads. The instructions executed by the Sync Unit are:
 
 <table><thead><tr><th>Instruction(s)</th><th>Latency</th><th>Throughput</th></tr></thead>
-<tr><td><code>ATGETM</code>, <code>ATRELM</code></td><td>1 cycle</td><td>Issue up to three per cycle, provided they refer to different mutexes</td></tr>
+<tr><td><code><a href="ATGETM.md">ATGETM</a></code>, <code><a href="ATRELM.md">ATRELM</a></code></td><td>1 cycle</td><td>Issue up to three per cycle, provided they refer to different mutexes</td></tr>
 <tr><td><code><a href="SEMINIT.md">SEMINIT</a></code>, <code><a href="SEMPOST.md">SEMPOST</a></code>, <code><a href="SEMGET.md">SEMGET</a></code></td><td>1 cycle</td><td rowspan="3">Issue at most one of these per cycle</td></tr>
 <tr><td><code><a href="STALLWAIT.md">STALLWAIT</a></code>, <code><a href="SEMWAIT.md">SEMWAIT</a></code></td><td>1 cycle</td></tr>
 <tr><td>RISCV semaphore write-request</td><td>1 cycle</td></tr>
@@ -24,7 +24,7 @@ There are seven mutexes (index 0, and then indices 2 through 7). Each mutex can 
 * Held by Tensix T1
 * Held by Tensix T2
 
-The `ATGETM` and `ATRELM` instructions manipulate these mutexes: `ATGETM` is a combined wait and acquire of a single mutex, whereas `ATRELM` releases a mutex.
+The [`ATGETM`](ATGETM.md) and [`ATRELM`](ATRELM.md) instructions manipulate these mutexes: `ATGETM` is a combined wait and acquire of a single mutex, whereas `ATRELM` releases a mutex.
 
 ## Semaphores
 
@@ -69,3 +69,5 @@ atomic {
   }
 }
 ```
+
+If a RISCV core is incrementing or decrementing semaphores through this memory-mapped interface, the [RISCV memory ordering](../BabyRISCV/MemoryOrdering.md) rules should be consulted to ensure correct ordering of the semaphore store relative to any other nearby loads and stores.

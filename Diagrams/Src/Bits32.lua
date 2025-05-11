@@ -787,6 +787,18 @@ local diagrams = {
       {24, 8, "0x5D"},
     }
   end,
+  ATGETM = function()
+    return Bits32{
+      {0, 16, "Index"},
+      {24, 8, "0xA0"},
+    }
+  end,
+  ATRELM = function()
+    return Bits32{
+      {0, 16, "Index"},
+      {24, 8, "0xA1"},
+    }
+  end,
   ATINCGET = function()
     return Bits32{
       {0, 6, "AddrReg"},
