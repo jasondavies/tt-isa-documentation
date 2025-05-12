@@ -905,6 +905,26 @@ local diagrams = {
       {24, 8, "0x84"},
     }
   end,
+  SFPADD = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {12, 4, "VB"},
+      {16, 4, "VA"},
+      {24, 8, "0x85"},
+    }
+  end,
+  SFPMUL = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {12, 4, "VB"},
+      {16, 4, "VA"},
+      {24, 8, "0x86"},
+    }
+  end,
   SFPMULI = function()
     return Bits32{
       {0, 4, "Mod1"},
