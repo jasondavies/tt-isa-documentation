@@ -97,15 +97,21 @@ for (auto [i, SubUnit] in enumerate({SimpleSubUnit, MADSubUnit, RoundSubUnit, St
   if (i != 3) {
     // This branch applies to SimpleSubUnit, MADSubInit, and RoundSubUnit. The instruction's
     // VD (result LReg index) is overridden, as is either VB or VC (input LReg indices).
+    if (SequenceBits & 0x80) {
+      Insn.VB = VD;
+      if (Insn.VC is None) {
+        Insn.VC = Insn.VD;
+      }
+    } else {
+      Insn.VC = VD;
+      if (Insn.VB is None) {
+        Insn.VB = Insn.VD;
+      }
+    }
     if (SequenceBits & 0x40) {
       Insn.VD = 16; // LReg[16] is a bonus extra LReg only writable via SFPLOADMACRO.
     } else {
       Insn.VD = VD;
-    }
-    if (SequenceBits & 0x80) {
-      Insn.VB = VD;
-    } else {
-      Insn.VC = VD;
     }
   } else {
     // This branch applies to StoreSubUnit. The instruction's VD (input LReg index) is
@@ -132,6 +138,11 @@ There are some extra considerations for `StoreSubUnit`:
 * In theory, `LoadMacroConfig` can differ between lanes (though this is not encouraged). If _any_ lane invokes `ScheduleInstructionForFutureExecution` on `StoreSubUnit`, then _all_ lanes must do so.
 * The call to `ApplyPartialAddrMod` in `SFPSTORE`'s functional model is skipped for `SFPSTORE` instructions scheduled via `SFPLOADMACRO`.
 * The computation of `uint10_t Addr` in `SFPSTORE`'s functional model is totally different for `SFPSTORE` instructions scheduled via `SFPLOADMACRO`: the computation in `SFPSTORE` will resolve to whatever was computed in `SFPLOADMACRO`, regardless of whether `SFPLOADMACRO` (or any other intermediate instruction) advanced any RWCs.
+
+Some instructions on other units also have extra considerations:
+* Simple sub-unit instructions: The usual `unsigned VB = VD;` assignment in the functional model is skipped, as the `SFPLOADMACRO` logic determines a value for `Insn.VB`.
+* `SFPADDI` and `SFPMULI`: The usual `unsigned VC = VD;` assignment in the functional model is skipped, as the `SFPLOADMACRO` logic determines a value for `Insn.VC`.
+* `SFPSHFT2` in `SFPSHFT2_MOD1_SHFT_IMM` mode: If the `SFPLOADMACRO` logic does `Insn.VB = VD`, then the usual `unsigned VB = Imm12 & 15;` assignment in the functional model is skipped.
 
 If an instruction scheduled via `SFPLOADMACRO` arrives at a sub-unit on the same cycle as software issues a regular Vector Unit (SFPU) instruction to that sub-unit, then the scheduled instruction takes priority and the regular instruction is silently discarded.
 

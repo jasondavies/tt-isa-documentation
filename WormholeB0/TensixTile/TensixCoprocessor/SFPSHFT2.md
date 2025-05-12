@@ -136,10 +136,11 @@ case SFPSHFT2_MOD1_SHFT_IMM:
   if (VD < 8) {
     lanewise {
       if (LaneEnabled) {
+        unsigned VB = Imm12 & 15;
         if (Imm12 >= 0) {
-          LReg[VD].u32 = LReg[Imm12 & 15].u32 << (Imm12 & 31);
+          LReg[VD].u32 = LReg[VB].u32 << (Imm12 & 31);
         } else {
-          LReg[VD].u32 = LReg[Imm12 & 15].u32 >> ((-Imm12) & 31);
+          LReg[VD].u32 = LReg[VB].u32 >> ((-Imm12) & 31);
         }
       }
     }

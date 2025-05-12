@@ -2,7 +2,7 @@
 
 **Summary:** Performs lanewise addition or subtraction between two vectors of 32-bit unsigned integers or 32-bit signed two's complement integers, or adds a signed 12-bit immediate to all lanes of such a vector. Lane flags can also be set based on the sign of the result.
 
-**Backend execution unit:** [Vector Unit (SFPU)](VectorUnit.md)
+**Backend execution unit:** [Vector Unit (SFPU)](VectorUnit.md), simple sub-unit
 
 ## Syntax
 
@@ -17,23 +17,26 @@ TT_SFPIADD(/* i12 */ (Imm12 & 0xfff), /* u4 */ VC, /* u4 */ VD, /* u4 */ Mod1)
 ## Functional model
 
 ```c
-if (VD < 8) {
+unsigned VB = VD;
+if (VD < 8 || VD == 16) {
   lanewise {
     if (LaneEnabled) {
       if (Mod1 & SFPIADD_MOD1_ARG_IMM) {
         LReg[VD].u32 = LReg[VC].u32 + SignExtend(Imm12);
       } else if (Mod1 & SFPIADD_MOD1_ARG_2SCOMP_LREG_DST) {
-        LReg[VD].u32 = LReg[VC].u32 - LReg[VD].u32;
+        LReg[VD].u32 = LReg[VC].u32 - LReg[VB].u32;
       } else {
-        LReg[VD].u32 = LReg[VC].u32 + LReg[VD].u32;
+        LReg[VD].u32 = LReg[VC].u32 + LReg[VB].u32;
       }
-      if (Mod1 & SFPIADD_MOD1_CC_NONE) {
-        // Leave LaneFlags as-is.
-      } else {
-        LaneFlags = int32_t(LReg[VD].u32) < 0;
-      }
-      if (Mod1 & SFPIADD_MOD1_CC_GTE0) {
-        LaneFlags = !LaneFlags;
+      if (VD < 8) {
+        if (Mod1 & SFPIADD_MOD1_CC_NONE) {
+          // Leave LaneFlags as-is.
+        } else {
+          LaneFlags = int32_t(LReg[VD].u32) < 0;
+        }
+        if (Mod1 & SFPIADD_MOD1_CC_GTE0) {
+          LaneFlags = !LaneFlags;
+        }
       }
     }
   }
