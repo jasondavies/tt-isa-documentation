@@ -35,7 +35,7 @@ lanewise {
 }
 ```
 
-## Supporting definitions
+Supporting definitions:
 
 ```c
 #define SFPMAD_MOD1_INDIRECT_VD 8
