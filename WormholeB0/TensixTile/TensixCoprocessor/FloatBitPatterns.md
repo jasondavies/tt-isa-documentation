@@ -12,7 +12,7 @@ Software running on the host system will generally expect IEEE 754 interpretatio
 <tr><td>0</td><td>1 - 254</td><td>Any</td><td colspan="3">(1 + Mant/2<sup>23</sup>) * 2<sup>Exp-127</sup></td></tr>
 <tr><td>0</td><td>0</td><td>Non-zero</td><td>(0 + Mant/2<sup>23</sup>) * 2<sup>-126</sup></td><td colspan="2">+0 (†)</td></tr>
 <tr><td>0</td><td>0</td><td>0</td><td colspan="3">+0</td></tr>
-<tr><td>1</td><td>0</td><td>0</td><td colspan="2">-0</td><td>-0 (†)</td></tr>
+<tr><td>1</td><td>0</td><td>0</td><td>-0</td><td colspan="2">-0 (†)</td></tr>
 <tr><td>1</td><td>0</td><td>Non-zero</td><td>-(0 + Mant/2<sup>23</sup>) * 2<sup>-126</sup></td><td colspan="2">-0 (†)</td></tr>
 <tr><td>1</td><td>1 - 254</td><td>Any</td><td colspan="3">-(1 + Mant/2<sup>23</sup>) * 2<sup>Exp-127</sup></td></tr>
 <tr><td>1</td><td>255</td><td>0</td><td colspan="2">-Infinity</td><td>-(1 + Mant/2<sup>23</sup>) * 2<sup>Exp-127</sup> (‡)</td></tr>
@@ -54,7 +54,7 @@ There is no IEEE 754 specification for this type, but one can be reasonably infe
 <tr><td>0</td><td>1 - 254</td><td>Any</td><td colspan="3">(1 + Mant/2<sup>7</sup>) * 2<sup>Exp-127</sup></td></tr>
 <tr><td>0</td><td>0</td><td>Non-zero</td><td>(0 + Mant/2<sup>7</sup>) * 2<sup>-126</sup></td><td colspan="2">+0 (†)</td></tr>
 <tr><td>0</td><td>0</td><td>0</td><td colspan="3">+0</td></tr>
-<tr><td>1</td><td>0</td><td>0</td><td colspan="2">-0</td><td>-0 (†)</td></tr>
+<tr><td>1</td><td>0</td><td>0</td><td>-0</td><td colspan="2">-0 (†)</td></tr>
 <tr><td>1</td><td>0</td><td>Non-zero</td><td>-(0 + Mant/2<sup>7</sup>) * 2<sup>-126</sup></td><td colspan="2">-0 (†)</td></tr>
 <tr><td>1</td><td>1 - 254</td><td>Any</td><td colspan="3">-(1 + Mant/2<sup>7</sup>) * 2<sup>Exp-127</sup></td></tr>
 <tr><td>1</td><td>255</td><td>0</td><td colspan="2">-Infinity</td><td>-(1 + Mant/2<sup>7</sup>) * 2<sup>Exp-127</sup> (‡)</td></tr>

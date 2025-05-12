@@ -830,8 +830,8 @@ local diagrams = {
   end,
   SFPLOADMACRO = function()
     return Bits32{
-      {0, 1, "VDHi", y=1, edge="right"}, -- Also low bit of Imm10 for load
-      {1, 9, "Imm9"}, -- Can overwrite high 9 of store's Imm10
+      {0, 1, "VDHi", y=1, edge="right"},
+      {1, 9, "Imm9"},
       {14, 2, "AddrMod", y=1},
       {16, 4, "Mod0"},
       {20, 2, "VDLo"},
@@ -893,6 +893,32 @@ local diagrams = {
       {4, 4, "VD"},
       {8, 16, "Imm16"},
       {24, 8, "0x91"},
+    }
+  end,
+  SFPMAD = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {12, 4, "VB"},
+      {16, 4, "VA"},
+      {24, 8, "0x84"},
+    }
+  end,
+  SFPMULI = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 16, "Imm16"},
+      {24, 8, "0x74"},
+    }
+  end,
+  SFPADDI = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 16, "Imm16"},
+      {24, 8, "0x75"},
     }
   end,
   Src_TF32 = function()
