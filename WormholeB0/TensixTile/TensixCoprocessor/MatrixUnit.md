@@ -18,6 +18,22 @@ The majority of Matrix Unit (FPU) instructions can be organised based on where t
 
 The remaining Matrix Unit (FPU) instructions which cannot be organised in this way are [`SETRWC`](SETRWC.md) and [`INCRWC`](INCRWC.md) for manipulating [RWCs](RWCs.md), and then the three oddball instructions [`CLEARDVALID`](CLEARDVALID.md), [`CLREXPHIST`](CLREXPHIST.md), and [`GATESRCRST`](GATESRCRST.md).
 
+Instruction latency and throughput:
+
+|Instruction(s)|Throughput (instructions per cycle)|Latency (cycles)|
+|---|---|---|
+|`MVMUL`, `DOTPV`, `GAPOOL`, `ELWMUL`|1 (†)|5|
+|`GMPOOL`, `ELWADD`, `ELWSUB`|1|5|
+|`SETRWC`, `INCRWC`, `CLEARDVALID`, `CLREXPHIST`, `GATESRCRST`|1|1|
+|`SHIFTXA`, `ZEROACC`, `ZEROSRC`, `TRNSPSRCB`|1|1|
+|`SHIFTXB`|0.5|2|
+|`MOVD2A`|1|2 (‡)|
+|`MOVA2D`, `DBGMOVA2D`, `MOVB2D`, `MOVB2A`|1|4 (‡)|
+
+(†) If multiple fidelity phases are in use, then one instruction is required per fidelity phase, so the effective IPC decreases as the number of fidelity phases increases.
+
+(‡) Only certain Matrix Unit (FPU) instructions can be used to hide this latency; see the relevant instruction pages for details.
+
 Note that instructions in _other units_ can also interact with `Dst`, `SrcA`, and `SrcB`:
 
 <table><tr><th/><th>Reads <code>Dst</code></th><th>Reads L1</th><th>Reads Tensix GPRs</th><th>Reads <code>LReg</code></th></tr>
