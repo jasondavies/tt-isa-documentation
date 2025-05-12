@@ -2,7 +2,7 @@
 
 **Summary:** Performs some kind of bitwise shift within vector lanes, or some kind of shuffle of vector lanes. The exact behaviour is determined by the `Mod1` field; see the functional model for descriptions of each mode.
 
-**Backend execution unit:** [Vector Unit (SFPU)](VectorUnit.md)
+**Backend execution unit:** [Vector Unit (SFPU)](VectorUnit.md), round sub-unit
 
 ## Syntax
 
@@ -52,7 +52,7 @@ switch (Mod1) {
 case SFPSHFT2_MOD1_COPY4: // (Mod1 == 0)
   // Within each lane, shuffle L0 / L1 / L2 / L3.
   lanewise {
-    if (VD < 12 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
+    if (VD < 12 || VD == 16 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
       if (LaneEnabled) {
         LReg[0] = LReg[1];
         LReg[1] = LReg[2];
@@ -67,7 +67,7 @@ case SFPSHFT2_MOD1_SUBVEC_CHAINED_COPY4: {
   // by eight lanes and assign it to L3.
   auto v0 = LReg[0];
   for (unsigned Lane = 0; Lane < 32; ++Lane) {
-    if (VD < 12 || LaneConfig[Lane].DISABLE_BACKDOOR_LOAD) {
+    if (VD < 12 || VD == 16 || LaneConfig[Lane].DISABLE_BACKDOOR_LOAD) {
       if (LaneEnabled[Lane]) {
         LReg[0][Lane] = LReg[1][Lane];
         LReg[1][Lane] = LReg[2][Lane];
@@ -80,7 +80,7 @@ case SFPSHFT2_MOD1_SUBVEC_CHAINED_COPY4: {
 case SFPSHFT2_MOD1_SUBVEC_SHFLROR1_AND_COPY4:
   // Within each lane, shuffle L0 / L1 / L2 / L3, then within each group of eight
   // lanes of the original VC, rotate lanes right by one lane and assign to L3.
-  if (VD < 12 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
+  if (VD < 12 || VD == 16 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
     auto vc = LReg[VC];
     for (unsigned Lane = 0; Lane < 32; ++Lane) {
       if (LaneEnabled[Lane]) {
@@ -94,9 +94,9 @@ case SFPSHFT2_MOD1_SUBVEC_SHFLROR1_AND_COPY4:
   break;
 case SFPSHFT2_MOD1_SUBVEC_SHFLROR1:
   // Within each group of eight lanes, rotate lanes right by one lane.
-  if (VD < 12 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
+  if (VD < 12 || VD == 16 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
     auto vc = LReg[VC];
-    if (VD < 8) {
+    if (VD < 8 || VD == 16) {
       for (unsigned Lane = 0; Lane < 32; ++Lane) {
         if (LaneEnabled[Lane]) {
           LReg[VD][Lane] = Lane & 7 ? vc[Lane - 1] : vc[Lane + 7];
@@ -107,7 +107,7 @@ case SFPSHFT2_MOD1_SUBVEC_SHFLROR1:
   break;
 case SFPSHFT2_MOD1_SUBVEC_SHFLSHR1:
   // Within each group of eight lanes, shift lanes right by one lane.
-  if (VD < 8) {
+  if (VD < 8 || VD == 16) {
     auto vc = LReg[VC];
     for (unsigned Lane = 0; Lane < 32; ++Lane) {
       if (LaneEnabled[Lane]) {
@@ -118,7 +118,7 @@ case SFPSHFT2_MOD1_SUBVEC_SHFLSHR1:
   break;
 case SFPSHFT2_MOD1_SHFT_LREG:
   // Within each lane, shift bits left or right.
-  if (VD < 8) {
+  if (VD < 8 || VD == 16) {
     lanewise {
       if (LaneEnabled) {
         int32_t vc = LReg[VC].i32;
@@ -133,7 +133,7 @@ case SFPSHFT2_MOD1_SHFT_LREG:
   break;
 case SFPSHFT2_MOD1_SHFT_IMM:
   // This mode has limited use; see SFPSHFT for a more useful alternative.
-  if (VD < 8) {
+  if (VD < 8 || VD == 16) {
     lanewise {
       if (LaneEnabled) {
         unsigned VB = Imm12 & 15;
