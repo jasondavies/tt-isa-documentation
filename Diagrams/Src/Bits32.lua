@@ -941,6 +941,12 @@ local diagrams = {
       {24, 8, "0x75"},
     }
   end,
+  SFPTRANSP = function()
+    return Bits32{
+      {4, 4, "VD"},
+      {24, 8, "0x8C"},
+    }
+  end,
   Src_TF32 = function()
     return Bits32{nbits = 19,
       {0, 8, "Exponent"},
