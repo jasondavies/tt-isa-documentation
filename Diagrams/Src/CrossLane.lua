@@ -62,8 +62,14 @@ local ctx_mt = {__index = {
             label = lr
           elseif lr ~= nil then
             lr = lr + row_bias
+            local color
+            if args.transp then
+              color = hsl(lr * 0.5 * 0.101125, 1 - lc * s_scale * 2 * 0.101125, 0.92)
+            else
+              color = hsl(lc * 0.101125, 1 - lr * s_scale * 2 * 0.101125, 0.92)
+            end
             ctx.out:putf('<rect x="%g" y="%g" width="%g" height="%g" stroke="transparent" fill="%s"/>\n',
-              x + col * cw, y + row * ch, cw, ch, hsl(lc * 0.101125, 1 - lr * s_scale * 2 * 0.101125, 0.92))
+              x + col * cw, y + row * ch, cw, ch, color)
             label = (args.skip_row_label and "" or chars:sub(lr + 1, lr + 1)) .. chars:sub(lc + 1, lc + 1)
           end
         end
@@ -192,65 +198,53 @@ local diagrams = {
     end}
   end,
   COPY4 = function(ctx)
-    local s_scale = 0.3
-    ctx:LReg{label = "LReg[0]", lane_transform = function() return "" end}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[1]", s_scale = s_scale}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[2]", row_bias = 4, s_scale = s_scale}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[3]", row_bias = 8, s_scale = s_scale}
+    local s_scale = 0.5
+    ctx:LReg{label = "LReg[0]", transp = true, s_scale = s_scale, lane_transform = function() return "" end}
+    for i = 1, 3 do
+      ctx:Spacer()
+      ctx:LReg{label = "LReg[".. i .."]", transp = true, s_scale = s_scale, row_bias = (i - 1) * 4}
+    end
     ctx:To()
-    ctx:LReg{label = "LReg[0]", s_scale = s_scale}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[1]", row_bias = 4, s_scale = s_scale}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[2]", row_bias = 8, s_scale = s_scale}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[3]", lane_transform = function() return "0" end}
+    for i = 0, 2 do
+      ctx:LReg{label = "LReg[".. i .."]", transp = true, s_scale = s_scale, row_bias = i * 4}
+      ctx:Spacer()
+    end
+    ctx:LReg{label = "LReg[3]", transp = true, s_scale = s_scale, lane_transform = function() return "0" end}
   end,
   CHAINED_COPY4 = function(ctx)
-    local s_scale = 0.25
-    ctx:LReg{label = "LReg[0]", s_scale = s_scale, lane_transform = function(r, c) if r > 0 then return r, c end end}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[1]", row_bias = 4, s_scale = s_scale}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[2]", row_bias = 8, s_scale = s_scale}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[3]", row_bias = 12, s_scale = s_scale}
+    local s_scale = 0.5
+    ctx:LReg{label = "LReg[0]", transp = true, s_scale = s_scale, lane_transform = function(r, c) if r > 0 then return r, c end end}
+    for i = 1, 3 do
+      ctx:Spacer()
+      ctx:LReg{label = "LReg[".. i .."]", transp = true, s_scale = s_scale, row_bias = i * 4}
+    end
     ctx:To()
-    ctx:LReg{label = "LReg[0]", row_bias = 4, s_scale = s_scale}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[1]", row_bias = 8, s_scale = s_scale}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[2]", row_bias = 12, s_scale = s_scale}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[3]", lane_transform = function(r, c) if r < 3 then return r+1, c else return "0" end end}
+    for i = 0, 2 do
+      ctx:LReg{label = "LReg[".. i .. "]", transp = true, s_scale = s_scale, row_bias = (i + 1) * 4}
+      ctx:Spacer()
+    end
+    ctx:LReg{label = "LReg[3]", transp = true, s_scale = s_scale, lane_transform = function(r, c) if r < 3 then return r+1, c else return "0" end end}
   end,
   SHFLROR1_AND_COPY4 = function(ctx)
-    local s_scale = 0.25
-    ctx:LReg{label = "LReg[VC]"}
+    local s_scale = 0.5
+    ctx:LReg{label = "LReg[VC]", s_scale = s_scale, transp = true}
     ctx:Spacer()
-    ctx:LReg{label = "LReg[0]", lane_transform = function() return "" end}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[1]", row_bias = 4, s_scale = s_scale}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[2]", row_bias = 8, s_scale = s_scale}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[3]", row_bias = 12, s_scale = s_scale}
+    ctx:LReg{label = "LReg[0]", s_scale = s_scale, transp = true, lane_transform = function() return "" end}
+    for i = 1, 3 do
+      ctx:Spacer()
+      ctx:LReg{label = "LReg[".. i .."]", s_scale = s_scale, transp = true, row_bias = i * 4}
+    end
     ctx:To()
-    ctx:LReg{label = "LReg[0]", row_bias = 4, s_scale = s_scale}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[1]", row_bias = 8, s_scale = s_scale}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[2]", row_bias = 12, s_scale = s_scale}
-    ctx:Spacer()
-    ctx:LReg{label = "LReg[3]", lane_transform = function(r, c)
+    for i = 0, 2 do
+      ctx:LReg{label = "LReg[".. i .."]", s_scale = s_scale, transp = true, row_bias = (i + 1) * 4}
+      ctx:Spacer()
+    end
+    ctx:LReg{label = "LReg[3]", s_scale = s_scale, transp = true, lane_transform = function(r, c)
       return r, (c - 1) % 8
     end}
   end,
   SFPTRANSP = function(ctx)
-    local s_scale = 0.25
+    local s_scale = 0.5
     for g = 0, 4, 4 do
       local chars0
       if g ~= 0 then
@@ -259,21 +253,15 @@ local diagrams = {
         chars0 = chars
         chars = chars0:lower()
       end
-      ctx:LReg{label = ("LReg[%u]"):format(g + 0), s_scale = s_scale}
-      ctx:Spacer()
-      ctx:LReg{label = ("LReg[%u]"):format(g + 1), row_bias = 4, s_scale = s_scale}
-      ctx:Spacer()
-      ctx:LReg{label = ("LReg[%u]"):format(g + 2), row_bias = 8, s_scale = s_scale}
-      ctx:Spacer()
-      ctx:LReg{label = ("LReg[%u]"):format(g + 3), row_bias = 12, s_scale = s_scale}
+      for i = 0, 3 do
+        if i ~= 0 then ctx:Spacer() end
+        ctx:LReg{label = ("LReg[%u]"):format(g + i), s_scale = s_scale, transp = true, row_bias = i * 4}
+      end
       ctx:ToFrom()
-      ctx:LReg{label = ("LReg[%u]"):format(g + 0), s_scale = s_scale, lane_transform = function(r, c) return r * 4, c end}
-      ctx:Spacer()
-      ctx:LReg{label = ("LReg[%u]"):format(g + 1), s_scale = s_scale, lane_transform = function(r, c) return r * 4 + 1, c end}
-      ctx:Spacer()
-      ctx:LReg{label = ("LReg[%u]"):format(g + 2), s_scale = s_scale, lane_transform = function(r, c) return r * 4 + 2, c end}
-      ctx:Spacer()
-      ctx:LReg{label = ("LReg[%u]"):format(g + 3), s_scale = s_scale, lane_transform = function(r, c) return r * 4 + 3, c end}
+      for i = 0, 3 do
+        if i ~= 0 then ctx:Spacer() end
+        ctx:LReg{label = ("LReg[%u]"):format(g + i), s_scale = s_scale, transp = true, lane_transform = function(r, c) return r * 4 + i, c end}
+      end
       if g ~= 0 then
         ctx.out:putf('</g>\n', ctx.w)
         ctx.w_scale = 2
@@ -282,9 +270,9 @@ local diagrams = {
     end
   end,
   SFPCONFIG = function(ctx)
-    ctx:LReg{label = "LReg[0]", lane_transform = function(r, c) if r == 0 then return r, c end end}
+    ctx:LReg{label = "LReg[0]", skip_row_label = true, lane_transform = function(r, c) if r == 0 then return r, c end end}
     ctx:To()
-    ctx:LReg{label = "LReg[VD]", lane_transform = function(r, c) return 0, c end}
+    ctx:LReg{label = "LReg[VD]", skip_row_label = true, lane_transform = function(r, c) return 0, c end}
   end,
   SHIFTXB0 = function(ctx)
     ctx:SrcRow{label = "SrcB[i]", skip_row_label = true}
