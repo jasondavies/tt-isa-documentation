@@ -1,6 +1,6 @@
 # `SFPSTORE` (Move from `LReg` to `Dst`)
 
-**Summary:** Move (up to) 32 datums from an `LReg` to the even or odd columns of four consecutive rows of [`Dst`](Dst.md). To bridge the gap between [`LReg` data types](LReg.md#data-types) and [`Dst` data types](Dst.md#data-types), some data type conversions are supported as part of the instruction, though software might still want a preceding `SFPSTOCHRND` or `SFPCAST` instruction to achieve a richer set of conversions.
+**Summary:** Move (up to) 32 datums from an `LReg` to the even or odd columns of four consecutive rows of [`Dst`](Dst.md). To bridge the gap between [`LReg` data types](LReg.md#data-types) and [`Dst` data types](Dst.md#data-types), some data type conversions are supported as part of the instruction, though software might still want a preceding [`SFPSTOCHRND`](SFPSTOCHRND.md) or [`SFPCAST`](SFPCAST.md) instruction to achieve a richer set of conversions.
 
 **Backend execution unit:** [Vector Unit (SFPU)](VectorUnit.md)
 

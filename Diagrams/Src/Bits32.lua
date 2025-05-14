@@ -941,10 +941,152 @@ local diagrams = {
       {24, 8, "0x75"},
     }
   end,
+  SFPDIVP2 = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {12, 8, "Imm8"},
+      {24, 8, "0x76"},
+    }
+  end,
+  SFPEXEXP = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {24, 8, "0x77"},
+    }
+  end,
+  SFPEXMAN = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {24, 8, "0x78"},
+    }
+  end,
+  SFPSHFT = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {12, 12, "Imm12 (signed)"},
+      {24, 8, "0x7A"},
+    }
+  end,
+  SFPMOV = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {24, 8, "0x7C"},
+    }
+  end,
+  SFPABS = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {24, 8, "0x7D"},
+    }
+  end,
+  SFPAND = function()
+    return Bits32{
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {24, 8, "0x7E"},
+    }
+  end,
+  SFPOR = function()
+    return Bits32{
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {24, 8, "0x7F"},
+    }
+  end,
+  SFPNOT = function()
+    return Bits32{
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {24, 8, "0x80"},
+    }
+  end,
+  SFPLZ = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {24, 8, "0x81"},
+    }
+  end,
+  SFPSETEXP = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {12, 8, "Imm8"},
+      {24, 8, "0x82"},
+    }
+  end,
+  SFPSETMAN = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {12, 12, "Imm12"},
+      {24, 8, "0x83"},
+    }
+  end,
+  SFPSETSGN = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {12, 1, "Imm1", y = 1},
+      {24, 8, "0x89"},
+    }
+  end,
   SFPTRANSP = function()
     return Bits32{
       {4, 4, "VD"},
       {24, 8, "0x8C"},
+    }
+  end,
+  SFPXOR = function()
+    return Bits32{
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {24, 8, "0x8D"},
+    }
+  end,
+  SFPSTOCHRND = function()
+    return Bits32{
+      {0, 3, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {21, 1, "StochasticRounding", y=1},
+      {24, 8, "0x8E"},
+    }
+  end,
+  SFPSTOCHRNDi = function()
+    return Bits32{
+      {0, 3, "Mod1"},
+      {3, 1, "UseImm5", y=1},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {12, 4, "VB"},
+      {16, 5, "Imm5"},
+      {21, 1, "StochasticRounding", y=1},
+      {24, 8, "0x8E"},
+    }
+  end,
+  SFPCAST = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {24, 8, "0x90"},
     }
   end,
   Src_TF32 = function()

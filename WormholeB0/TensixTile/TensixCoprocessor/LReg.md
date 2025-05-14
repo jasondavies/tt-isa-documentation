@@ -3,7 +3,7 @@
 Vector Unit (SFPU) instructions assume the presence of the following global variable:
 
 ```c
-union {uint32_t u32; float f32;} LReg[17][32];
+union {uint32_t u32; int32_t i32; float f32;} LReg[17][32];
 ```
 
 The `[17]` is not entirely uniform:

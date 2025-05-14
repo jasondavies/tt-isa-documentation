@@ -32,7 +32,7 @@ if (VD < 8 || VD == 16) {
         if (Mod1 & SFPIADD_MOD1_CC_NONE) {
           // Leave LaneFlags as-is.
         } else {
-          LaneFlags = int32_t(LReg[VD].u32) < 0;
+          LaneFlags = LReg[VD].i32 < 0;
         }
         if (Mod1 & SFPIADD_MOD1_CC_GTE0) {
           LaneFlags = !LaneFlags;
