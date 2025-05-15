@@ -7,7 +7,7 @@
 ## Syntax
 
 ```c
-TTI_SFPTRANSP(0, 0, /* u4 */ VD, 0)
+TT_SFPTRANSP(0, 0, /* u4 */ VD, 0)
 ```
 
 ## Encoding
@@ -23,7 +23,7 @@ Assuming all 32 lanes active:
 ## Functional model
 
 ```c
-if (VD < 12 || VD == 16) {
+if (VD < 12 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
   Transpose4(0);
   Transpose4(4);
 }

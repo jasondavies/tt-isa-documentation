@@ -24,4 +24,4 @@ As per [`SFPMAD`](SFPMAD.md#ieee754-conformance--divergence).
 
 ## Instruction scheduling
 
-If `SFPADD` is used, software must ensure that on the next cycle, the Vector Unit (SFPU) does not execute an instruction which reads from any location written to by the `SFPADD`. A NOP instruction can be inserted to ensure this (any kind of Tensix NOP suffices, though `SFPNOP` is conventional).
+If `SFPADD` is used, software must ensure that on the next cycle, the Vector Unit (SFPU) does not execute an instruction which reads from any location written to by the `SFPADD`. An [`SFPNOP`](SFPNOP.md) instruction can be inserted to ensure this.

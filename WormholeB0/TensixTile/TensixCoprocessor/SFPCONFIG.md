@@ -32,8 +32,8 @@ for (unsigned Lane = 0; Lane < 32; ++Lane) {
     // used for both purposes simultaneously.
     if (!Imm16.Bit[(Lane & 7) * 2]) continue;
   }
-  if (LaneFlagsEnabled) {
-    if (!LaneFlags.Bit[Lane & 7]) continue;
+  if (UseLaneFlagsForLaneEnable[Lane & 7]) {
+    if (!LaneFlags[Lane & 7]) continue;
   }
 
   switch (VD) {
@@ -106,3 +106,29 @@ Supporting definitions:
 #define MOD1_BITWISE_XOR        6
 #define MOD1_IMM16_IS_LANE_MASK 8
 ```
+
+## `LaneConfig`
+
+|First&nbsp;bit|#&nbsp;Bits|Name|Purpose|
+|--:|--:|---|---|
+|0|1|`ENABLE_FP16A_INF`|Controls how [`SFPLOAD`](SFPLOAD.md) interprets [FP16 bit patterns](FloatBitPatterns.md#fp16) that can mean infinity|
+|1|1|`DISABLE_BACKDOOR_LOAD`|If `false`, instructions with `VD ≥ 12` are treated as writes (of the instruction bits) to `LoadMacroConfig.InstructionTemplate[VD - 12]`; software should set to `true` if it wants to execute [`SFPSTORE`](SFPSTORE.md) or [`SFPSWAP`](SFPSWAP.md) with `VD ≥ 12`|
+|2|1|`ENABLE_DEST_INDEX`|If `true`, causes [`SFPSWAP`](SFPSWAP.md) to perform `argmin` and `argmax` rather than `min` and `max`|
+|3|1|`CAPTURE_DEFAULT_DEST_INDEX`|If both this and `ENABLE_DEST_INDEX` are `true`, causes [`SFPLOAD`](SFPLOAD.md) to perform a 2<sup>nd</sup> `LReg` write containing the `Dst` index|
+|4|1|`BLOCK_DEST_WR_FROM_SFPU`|If `true`, [`SFPSTORE`](SFPSTORE.md) will not write to `Dst`|
+|5|1|`BLOCK_SFPU_RD_FROM_DEST`|If `true`, [`SFPLOAD`](SFPLOAD.md) will not write to `LReg`|
+|6|1|`DEST_RD_COL_EXCHANGE`|If `true`, [`SFPLOAD`](SFPLOAD.md) always loads from odd columns of `Dst`|
+|7|1|`DEST_WR_COL_EXCHANGE`|If `true`, [`SFPSTORE`](SFPSTORE.md) always stores to odd columns of `Dst`|
+|8|1|`EXCHANGE_SRCB_SRCC`|If `true`, causes [`SFPSWAP`](SFPSWAP.md) to invert the comparison result (thus computing `max` and `min` rather than `min` and `max`)|
+|9|2|`BLOCK_DEST_MOV`|Used to disable individual columns during [`MOVA2D`](MOVA2D.md), [`MOVB2D`](MOVB2D.md), [`MOVD2A`](MOVD2A.md), and [`MOVD2B`](MOVD2B.md) instructions|
+|11|1|Reserved||
+|12|4|`ROW_MASK`|Used as part of [`IsLaneEnabled`](VectorUnit.md#lane-predication-masks)|
+|16|2|Reserved||
+
+## `LoadMacroConfig`
+
+See [`SFPLOADMACRO`](SFPLOADMACRO.md#functional-model) for a description of `LoadMacroConfig`.
+
+## Instruction scheduling
+
+If `SFPCONFIG` is used to change the value of `LaneConfig.DISABLE_BACKDOOR_LOAD`, the next Vector Unit (SFPU) instruction might observe either the old value or the new value of `LaneConfig.DISABLE_BACKDOOR_LOAD`. If this would cause a difference in instruction behaviour, software should insert an [`SFPNOP`](SFPNOP.md) instruction immediately after `SFPCONFIG`.

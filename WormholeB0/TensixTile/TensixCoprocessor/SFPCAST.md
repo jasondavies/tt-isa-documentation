@@ -18,7 +18,7 @@ TT_SFPCAST(/* u4 */ VC, /* u4 */ VD, /* u4 */ Mod1)
 
 ```c
 lanewise {
-  if (VD < 12 || VD == 16 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
+  if (VD < 12 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
     if (LaneEnabled) {
       uint32_t c = LReg[VC].u32; // Sign-magnitude integer.
       uint32_t Sign = c & 0x80000000u;

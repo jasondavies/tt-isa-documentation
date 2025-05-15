@@ -37,7 +37,7 @@ if (Mod1 != SFPSTOCHRND_MOD1_FP32_TO_FP16A
 }
 
 lanewise {
-  if (VD < 12 || VD == 16 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
+  if (VD < 12 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
     if (LaneEnabled) {
       uint32_t PRNGBits = StochasticRounding ? AdvancePRNG() & 0x7fffff : 0x400000;
       uint32_t x = LReg[VC].u32; // FP32.

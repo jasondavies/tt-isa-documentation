@@ -52,35 +52,36 @@ Note that this pattern is the exact inverse of [`SFPLOAD`](SFPLOAD.md).
 ## Functional model
 
 ```c
-if (VD < 12 || VD == 16) {
-  uint1_t StateID = ThreadConfig[CurrentThread].CFG_STATE_ID_StateID;
-  auto& ConfigState = Config[StateID];
+uint1_t StateID = ThreadConfig[CurrentThread].CFG_STATE_ID_StateID;
+auto& ConfigState = Config[StateID];
 
-  // Resolve MOD0_FMT_SRCB to something concrete.
-  if (Mod0 == MOD0_FMT_SRCB) {
-    if (ConfigState.ALU_ACC_CTRL_SFPU_Fp32_enabled) {
-      Mod0 = MOD0_FMT_FP32; // NB: Functionally identical to MOD0_FMT_INT32.
+// Resolve MOD0_FMT_SRCB to something concrete.
+if (Mod0 == MOD0_FMT_SRCB) {
+  if (ConfigState.ALU_ACC_CTRL_SFPU_Fp32_enabled) {
+    Mod0 = MOD0_FMT_FP32; // NB: Functionally identical to MOD0_FMT_INT32.
+  } else {
+    uint4_t SrcBFmt = ConfigState.ALU_FORMAT_SPEC_REG_SrcB_override ? ConfigState.ALU_FORMAT_SPEC_REG_SrcB_val : ConfigState.ALU_FORMAT_SPEC_REG1_SrcB;
+    if (SrcBFmt in {FP32, TF32, BF16, BFP8, BFP4, BFP2, INT32, INT16}) {
+      Mod0 = MOD0_FMT_BF16;
     } else {
-      uint4_t SrcBFmt = ConfigState.ALU_FORMAT_SPEC_REG_SrcB_override ? ConfigState.ALU_FORMAT_SPEC_REG_SrcB_val : ConfigState.ALU_FORMAT_SPEC_REG1_SrcB;
-      if (SrcBFmt in {FP32, TF32, BF16, BFP8, BFP4, BFP2, INT32, INT16}) {
-        Mod0 = MOD0_FMT_BF16;
-      } else {
-        Mod0 = MOD0_FMT_FP16;
-      }
+      Mod0 = MOD0_FMT_FP16;
     }
   }
+}
 
-  // Apply various Dst address adjustments.
-  // The top 8 bits of Addr end up selecting an aligned group of four rows of Dst, the
-  // next bit selects between even and odd columns, and the low bit goes unused.
-  uint10_t Addr = Imm10 + ThreadConfig[CurrentThread].DEST_TARGET_REG_CFG_MATH_Offset;
-  if (Mod0 == MOD0_FMT_INT32_ALL) {
-    Addr += (RWCs[CurrentThread].Dst + ConfigState.DEST_REGW_BASE_Base) & 3;
-  } else {
-    Addr += RWCs[CurrentThread].Dst + ConfigState.DEST_REGW_BASE_Base;
-  }
+// Apply various Dst address adjustments.
+// The top 8 bits of Addr end up selecting an aligned group of four rows of Dst, the
+// next bit selects between even and odd columns, and the low bit goes unused.
+uint10_t Addr = Imm10 + ThreadConfig[CurrentThread].DEST_TARGET_REG_CFG_MATH_Offset;
+if (Mod0 == MOD0_FMT_INT32_ALL) {
+  Addr += (RWCs[CurrentThread].Dst + ConfigState.DEST_REGW_BASE_Base) & 3;
+} else {
+  Addr += RWCs[CurrentThread].Dst + ConfigState.DEST_REGW_BASE_Base;
+}
 
-  for (unsigned Lane = 0; Lane < 32; ++Lane) {
+for (unsigned Lane = 0; Lane < 32; ++Lane) {
+  if (LaneConfig[Lane].BLOCK_DEST_WR_FROM_SFPU) continue;
+  if (VD < 12 || LaneConfig[Lane].DISABLE_BACKDOOR_LOAD) {
     if (LaneEnabled[Lane] || Mod0 == MOD0_FMT_INT32_ALL) {
       uint32_t Datum = LReg[VD][Lane].u32;
       uint10_t Row = (Addr & ~3) + (Lane / 8);

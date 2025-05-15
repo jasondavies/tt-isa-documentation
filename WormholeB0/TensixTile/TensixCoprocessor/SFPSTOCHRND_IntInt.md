@@ -34,7 +34,7 @@ if (Mod1 != SFPSTOCHRND_MOD1_INT32_TO_UINT8
 }
 
 lanewise {
-  if (VD < 12 || VD == 16 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
+  if (VD < 12 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
     if (LaneEnabled) {
       uint32_t PRNGBits = StochasticRounding ? AdvancePRNG() & 0x7fffff : 0x400000;
       uint32_t c = LReg[VC].u32; // Sign-magnitude integer.

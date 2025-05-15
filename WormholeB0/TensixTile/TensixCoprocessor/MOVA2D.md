@@ -62,6 +62,7 @@ if (Move8Rows) {
 // Actually copy the row(s).
 for (; NumRows; --NumRows, ++DstRow, ++SrcRow) {
   for (unsigned Column = 0; Column < 16; ++Column) {
+    if (LaneConfig[Column / 2].BLOCK_DEST_MOV.Bit[Column & 1]) continue;
     uint19_t SrcAVal = SrcA[MatrixUnit.SrcABank][SrcRow][Column];
     uint16_t Val16b = Use8bExponent ? RemoveLowMantissa(SrcAVal) : RemoveHighExponent(SrcAVal);
     if (SrcAFmt == TF32) {

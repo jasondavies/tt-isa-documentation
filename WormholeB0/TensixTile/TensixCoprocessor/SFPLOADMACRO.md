@@ -138,8 +138,10 @@ There are some extra considerations for `StoreSubUnit`:
 * In theory, `LoadMacroConfig` can differ between lanes (though this is not encouraged). If _any_ lane invokes `ScheduleInstructionForFutureExecution` on `StoreSubUnit`, then _all_ lanes must do so.
 * The call to `ApplyPartialAddrMod` in `SFPSTORE`'s functional model is skipped for `SFPSTORE` instructions scheduled via `SFPLOADMACRO`.
 * The computation of `uint10_t Addr` in `SFPSTORE`'s functional model is totally different for `SFPSTORE` instructions scheduled via `SFPLOADMACRO`: the computation in `SFPSTORE` will resolve to whatever was computed in `SFPLOADMACRO`, regardless of whether `SFPLOADMACRO` (or any other intermediate instruction) advanced any RWCs.
+* In `SFPSTORE`'s functional model, `LaneConfig[Lane].DISABLE_BACKDOOR_LOAD` is replaced with `true` for `SFPSTORE` instructions scheduled via `SFPLOADMACRO`.
 
-Some instructions on other units also have extra considerations:
+Instructions on other units also have extra considerations for instructions scheduled via `SFPLOADMACRO`:
+* All instructions: any occurrence of `LaneConfig.DISABLE_BACKDOOR_LOAD` or `LaneConfig[Lane].DISABLE_BACKDOOR_LOAD` in the functional model is replaced with `true`.
 * Simple sub-unit instructions: The usual `unsigned VB = VD;` assignment in the functional model is skipped, as the `SFPLOADMACRO` logic determines a value for `Insn.VB`.
 * `SFPADDI` and `SFPMULI`: The usual `unsigned VC = VD;` assignment in the functional model is skipped, as the `SFPLOADMACRO` logic determines a value for `Insn.VC`.
 * `SFPSHFT2` in `SFPSHFT2_MOD1_SHFT_IMM` mode: If the `SFPLOADMACRO` logic does `Insn.VB = VD`, then the usual `unsigned VB = Imm12 & 15;` assignment in the functional model is skipped.

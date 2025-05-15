@@ -61,6 +61,7 @@ if (Move4Rows) {
 // Actually copy the row(s).
 for (; NumRows; --NumRows, ++DstRow, ++SrcRow) {
   for (unsigned Column = 0; Column < 16; ++Column) {
+    if (LaneConfig[Column / 2].BLOCK_DEST_MOV.Bit[Column & 1]) continue;
     uint19_t SrcBVal;
     if (UseDst32b) {
       // Read from Dst in 32-bit mode.

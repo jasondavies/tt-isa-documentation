@@ -51,7 +51,7 @@ for (unsigned Lane = 0; Lane < 32; ++Lane) {
           // Want to end up with VD = max, so swap if VC is larger.
           ShouldSwap = !SignMagIsSmaller(VCVal, VDVal);
         }
-        if (LaneConfig[Lane].EXCHANGE_SRCB_SRCC1) {
+        if (LaneConfig[Lane].EXCHANGE_SRCB_SRCC) {
           ShouldSwap = !ShouldSwap;
         }
       }

@@ -52,7 +52,7 @@ switch (Mod1) {
 case SFPSHFT2_MOD1_COPY4: // (Mod1 == 0)
   // Within each lane, shuffle L0 / L1 / L2 / L3.
   lanewise {
-    if (VD < 12 || VD == 16 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
+    if (VD < 12 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
       if (LaneEnabled) {
         LReg[0] = LReg[1];
         LReg[1] = LReg[2];
@@ -67,7 +67,7 @@ case SFPSHFT2_MOD1_SUBVEC_CHAINED_COPY4: {
   // by eight lanes and assign it to L3.
   auto v0 = LReg[0];
   for (unsigned Lane = 0; Lane < 32; ++Lane) {
-    if (VD < 12 || VD == 16 || LaneConfig[Lane].DISABLE_BACKDOOR_LOAD) {
+    if (VD < 12 || LaneConfig[Lane].DISABLE_BACKDOOR_LOAD) {
       if (LaneEnabled[Lane]) {
         LReg[0][Lane] = LReg[1][Lane];
         LReg[1][Lane] = LReg[2][Lane];
@@ -80,7 +80,7 @@ case SFPSHFT2_MOD1_SUBVEC_CHAINED_COPY4: {
 case SFPSHFT2_MOD1_SUBVEC_SHFLROR1_AND_COPY4:
   // Within each lane, shuffle L0 / L1 / L2 / L3, then within each group of eight
   // lanes of the original VC, rotate lanes right by one lane and assign to L3.
-  if (VD < 12 || VD == 16 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
+  if (VD < 12 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
     auto vc = LReg[VC];
     for (unsigned Lane = 0; Lane < 32; ++Lane) {
       if (LaneEnabled[Lane]) {
@@ -94,7 +94,7 @@ case SFPSHFT2_MOD1_SUBVEC_SHFLROR1_AND_COPY4:
   break;
 case SFPSHFT2_MOD1_SUBVEC_SHFLROR1:
   // Within each group of eight lanes, rotate lanes right by one lane.
-  if (VD < 12 || VD == 16 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
+  if (VD < 12 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
     auto vc = LReg[VC];
     if (VD < 8 || VD == 16) {
       for (unsigned Lane = 0; Lane < 32; ++Lane) {
@@ -164,13 +164,13 @@ Supporting definitions:
 
 ## Instruction scheduling
 
-If `SFPSHFT2_MOD1_SUBVEC_SHFLROR1_AND_COPY4` is used, software must ensure that on the next cycle, the Vector Unit (SFPU) does not execute an instruction which reads from `LReg[0]` or `LReg[1]` or `LReg[2]` or `LReg[3]`. A NOP instruction can be inserted to ensure this (any kind of Tensix NOP suffices, though `SFPNOP` is conventional).
+If `SFPSHFT2_MOD1_SUBVEC_SHFLROR1_AND_COPY4` is used, software must ensure that on the next cycle, the Vector Unit (SFPU) does not execute an instruction which reads from `LReg[0]` or `LReg[1]` or `LReg[2]` or `LReg[3]`. An [`SFPNOP`](SFPNOP.md) instruction can be inserted to ensure this.
 
-If `SFPSHFT2_MOD1_SUBVEC_SHFLROR1_AND_COPY4` is used, software must ensure that on the next cycle, the Vector Unit (SFPU) does not execute an instruction which writes to `LReg[1]` or `LReg[2]` or `LReg[3]`. A NOP instruction can be inserted to ensure this (any kind of Tensix NOP suffices, though `SFPNOP` is conventional).
+If `SFPSHFT2_MOD1_SUBVEC_SHFLROR1_AND_COPY4` is used, software must ensure that on the next cycle, the Vector Unit (SFPU) does not execute an instruction which writes to `LReg[1]` or `LReg[2]` or `LReg[3]`. An [`SFPNOP`](SFPNOP.md) instruction can be inserted to ensure this.
 
-If `SFPSHFT2_MOD1_SUBVEC_SHFLROR1` or `SFPSHFT2_MOD1_SUBVEC_SHFLSHR1` are used with `VD < 8`, software must ensure that on the next cycle, the Vector Unit (SFPU) does not execute an instruction which reads from `LReg[VD]`. A NOP instruction can be inserted to ensure this (any kind of Tensix NOP suffices, though `SFPNOP` is conventional).
+If `SFPSHFT2_MOD1_SUBVEC_SHFLROR1` or `SFPSHFT2_MOD1_SUBVEC_SHFLSHR1` are used with `VD < 8`, software must ensure that on the next cycle, the Vector Unit (SFPU) does not execute an instruction which reads from `LReg[VD]`. An [`SFPNOP`](SFPNOP.md) instruction can be inserted to ensure this.
 
-If `SFPSHFT2_MOD1_SUBVEC_SHFLROR1_AND_COPY4` or `SFPSHFT2_MOD1_SUBVEC_SHFLROR1` or `SFPSHFT2_MOD1_SUBVEC_SHFLSHR1` are used, software must ensure that on the next cycle, the Vector Unit (SFPU) does not execute an instruction from the following list. A NOP instruction can be inserted to ensure this (any kind of Tensix NOP suffices, though `SFPNOP` is conventional).
+If `SFPSHFT2_MOD1_SUBVEC_SHFLROR1_AND_COPY4` or `SFPSHFT2_MOD1_SUBVEC_SHFLROR1` or `SFPSHFT2_MOD1_SUBVEC_SHFLSHR1` are used, software must ensure that on the next cycle, the Vector Unit (SFPU) does not execute an instruction from the following list. An [`SFPNOP`](SFPNOP.md) instruction can be inserted to ensure this.
 * `SFPABS`
 * `SFPAND`
 * `SFPCAST`

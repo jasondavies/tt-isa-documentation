@@ -18,20 +18,22 @@ TT_SFPMAD(/* u4 */ VA, /* u4 */ VB, /* u4 */ VC, /* u4 */ VD, /* u4 */ Mod1)
 
 ```c
 lanewise {
-  if (LaneEnabled) {
-    unsigned va = Mod1 & SFPMAD_MOD1_INDIRECT_VA ? LReg[7].u32 & 15 : VA;
-    float a = LReg[va].f32;
-    float b = LReg[VB].f32;
-    float c = LReg[VC].f32;
-    float d = a * b + c;
-    unsigned vd;
-    if ((Mod1 & SFPMAD_MOD1_INDIRECT_VD) && VD != 16) {
-      vd = LReg[7].u32 & 15;
-    } else {
-      vd = VD;
-    }
-    if (vd < 8 || vd == 16) {
-      LReg[vd].f32 = d;
+  if (VD < 12 || LaneConfig[Lane].DISABLE_BACKDOOR_LOAD) {
+    if (LaneEnabled) {
+      unsigned va = Mod1 & SFPMAD_MOD1_INDIRECT_VA ? LReg[7].u32 & 15 : VA;
+      float a = LReg[va].f32;
+      float b = LReg[VB].f32;
+      float c = LReg[VC].f32;
+      float d = a * b + c;
+      unsigned vd;
+      if ((Mod1 & SFPMAD_MOD1_INDIRECT_VD) && VD != 16) {
+        vd = LReg[7].u32 & 15;
+      } else {
+        vd = VD;
+      }
+      if (vd < 8 || vd == 16) {
+        LReg[vd].f32 = d;
+      }
     }
   }
 }
@@ -56,7 +58,7 @@ If the output is denormal or negative zero, it'll be flushed to positive zero.
 
 ## Instruction scheduling
 
-If `SFPMAD` is used, software must ensure that on the next cycle, the Vector Unit (SFPU) does not execute an instruction which reads from any location written to by the `SFPMAD`. A NOP instruction can be inserted to ensure this (any kind of Tensix NOP suffices, though `SFPNOP` is conventional).
+If `SFPMAD` is used, software must ensure that on the next cycle, the Vector Unit (SFPU) does not execute an instruction which reads from any location written to by the `SFPMAD`. An [`SFPNOP`](SFPNOP.md) instruction can be inserted to ensure this.
 
 ## Performance
 

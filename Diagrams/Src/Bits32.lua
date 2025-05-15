@@ -975,6 +975,15 @@ local diagrams = {
       {24, 8, "0x7A"},
     }
   end,
+  SFPSETCC = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {12, 1, "Imm1", y=1},
+      {24, 8, "0x7B"},
+    }
+  end,
   SFPMOV = function()
     return Bits32{
       {0, 4, "Mod1"},
@@ -1038,6 +1047,20 @@ local diagrams = {
       {24, 8, "0x83"},
     }
   end,
+  SFPPUSHC = function()
+    return Bits32{
+      {0, 4, "0"},
+      {4, 4, "VD"},
+      {24, 8, "0x87"},
+    }
+  end,
+  SFPPOPC = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {24, 8, "0x88"},
+    }
+  end,
   SFPSETSGN = function()
     return Bits32{
       {0, 4, "Mod1"},
@@ -1045,6 +1068,20 @@ local diagrams = {
       {8, 4, "VC"},
       {12, 1, "Imm1", y = 1},
       {24, 8, "0x89"},
+    }
+  end,
+  SFPENCC = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {12, 2, "Imm2"},
+      {24, 8, "0x8A"},
+    }
+  end,
+  SFPCOMPC = function()
+    return Bits32{
+      {4, 4, "VD"},
+      {24, 8, "0x8B"},
     }
   end,
   SFPTRANSP = function()
@@ -1079,6 +1116,12 @@ local diagrams = {
       {16, 5, "Imm5"},
       {21, 1, "StochasticRounding", y=1},
       {24, 8, "0x8E"},
+    }
+  end,
+  SFPNOP = function()
+    return Bits32{
+      {7, 1, "0"},
+      {24, 8, "0x8F"},
     }
   end,
   SFPCAST = function()
