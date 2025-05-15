@@ -47,11 +47,11 @@ local function TensixBackendMisc()
 
   local x_spacing = 28
   local y_spacing = 28
-  local rwc_f = Drawing.RectText(out, {x = 5.5, y = 5.5, w = 170, h = 50, color = data_color}, {"Fidelity Phase", "RWCs; 3x 2b"})
+  local rwc_f = Drawing.RectText(out, {x = 5.5, y = 5.5, w = 170, h = 50, color = data_color}, {"Fidelity Phase RWCs", "3x 2b"})
   local fpu = Drawing.RectText(out, {x = rwc_f.x, y = rwc_f.bottom + y_spacing, w = rwc_f.w, h = rwc_f.h * 2 + y_spacing, color = xu_color}, {"Matrix Unit", "(FPU)"})
   local rwc = Drawing.RectText(out, {x = fpu.x, y = fpu.bottom + y_spacing, w = fpu.w, h = rwc_f.h, color = data_color}, {"Dst, SrcA, SrcB RWCs", "3x 2x (10b + 6b + 6b)"})
   local sfpu = Drawing.RectText(out, {x = rwc.x, y = rwc.bottom + y_spacing, w = rwc.w, h = rwc_f.h * 2 + 10, color = xu_color}, {"Vector Unit", "(SFPU)"})
-  local cc = Drawing.RectText(out, {x = sfpu.x, y = sfpu.bottom + y_spacing, w = sfpu.w, h = rwc.h, color = data_color}, {"Lane Predication", "Masks; 9x (1b + 32b)"})
+  local cc = Drawing.RectText(out, {x = sfpu.x, y = sfpu.bottom + y_spacing, w = sfpu.w, h = rwc.h, color = data_color}, {"Lane Predication Masks", "32x 9x (1b + 1b)"})
 
   VertConn(out, rwc_f, "<>", fpu)
   VertConn(out, fpu, "<>", rwc)
@@ -59,8 +59,8 @@ local function TensixBackendMisc()
   VertConn(out, sfpu, "<>", cc)
 
   local acl = Drawing.RectText(out, {x = fpu.right + x_spacing, y = fpu.y, w = 160, h = rwc_f.h, color = data_color}, {"SrcA, SrcB Access", "Control; 4b + 4b"})
-  local adc = Drawing.RectText(out, {x = acl.right + x_spacing, y = acl.bottom + y_spacing, w = 130, h = acl.h, color = data_color}, {"Unpacker ADCs", "3x 2x 2x 2x 50b"})
-  local adc1 = Drawing.RectText(out, {x = adc.x, y = adc.bottom + 10, w = adc.w, h = adc.h, color = data_color}, {"Packer ADCs", "3x 1x 2x 2x 50b"})
+  local adc = Drawing.RectText(out, {x = acl.right + x_spacing, y = acl.bottom + y_spacing, w = 130, h = acl.h, color = data_color}, {"Unpacker ADCs", "3x 2x 2x 2x 47b"})
+  local adc1 = Drawing.RectText(out, {x = adc.x, y = adc.bottom + 10, w = adc.w, h = adc.h, color = data_color}, {"Packer ADCs", "3x 1x 2x 2x 47b"})
   local misc = Drawing.RectText(out, {x = acl.x, y = adc.y, w = acl.w, bottom = adc1.bottom, color = xu_color}, {"Miscellaneous", "Unit"})
 
   local scalar = Drawing.RectText(out, {x = adc.right + x_spacing, y = adc.y, w = 128, h = misc.h, color = xu_color}, {"Scalar Unit", "(ThCon)"})
