@@ -39,8 +39,11 @@ for (unsigned Lane = 0; Lane < 32; ++Lane) {
   switch (VD) {
   case 0: case 1: case 2: case 3:
     // Write to LoadMacroConfig::InstructionTemplate.
-    // Not enough Imm16 bits to specify a 32-bit instruction, so
-    // these cases completely ignore MOD1_IMM16_IS_VALUE.
+    // Not enough Imm16 bits to specify a 32-bit instruction, so these
+    // cases completely ignore MOD1_IMM16_IS_VALUE. Note that executing an
+    // instruction with VD set to 12+i will write the instruction bits to
+    // InstructionTemplate[i], which can be more efficient than using SFPCONFIG
+    // (this requires DISABLE_BACKDOOR_LOAD to be false, which is the default).
     LoadMacroConfig[Lane].InstructionTemplate[VD] = LReg[0][Lane & 7];
     break;
   case 4: case 5: case 6: case 7: {

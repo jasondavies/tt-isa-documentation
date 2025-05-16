@@ -8,7 +8,7 @@
 
 (†) If a Simple instruction and a Round instruction execute on the same cycle, then one of them needs to have `VD == 16` and the other needs to have `VD != 16`, or one needs to have `VD < 4` and the other needs to have `4 <= VD < 8`.
 
-(‡) If `SFPSWAP` is scheduled to the Simple sub-unit, then `SFPNOP` needs to scheduled to the MAD sub-unit for the same time.
+(‡) If `SFPSWAP` is scheduled to the Simple sub-unit, then `SFPNOP` needs to be scheduled to the MAD sub-unit for the same time.
 
 The Vector Unit (SFPU) is capable of executing up to five instructions per cycle: one load-style instruction (`SFPLOAD` or `SFPLOADI` or `SFPLOADMACRO` or `SFPNOP`), and then one instruction from each of the above four columns. However, `SFPLOADMACRO` is the only mechanism for attaining more than one instruction per cycle, and some pre-configuration is required (via [`SFPCONFIG`](SFPCONFIG.md)).
 
@@ -132,7 +132,7 @@ for (auto [i, SubUnit] in enumerate({SimpleSubUnit, MADSubUnit, RoundSubUnit, St
   SubUnit.ScheduleInstructionForFutureExecution(Insn, Delay, DelayKind);
 }
 ```
-An instruction scheduled with a delay of 0 will execute on the cycle immediately after `SFPLOADMACRO`, whereas an instruction scheduled with a delay greater than zero will gradually count down, and then execute on the cycle _after_ the cycle on which it counts down from 1 to 0. If _any_ outstanding instruction (on any sub-unit) scheduled for future execution has a delay kind of `WaitForElapsedInstructions`, then _all_ outstanding instructions (on all sub-units) have their delay counter decremented by one every time a thread issues an instruction to the Vector Unit (SFPU). On the other hand, if all outstanding instructions have a delay kind of `WaitForElapsedCycles`, then all outstanding instructions have their delay counter decremented by one every cycle.
+An instruction scheduled with a delay of 0 will execute on the cycle immediately after `SFPLOADMACRO`, whereas an instruction scheduled with a delay greater than zero will gradually count down, and then execute on the cycle _after_ the cycle on which it counts down from 1 to 0. If _any_ outstanding instruction (on any sub-unit) scheduled for future execution has a delay kind of `WaitForElapsedInstructions`, then _all_ outstanding instructions (on all sub-units) have their delay counter decremented by one every time a thread issues an instruction to the Vector Unit (SFPU). On the other hand, if all outstanding instructions have a delay kind of `WaitForElapsedCycles`, then all outstanding instructions have their delay counter decremented by one every cycle. The `WaitForElapsedInstructions` delay kind is useful when a scheduled instruction consumes an input which is produced by a future instruction (it is not required when the producing instruction and the consuming instruction come from the same `SFPLOADMACRO`, but it generally is required in other cases).
 
 There are some extra considerations for `StoreSubUnit`:
 * In theory, `LoadMacroConfig` can differ between lanes (though this is not encouraged). If _any_ lane invokes `ScheduleInstructionForFutureExecution` on `StoreSubUnit`, then _all_ lanes must do so.
