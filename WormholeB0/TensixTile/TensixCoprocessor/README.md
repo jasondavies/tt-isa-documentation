@@ -48,7 +48,7 @@ Once instructions pass through the Wait Gate in the frontend, they'll be dispatc
 2. Unpackers
 3. [Matrix Unit (FPU)](MatrixUnit.md)
 4. [Packers](Packers/README.md)
-5. Vector Unit (SFPU)
+5. [Vector Unit (SFPU)](VectorUnit.md)
 6. [Scalar Unit (ThCon)](ScalarUnit.md)
 7. [Configuration Unit](ConfigurationUnit.md)
 8. [Mover](XMOV.md)

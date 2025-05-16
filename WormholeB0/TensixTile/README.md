@@ -8,7 +8,7 @@ Each Tensix tile contains:
   * [1x Tensix coprocessor](TensixCoprocessor/README.md) - a big AI coprocessor, itself containing:
     * 2x Unpacker, for moving data from L1 into the coprocessor
     * [1x Matrix Unit (FPU)](TensixCoprocessor/MatrixUnit.md), for performing low precision matrix multiply-accumulate operations and some other matrix operations
-    * 1x Vector Unit (SFPU), for performing 32-wide SIMD operations on 32-bit lanes, including FP32 multiply-accumulate operations
+    * [1x Vector Unit (SFPU)](TensixCoprocessor/VectorUnit.md), for performing 32-wide SIMD operations on 32-bit lanes, including FP32 multiply-accumulate operations
     * [1x Scalar Unit (ThCon)](TensixCoprocessor/ScalarUnit.md), for performing integer scalar operations and 128-bit memory operations against L1 (including atomics)
     * [4x Packer](TensixCoprocessor/Packers/README.md), for moving data from the coprocessor back to L1
   * A variety of little utility devices, mainly for the benefit of the RISCV cores: [the mover](Mover.md), [mailboxes](BabyRISCV/Mailboxes.md), [TDMA-RISC](TDMA-RISC.md), [the debug timestamper](DebugTimestamper.md), and the PIC.
