@@ -204,6 +204,13 @@ local diagrams = {
       {24, 8, "0x94"},
     }
   end,
+  SFPLUTFP32 = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {24, 8, "0x95"},
+    }
+  end,
   REG2FLOP_Configuration = function()
     return Bits32{
       {0, 6, "InputReg"},
@@ -923,6 +930,13 @@ local diagrams = {
       {12, 4, "VB"},
       {16, 4, "VA"},
       {24, 8, "0x86"},
+    }
+  end,
+  SFPLUT = function()
+    return Bits32{
+      {16, 4, "Mod0"},
+      {20, 4, "VD"},
+      {24, 8, "0x73"},
     }
   end,
   SFPMULI = function()
