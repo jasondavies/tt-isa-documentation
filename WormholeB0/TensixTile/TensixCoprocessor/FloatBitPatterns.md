@@ -85,3 +85,31 @@ There is no IEEE 754 specification for this type, but one can be reasonably infe
 (‡) In some contexts, this bit pattern behaves similarly to ±Infinity, as the Matrix Unit (FPU) will output this bit pattern for values whose magnitude is too large to represent (as will [`SFPSTORE`](SFPSTORE.md)), and [`SFPLOAD`](SFPLOAD.md) can optionally be configured to interpret this bit pattern as ±Infinity.
 
 (*) This will become an FP32 denormal, which subsequent arithmetic instructions within the Vector Unit (FPU) will interpret as zero.
+
+## BFP
+
+The coprocessor's packers and unpackers support a variety of block float formats, which are collectively called BFP formats. These consist of either 8 or 4 or 2 bits per datum, where the most significant bit is a sign bit and the remaining bits are a magnitude. Exponents are separate, with each group of 16 datums sharing a common 8-bit exponent (though BFP8a/BFP4a/BFP2a only use the low five bits of the exponent and expect the high three bits to be zero).
+
+### BFP8 and BFP8a
+
+<table><thead><tr><th>Sign</th><th>Exp<th>Mag&nbsp;(7b)</th><th>BFP8 Meaning</th><th>BFP8a Meaning</th></tr></thead>
+<tr><td>0</td><td>Any</td><td>1 - 127</td><td>Mag/2<sup>6</sup> * 2<sup>Exp-127</sup></td><td>Mag/2<sup>6</sup> * 2<sup>Exp-15</sup></td></tr>
+<tr><td>0</td><td>Any</td><td>0</td><td>+0</td><td>+0</td></tr>
+<tr><td>1</td><td>Any</td><td>1 - 127</td><td>-Mag/2<sup>6</sup> * 2<sup>Exp-127</sup></td><td>-Mag/2<sup>6</sup> * 2<sup>Exp-15</sup></td></tr>
+<tr><td>1</td><td>Any</td><td>0</td><td>-2<sup>128</sup> or -Infinity</td><td>-2<sup>16</sup></td></tr></table>
+
+### BFP4 and BFP4a
+
+<table><thead><tr><th>Sign</th><th>Exp<th>Mag&nbsp;(3b)</th><th>BFP4 Meaning</th><th>BFP4a Meaning</th></tr></thead>
+<tr><td>0</td><td>Any</td><td>1 - 7</td><td>Mag/2<sup>2</sup> * 2<sup>Exp-127</sup></td><td>Mag/2<sup>2</sup> * 2<sup>Exp-15</sup></td></tr>
+<tr><td>0</td><td>Any</td><td>0</td><td>+0</td><td>+0</td></tr>
+<tr><td>1</td><td>Any</td><td>1 - 7</td><td>-Mag/2<sup>2</sup> * 2<sup>Exp-127</sup></td><td>-Mag/2<sup>2</sup> * 2<sup>Exp-15</sup></td></tr>
+<tr><td>1</td><td>Any</td><td>0</td><td>-2<sup>128</sup> or -Infinity</td><td>-2<sup>16</sup></td></tr></table>
+
+### BFP2 and BFP2a
+
+<table><thead><tr><th>Sign</th><th>Exp<th>Mag&nbsp;(1b)</th><th>BFP2 Meaning</th><th>BFP2a Meaning</th></tr></thead>
+<tr><td>0</td><td>Any</td><td>1</td><td>2<sup>Exp-127</sup></td><td>2<sup>Exp-15</sup></td></tr>
+<tr><td>0</td><td>Any</td><td>0</td><td>+0</td><td>+0</td></tr>
+<tr><td>1</td><td>Any</td><td>1</td><td>-2<sup>Exp-127</sup></td><td>-2<sup>Exp-15</sup></td></tr>
+<tr><td>1</td><td>Any</td><td>0</td><td>-2<sup>128</sup> or -Infinity</td><td>-2<sup>16</sup></td></tr></table>
