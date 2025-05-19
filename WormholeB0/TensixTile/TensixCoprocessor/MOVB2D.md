@@ -46,6 +46,7 @@ if (ThreadConfig[CurrentThread].FP16A_FORCE_Enable) {
 } else {
   Use8bExponent = false;
 }
+bool FlushDenormals = !ConfigState.ALU_ACC_CTRL_Zero_Flag_disabled_src;
 
 // Determine the row range.
 unsigned NumRows;
@@ -71,6 +72,7 @@ for (; NumRows; --NumRows, ++DstRow, SrcRow += !Broadcast1RowTo8) {
   for (unsigned Column = 0; Column < 16; ++Column) {
     if (LaneConfig[Column / 2].BLOCK_DEST_MOV.Bit[Column & 1]) continue;
     uint19_t SrcBVal = SrcB[MatrixUnit.SrcBBank][SrcRow][BroadcastCol0 ? 0 : Column];
+    if (FlushDenormals && !(SrcBVal & 0xff)) SrcBVal = 0;
     uint16_t Val16b = Use8bExponent ? RemoveLowMantissa(SrcBVal) : RemoveHighExponent(SrcBVal);
     if (SrcAFmt == TF32) {
       uint16_t LowMantissa = ((SrcBVal >> 8) & 7) << 13; // The bits removed by RemoveLowMantissa.
