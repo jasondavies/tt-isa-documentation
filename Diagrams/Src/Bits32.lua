@@ -22,7 +22,7 @@ local function Bits32(fields)
 
   local out = buffer.new()
   local nul = buffer.new()
-  local dims = {w = 10 + cell_w * nbits, h = 55}
+  local dims = {w = 10 + cell_w * nbits + (fields.extra_w or 0), h = 55}
   for _, field in ipairs(fields) do
     if field.y then
       dims.h = math.max(dims.h, 65 + field.y * 20)
@@ -1144,6 +1144,41 @@ local diagrams = {
       {4, 4, "VD"},
       {8, 4, "VC"},
       {24, 8, "0x90"},
+    }
+  end,
+  UNPACR_Regular = function()
+    return Bits32{extra_w = 70,
+      {1, 1, "0"},
+      {2, 1, "RowSearch", y = 1, edge = "left"},
+      {3, 1, "UseContextCounter", y = 2, edge = "left"},
+      {4, 1, "AllDatumsAreZero", y = 3, edge = "left"},
+      {6, 1, "FlipSrc", y = 4},
+      {7, 1, "MultiContextMode", y = 3, edge = "right"},
+      {8, 2, "ContextADC", y = 2, edge = "right"},
+      {10, 3, "ContextNumber", y = 1, edge = "right"},
+      {13, 1, "0"},
+      {15, 2, "Ch0ZInc", y = 3},
+      {17, 2, "Ch0YInc", y = 2},
+      {19, 2, "Ch1ZInc", y = 1},
+      {21, 2, "Ch1YInc", y = 2},
+      {23, 1, "WhichUnpacker", y = 1, edge = "right"},
+      {24, 8, "0x42"},
+    }
+  end,
+  UNPACR_IncrementContextCounter = function()
+    return Bits32{
+      {1, 1, "0"},
+      {13, 1, "1"},
+      {23, 1, "WhichUnpacker", y = 1},
+      {24, 8, "0x42"},
+    }
+  end,
+  UNPACR_FlushCache = function()
+    return Bits32{
+      {1, 1, "1"},
+      {7, 1, "MultiContextMode", y = 1},
+      {23, 1, "WhichUnpacker", y = 1},
+      {24, 8, "0x42"},
     }
   end,
   Src_TF32 = function()
