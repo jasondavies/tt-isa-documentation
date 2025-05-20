@@ -1177,6 +1177,14 @@ local diagrams = {
       {18, 1, "Sign", y = 1, edge = "left"},
     }
   end,
+  Src_INT16 = function()
+    return Bits32{nbits = 19,
+      {0, 8, "Magnitude (low)"},
+      {8, 3, "0"},
+      {11, 7, "Magnitude (high)"},
+      {18, 1, "Sign", y = 1, edge = "left"},
+    }
+  end,
   Dst16_BF16 = function()
     return Bits32{nbits = 16,
       {0, 8, "Exponent"},
@@ -1193,7 +1201,7 @@ local diagrams = {
   end,
   Dst16_INT8 = function()
     return Bits32{nbits = 16,
-      {0, 5, "16"},
+      {0, 5, "16 or 0"},
       {5, 10, "Magnitude"},
       {15, 1, "Sign", y = 1, edge = "left"},
     }

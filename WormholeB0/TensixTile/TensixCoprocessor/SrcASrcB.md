@@ -30,6 +30,7 @@ Each datum in `SrcA` or `SrcB` is up to 19 bits wide, holding one of:
 * **BF16 (1 sign bit, 8 bit exponent, 7 bit mantissa)**. Unpackers can losslessly convert BFP8 / BFP4 / BFP2 to BF16. Internally, this type is overlaid on to TF32, with the three least significant bits of the TF32 mantissa set to zero.
 * **FP16 (1 sign bit, 5 bit exponent, 10 bit mantissa)**. Unpackers can losslessly convert FP8 (1 sign bit, 5 bit exponent, 3 bit mantissa) to FP16. They can also losslessly convert BFP8a / BFP4a / BFP2a to FP16.
 * **Integer "8" (1 sign bit, 10 bit magnitude)**. The range of this type is -1023 through +1023, albeit the majority of hardware conversions to/from this type involve a range of -127 through +127 or 0 through 255. Internally, this type is overlaid on to FP16, using a fixed raw exponent of 16 (or sometimes a raw exponent of 0 when the magnitude is zero).
+* **Integer "16" (1 sign bit, 15 bit magnitude)**. This type is intended only for opaque data transfer of 16 bits; there are no computation instructions involving this type. If used for opaque data transfer, this type can be used to contain _any_ 16 bits, including unsigned 16-bit data.
 
 Note that the coprocessor does not entirely conform to IEEE 754 for TF32 / BF16 / FP16. See [floating-point bit patterns](FloatBitPatterns.md) for details.
 
@@ -61,9 +62,19 @@ Most of the time, software does not need to care about the exact bit layout of t
 
 ![](../../../Diagrams/Out/Bits32_Src_FP16.svg)
 
+The representation of infinity differs from IEEE 754, and NaN is not supported; see [FP16 bit patterns](FloatBitPatterns.md#fp16) for details.
+
 **Integer "8":**
 
 ![](../../../Diagrams/Out/Bits32_Src_INT8.svg)
+
+The low five bits usually contain the value `16`, but unpackers will instead set these bits to `0` when the magnitude is zero.
+
+**Integer "16":**
+
+![](../../../Diagrams/Out/Bits32_Src_INT16.svg)
+
+If using [`MOVA2D`](MOVA2D.md) or [`MOVB2D`](MOVB2D.md) with this type, `ALU_ACC_CTRL_Zero_Flag_disabled_src` should be set, as otherwise the high 11 bits will be treated as zero when the low 8 bits are zero.
 
 ## Fidelity phases (floating-point)
 

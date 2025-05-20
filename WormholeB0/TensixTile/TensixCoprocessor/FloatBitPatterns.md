@@ -113,3 +113,56 @@ The coprocessor's packers and unpackers support a variety of block float formats
 <tr><td>0</td><td>Any</td><td>0</td><td>+0</td><td>+0</td></tr>
 <tr><td>1</td><td>Any</td><td>1</td><td>-2<sup>Exp-127</sup></td><td>-2<sup>Exp-15</sup></td></tr>
 <tr><td>1</td><td>Any</td><td>0</td><td>-2<sup>128</sup> or -Infinity</td><td>-2<sup>16</sup></td></tr></table>
+
+### Conversion routines
+
+Hardware will convert BFP8 / BFP4 / BFP2 to BF16 using the following logic:
+
+```c
+uint16_t BFP8ToBF16(uint8_t DatumBits, uint8_t ExpBits) {
+  uint8_t Sign = DatumBits >> 7;
+  uint8_t Mag  = DatumBits << 1;
+  if (Mag == 0) {
+    return Sign ? 0xff80 : 0;
+  } else {
+    unsigned LZ = stdc_leading_zeros_uc(Mag);
+    Mag <<= LZ;
+    ExpBits -= LZ;
+    return (Sign << 15) | (ExpBits << 7) | (Mag & 0x7e);
+  }
+}
+
+uint16_t BFP4ToBF16(uint4_t DatumBits, uint8_t ExpBits) {
+  return BFP8ToBF16(DatumBits << 4, ExpBits);
+}
+
+uint16_t BFP2ToBF16(uint2_t DatumBits, uint8_t ExpBits) {
+  return BFP8ToBF16(DatumBits << 6, ExpBits);
+}
+```
+
+Hardware will convert BFP8a / BFP4a / BFP2a to FP16 using the following logic:
+
+```c
+uint16_t BFP8aToFP16(uint8_t DatumBits, uint8_t ExpBits) {
+  uint8_t Sign = DatumBits >> 7;
+  uint8_t Mag  = DatumBits << 1;
+  if (Mag == 0) {
+    return Sign ? 0xfc00 : 0;
+  } else {
+    unsigned LZ = stdc_leading_zeros_uc(Mag);
+    Mag <<= LZ;
+    ExpBits -= LZ;
+    if (ExpBits & 0xe0) UndefinedBehaviour();
+    return (Sign << 15) | (ExpBits << 10) | ((Mag & 0x7e) << 3);
+  }
+}
+
+uint16_t BFP4aToFP16(uint4_t DatumBits, uint8_t ExpBits) {
+  return BFP8aToFP16(DatumBits << 4, ExpBits);
+}
+
+uint16_t BFP2aToFP16(uint2_t DatumBits, uint8_t ExpBits) {
+  return BFP8aToFP16(DatumBits << 6, ExpBits);
+}
+```
