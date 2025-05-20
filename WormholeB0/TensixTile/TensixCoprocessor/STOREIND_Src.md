@@ -72,7 +72,7 @@ if (StoreToSrcB) {
       if (Row >= 16) {
         UndefinedBehaviour();
       }
-      Row += Unpackers[0].SrcRow; // Will add 0 / 16 / 32 / 48.
+      Row += Unpackers[0].SrcRow[CurrentThread]; // Will add 0 / 16 / 32 / 48.
     }
     for (unsigned i = 0; i < 4; ++i) {
       SrcA[Bank][Row][Column0 + i] = Datum[i];
