@@ -16,7 +16,7 @@ TT_SFP_STOCH_RND(/* bool */ StochasticRounding,
                  /* u4 */ VB,
                  /* u4 */ VC,
                  /* u4 */ VD,
-               ((/* bool */ UseImm5) << 1) +
+               ((/* bool */ UseImm5) << 3) +
                  /* u3 */ Mod1)
 ```
 
