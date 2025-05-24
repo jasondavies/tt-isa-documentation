@@ -53,7 +53,7 @@ Note that `Config` in the above table is referencing [Tensix backend configurati
 
 All columns of `SrcA` data can be held in reset as part of bit 10, or groups of four columns can be held in reset using bits 19 through 22. Software is encouraged to use [`ZEROSRC`](TensixCoprocessor/ZEROSRC.md) rather than relying heavily on `SrcA` data soft reset.
 
-**Upon entering soft reset:** The relevant columns of `SrcA` (all banks, all rows) will have their data to zero.
+**Upon entering soft reset:** The relevant columns of `SrcA` (all banks, all rows) will have their data set to zero.
 
 **Whilst held in soft reset:** Instructions writing to the relevant columns of `SrcA` (any bank, any row) will have the writes to those columns discarded.
 
@@ -63,7 +63,7 @@ All columns of `SrcA` data can be held in reset as part of bit 10, or groups of 
 
 All columns of `SrcB` data can be held in reset as part of bit 16. Software is encouraged to use [`ZEROSRC`](TensixCoprocessor/ZEROSRC.md) rather than relying heavily on `SrcB` data soft reset.
 
-**Upon entering soft reset:** The relevant columns of `SrcB` (all banks, all rows) will have their data to zero.
+**Upon entering soft reset:** The relevant columns of `SrcB` (all banks, all rows) will have their data set to zero.
 
 **Whilst held in soft reset:** Instructions writing to the relevant columns of `SrcB` (any bank, any row) will have the writes to those columns discarded.
 

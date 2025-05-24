@@ -59,7 +59,7 @@ for (unsigned i = 0; i < 4; ++i) {
   }
 }
 
-auto AddrMod = ThreadConfig[CurrentThead].ADDR_MOD_PACK_SEC[CurrentInstruction.AddrMod];
+auto AddrMod = ThreadConfig[CurrentThread].ADDR_MOD_PACK_SEC[CurrentInstruction.AddrMod];
 for (unsigned i = 0; i < 3; ++i) {
   if (!ADCsToAdvance[i]) continue;
   auto& ADC = ADCs[i].Packers.Channel[0];
