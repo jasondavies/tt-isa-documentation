@@ -11,7 +11,7 @@ The ADC manipulation instructions are:
 |**Z**|[`SETADC`](SETADC.md), [`SETADCZW`](SETADCZW.md)|[`INCADCZW`](INCADCZW.md)|[`ADDRCRZW`](ADDRCRZW.md)|
 |**W**|[`SETADC`](SETADC.md), [`SETADCZW`](SETADCZW.md)|[`INCADCZW`](INCADCZW.md)|[`ADDRCRZW`](ADDRCRZW.md)|
 
-Note that the Sclar Unit (ThCon) instruction [`REG2FLOP`](REG2FLOP_ADC.md) can move values from GPRs to ADCs.
+Note that the Scalar Unit (ThCon) instruction [`REG2FLOP`](REG2FLOP_ADC.md) can move values from GPRs to ADCs.
 
 The instructions which live in the Miscellaneous Unit because they don't fit anywhere else are:
 * [`SETDVALID`](SETDVALID.md)

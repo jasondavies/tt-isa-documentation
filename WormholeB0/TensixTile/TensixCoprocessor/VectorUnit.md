@@ -127,7 +127,7 @@ Stack<FlagStackEntry> FlagStack[32];
 
 Software is encouraged to set `UseLaneFlagsForLaneEnable` to `true` and then always leave it as `true`, though it doesn't have to.
 
-In instruction descriptions, `LaneEnabled[Lane]` is shorthand `IsLaneEnabled(Lane)`, whose definition is:
+In instruction descriptions, `LaneEnabled[Lane]` is shorthand for `IsLaneEnabled(Lane)`, whose definition is:
 
 ```c
 bool IsLaneEnabled(unsigned Lane) {

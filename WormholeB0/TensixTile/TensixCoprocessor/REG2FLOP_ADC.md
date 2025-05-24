@@ -67,4 +67,4 @@ case 3: Cr ? Ch.W_Cr = Value : Ch.W = Value; break;
 
 ## Performance
 
-This instruction usually takes two cycles, though it will take longer if [Configuration Unit](ConfigurationUnit.md) instructions (from any Tensix thread or any baby RISCV) are writing to to THCON configuration. This is not a typo; it applies _even though_ this variant of `REG2FLOP` does not touch THCON configuration. The instruction occupies the [Scalar Unit (ThCon)](ScalarUnit.md) for the entire duration, and the issuing thread will be blocked from issuing subsequent instructions for the entire duration.
+This instruction usually takes two cycles, though it will take longer if [Configuration Unit](ConfigurationUnit.md) instructions (from any Tensix thread or any baby RISCV) are writing to THCON configuration. This is not a typo; it applies _even though_ this variant of `REG2FLOP` does not touch THCON configuration. The instruction occupies the [Scalar Unit (ThCon)](ScalarUnit.md) for the entire duration, and the issuing thread will be blocked from issuing subsequent instructions for the entire duration.

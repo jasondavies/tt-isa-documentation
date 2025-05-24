@@ -16,7 +16,7 @@ TT_ATRELM(/* u16 */ Index)
 
 ## Functional model
 
-This instruction will, if neccessary, spend time waiting at the Wait Gate for a chance to release the mutex:
+This instruction will, if necessary, spend time waiting at the Wait Gate for a chance to release the mutex:
 
 ```c
 if (Index == 1 || Index > 7) {

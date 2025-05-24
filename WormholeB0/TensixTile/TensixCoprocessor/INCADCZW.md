@@ -7,7 +7,7 @@
 ## Syntax
 
 ```c
-TT_INCADCXY(((/* bool */ PK) << 2) +
+TT_INCADCZW(((/* bool */ PK) << 2) +
             ((/* bool */ U1) << 1) +
               /* bool */ U0,
               /* u3 */ W1Inc,

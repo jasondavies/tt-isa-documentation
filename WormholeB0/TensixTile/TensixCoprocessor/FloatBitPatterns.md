@@ -84,7 +84,7 @@ There is no IEEE 754 specification for this type, but one can be reasonably infe
 
 (‡) In some contexts, this bit pattern behaves similarly to ±Infinity, as the Matrix Unit (FPU) will output this bit pattern for values whose magnitude is too large to represent (as will [`SFPSTORE`](SFPSTORE.md)), and [`SFPLOAD`](SFPLOAD.md) can optionally be configured to interpret this bit pattern as ±Infinity.
 
-(*) This will become an FP32 denormal, which subsequent arithmetic instructions within the Vector Unit (FPU) will interpret as zero.
+(*) This will become an FP32 denormal, which subsequent arithmetic instructions within the Vector Unit (SFPU) will interpret as zero.
 
 ## BFP
 

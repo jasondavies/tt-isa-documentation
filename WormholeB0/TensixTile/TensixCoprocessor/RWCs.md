@@ -12,7 +12,7 @@ struct {
 } RWCs[3];
 ```
 
-The `[3]` is always indexed as `[CurrentThread]`, i.e. each Tensix thread has its own set of RWCs, and each thread has exclusive access its own RWCs (there is no cross-thread access).
+The `[3]` is always indexed as `[CurrentThread]`, i.e. each Tensix thread has its own set of RWCs, and each thread has exclusive access to its own RWCs (there is no cross-thread access).
 
 Matrix Unit (FPU) and Vector Unit (SFPU) instructions use RWCs as auto-incrementing addressing counters: the initial values of `RWCs[CurrentThread].Dst` and `RWCs[CurrentThread].SrcA` and `RWCs[CurrentThread].SrcB` help to specify which row(s) of [`Dst`](Dst.md) and [`SrcA`](SrcASrcB.md) and [`SrcB`](SrcASrcB.md) the instruction accesses, and then the instruction can specify how to increment these counters in preparation for the next instruction. The same is true of `RWCs[CurrentThread].FidelityPhase`, albeit instead of specifying a row, it specifies which one of four possible fidelity phases are in use for multiplications performed by the Matrix Unit (FPU).
 

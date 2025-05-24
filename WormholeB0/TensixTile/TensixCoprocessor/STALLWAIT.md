@@ -179,14 +179,14 @@ The condition mask consists of 15 bits, named C0 (least significant bit) through
 |**C4**|The current thread has an instruction in any stage of Packer 1's pipeline.|
 |**C5**|The current thread has an instruction in any stage of Packer 2's pipeline.|
 |**C6**|The current thread has an instruction in any stage of Packer 3's pipeline.|
-|**C7**|The current thread has an instruction in any stage of the Matrix Unit (FPU) pipeline. If the Matrix Unit (FPU) is being concurrently used by multiple threads, this _might_ wait longer than strictly neccessary.|
+|**C7**|The current thread has an instruction in any stage of the Matrix Unit (FPU) pipeline. If the Matrix Unit (FPU) is being concurrently used by multiple threads, this _might_ wait longer than strictly necessary.|
 |**C8**|`SrcA[Unpackers[0].SrcBank].AllowedClient != SrcClient::Unpackers`|
 |**C9**|`SrcB[Unpackers[1].SrcBank].AllowedClient != SrcClient::Unpackers`|
 |**C10**|`SrcA[MatrixUnit.SrcABank].AllowedClient != SrcClient::MatrixUnit`|
 |**C11**|`SrcB[MatrixUnit.SrcBBank].AllowedClient != SrcClient::MatrixUnit`|
 |**C12**|The mover has any memory requests still outstanding (from any thread or from TDMA-RISC).|
 |**C13**|The RISCV T core associated with the current Tensix thread has a memory read-request or write-request against Tensix GPRs or Tensix configuration or TDMA-RISC that has been emitted from the RISCV core but not yet processed.|
-|**C14**|The current thread has an instruction in any stage of the Vector Unit (SFPU) pipeline. If the Vector Unit (SFPU) is being concurrently used by multiple threads, this _might_ wait longer than strictly neccessary.|
+|**C14**|The current thread has an instruction in any stage of the Vector Unit (SFPU) pipeline. If the Vector Unit (SFPU) is being concurrently used by multiple threads, this _might_ wait longer than strictly necessary.|
 
 If multiple condition bits are set in the condition mask, then the `STALLWAIT` instruction will remain latched if _any_ of the selected conditions indicate "keep on waiting" - the instruction will only be forgotten once _all_ of the conditions are simultaneously met.
 
