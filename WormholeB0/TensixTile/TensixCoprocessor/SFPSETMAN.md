@@ -28,7 +28,7 @@ if (VD < 8 || VD == 16) {
       if (Mod1 & SFPSETMAN_MOD1_ARG_IMM) {
         // New mantissa bits come from Imm12. They are shifted left by 11 places
         // because we want 23 bits for FP32, but the instruction only fits 12 bits.
-        Exp = Imm12 << 11;
+        Man = Imm12 << 11;
       } else {
         // New mantissa bits come from existing FP32 mantissa bits or low bits of
         // existing integer.

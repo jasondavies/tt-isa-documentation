@@ -58,13 +58,13 @@ Writes to `SemaphoreAccess[i] = new_val` behave as:
 atomic {
   if (new_val & 1) {
     // This is like a SEMGET instruction.
-    if (Semaphores[i].Val > 0) {
-      Semaphores[i].Val -= 1;
+    if (Semaphores[i].Value > 0) {
+      Semaphores[i].Value -= 1;
     }
   } else {
     // This is like a SEMPOST instruction.
-    if (Semaphores[i].Val < 15) {
-      Semaphores[i].Val += 1;
+    if (Semaphores[i].Value < 15) {
+      Semaphores[i].Value += 1;
     }
   }
 }
