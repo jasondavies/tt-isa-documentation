@@ -14,7 +14,7 @@ With this in mind, there are a few different ways of safely populating the instr
 * Disable RISCV NC's branch predictor and ensure that RISCV NC is executing instructions out of L1, then instruct the mover, and only enable the branch predictor again and jump to IRAM once the mover has finished. Unfortunately, the registers for enabling and disabling the branch predictor are not mapped into RISCV NC's address space, so the assistance of some other core is required for those steps.
 * Ensure that RISCV NC is executing instructions out of L1, then have RISCV NC deliberately pollute its branch predictor history in a way that means branch prediction targets will not be IRAM until IRAM is next executed from, then instruct the mover, and only jump to IRAM once the mover has finished.
 
-The last option in the above list sounds somewhat exotic, but executing the following instruction sequence (from L1) will perform the neccessary pollution:
+The last option in the above list sounds somewhat exotic, but executing the following instruction sequence (from L1) will perform the necessary pollution:
 ```
 .rept 13
 bne x0, x0, .

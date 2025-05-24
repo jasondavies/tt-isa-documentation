@@ -26,7 +26,7 @@ When `Direction==DIRECTION_LEFT`:
 
 ## Functional model
 
-This instruction will, if neccessary, spend time waiting at the Wait Gate before being dispatched to the Matrix Unit (FPU):
+This instruction will, if necessary, spend time waiting at the Wait Gate before being dispatched to the Matrix Unit (FPU):
 
 ```c
 while (SrcA[MatrixUnit.SrcABank].AllowedClient != MatrixUnit) {

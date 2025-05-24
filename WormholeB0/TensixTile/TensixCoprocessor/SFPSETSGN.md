@@ -33,7 +33,7 @@ if (VD < 8 || VD == 16) {
         uint32_t b = LReg[VB].u32;
         Sign = b >> 31;
       }
-      LReg[VD].u32 = (Sign << 31) | (Exp << 23) | Mag; // FP32.
+      LReg[VD].u32 = (Sign << 31) | (Exp << 23) | Man; // FP32.
     }
   }
 }

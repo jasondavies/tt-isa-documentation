@@ -42,7 +42,7 @@ See [Debug register access](#debug-register-access) for details on how software 
 
 ## Command and control bitmask
 
-The low 9 bits of `DR(1)` contains a bitmask of potential debugger actions: any write to `DR(1)` will trigger all of the actions specified in the bitmask (though not all combinations of actions are valid). Software can read back the value of `DR(1)` and observe the bitmask, but the bitmask only causes a hardware effect on the single cycle on which the write occured. Meanwhile, the high bit of `DR(1)` behaves totally differently: it is a persistent mode bit. If software sets this bit, it remains in effect up until software subsequently clears the bit.
+The low 9 bits of `DR(1)` contains a bitmask of potential debugger actions: any write to `DR(1)` will trigger all of the actions specified in the bitmask (though not all combinations of actions are valid). Software can read back the value of `DR(1)` and observe the bitmask, but the bitmask only causes a hardware effect on the single cycle on which the write occurred. Meanwhile, the high bit of `DR(1)` behaves totally differently: it is a persistent mode bit. If software sets this bit, it remains in effect up until software subsequently clears the bit.
 
 |Bit&nbsp;index|Meaning|Valid to set when...|
 |--:|---|---|
@@ -122,7 +122,7 @@ Most RISCV instructions will always complete in a finite number of cycles. Howev
 
 The above instructions present two problems for the GDB/Debug interface:
 1. When a pause is requested, if any of the above instructions are in flight, it could take an indeterminate amount of time for the pause to be actioned, and until it is actioned, the GDB/Debug interface can't even query the `pc` (though the [debug daisychain](../DebugDaisychain.md#riscv-execution-state) _can_ be used to query `pc` whilst waiting for a pause to be actioned, and the low 31 bits of group A therein are guaranteed to be valid once a pause has been requested).
-2. In order to safely resume a core after it has been paused, it usually needs to be placed in [slow execution mode](#slow-execution-mode) prior to be paused, and if the Load/Store Unit's retire-order queue initially contains more than one entry, software needs to wait for the existing entries to naturally drain out. If any of the above instructions are in flight, it could take an indeterminate amount of time for this draining to happen.
+2. In order to safely resume a core after it has been paused, it usually needs to be placed in [slow execution mode](#slow-execution-mode) prior to being paused, and if the Load/Store Unit's retire-order queue initially contains more than one entry, software needs to wait for the existing entries to naturally drain out. If any of the above instructions are in flight, it could take an indeterminate amount of time for this draining to happen.
 
 If software wishes to use the GDB/Debug interface, the following mitigations are suggested:
 1. Do not use [PCBufs](PCBufs.md) at all; [mailboxes](Mailboxes.md) can be used instead.

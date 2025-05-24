@@ -41,7 +41,7 @@ lanewise {
     if (LaneEnabled) {
       uint32_t PRNGBits = StochasticRounding ? AdvancePRNG() & 0x7fffff : 0x400000;
       uint32_t x = LReg[VC].u32; // FP32.
-      uint32_t Exp = (c >> 23) & 0xff;
+      uint32_t Exp = (x >> 23) & 0xff;
       if (Exp == 0) {
         // Denormal or zero? Becomes zero.
         x = 0;
@@ -56,7 +56,7 @@ lanewise {
         if ((DiscardedBits << 10) >= PRNGBits) x += 0x2000;
       } else /* Mod1 == SFPSTOCHRND_MOD1_FP32_TO_FP16B */ {
         // Keep 7 bits of mantissa precision, discard 16 bits (use them for rounding).
-        uint32_t DiscardedBits = c & 0xffff;
+        uint32_t DiscardedBits = x & 0xffff;
         x -= DiscardedBits;
         if ((DiscardedBits << 7) >= PRNGBits) x += 0x10000;
       }

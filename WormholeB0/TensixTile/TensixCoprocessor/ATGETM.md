@@ -16,7 +16,7 @@ TT_ATGETM(/* u16 */ Index)
 
 ## Functional model
 
-This instruction will, if neccessary, spend time waiting at the Wait Gate for the mutex to become available:
+This instruction will, if necessary, spend time waiting at the Wait Gate for the mutex to become available:
 
 ```c
 if (Index == 1 || Index > 7) {

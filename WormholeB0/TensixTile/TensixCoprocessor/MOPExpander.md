@@ -70,7 +70,7 @@ async def ExpandTemplate1(MopCfg):
   else:
     LoopOpFlip = LoopOp ^ LoopOp1 # Inner loop will alternate between the two instructions and will
     InnerCount *= 2               # execute for twice as many iterations. It is expressed like this
-                                  # this because Loop0Last / Loop1Last override the last iteration.
+                                  # because Loop0Last / Loop1Last override the last iteration.
   if OuterCount == 1 and IsNop(StartOp) and InnerCount == 0 and not IsNop(EndOp0):
     OuterCount += 128 # Hardware bug
   for j in range(OuterCount):
@@ -113,7 +113,7 @@ Though the functional model shows `MopCfg` being sampled at the start of `Expand
 
 ## Performance
 
-While not processing `MOP` or `MOP_CFG` instructions, each MOP Expander can ingest one instruction per cycle and emit one instruction per cycle. When emitting instructions, the MOP Expander will resolve as much control flow as neccessary to find the next `yield` statement, so the control flow is effectively free.
+While not processing `MOP` or `MOP_CFG` instructions, each MOP Expander can ingest one instruction per cycle and emit one instruction per cycle. When emitting instructions, the MOP Expander will resolve as much control flow as necessary to find the next `yield` statement, so the control flow is effectively free.
 
 Upon receiving a `MOP` instruction, a MOP Expander will ingest the `MOP` instruction and then emit a different sequence of instructions, at a rate of one instruction per cycle, only slowing down if backpressured from downstream.
 

@@ -95,7 +95,7 @@ for (auto [i, SubUnit] in enumerate({SimpleSubUnit, MADSubUnit, RoundSubUnit, St
 
   // Override some instruction fields with values from the SFPLOADMACRO instruction:
   if (i != 3) {
-    // This branch applies to SimpleSubUnit, MADSubInit, and RoundSubUnit. The instruction's
+    // This branch applies to SimpleSubUnit, MADSubUnit, and RoundSubUnit. The instruction's
     // VD (result LReg index) is overridden, as is either VB or VC (input LReg indices).
     if (SequenceBits & 0x80) {
       Insn.VB = VD;

@@ -46,7 +46,7 @@ TT_GMPOOL(((/* bool */ FlipSrcB) << 1) +
 
 ## Functional model
 
-This instruction will, if neccessary, spend time waiting at the Wait Gate before being dispatched to the Matrix Unit (FPU):
+This instruction will, if necessary, spend time waiting at the Wait Gate before being dispatched to the Matrix Unit (FPU):
 
 ```c
 while (SrcA[MatrixUnit.SrcABank].AllowedClient != MatrixUnit
@@ -255,7 +255,7 @@ Datum ReadAndScaleSrc(uint19_t SrcAVal, uint4_t SrcAStyle, uint19_t SrcBVal) {
     // This effectively sets Result to negative infinity.
     Result.Sign = 1;
     Result.Exponent = ~0u;
-    Result.Magnitude = ~0u;
+    Result.MagOrMan = ~0u;
   } else if (SrcAExponent == 0) {
     // This is flushing denormals to zero.
     Result.Sign = 0;
