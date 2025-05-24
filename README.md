@@ -8,7 +8,7 @@ The typical software stack for these architectures, from highest level to lowest
 3. [TT-Metalium](https://github.com/tenstorrent/tt-metal/?tab=readme-ov-file#user-content-programming-guide--api-reference)
 4. [TT-LLK](https://github.com/tenstorrent/tt-llk/)
 
-The material in this reposity is intended for software developers writing code at, or below, the level of TT-LLK.
+The material in this repository is intended for software developers writing code at, or below, the level of TT-LLK.
 
 At the moment, only one architecture is covered in this repository:
 * [Wormhole B0](WormholeB0/README.md) - The version of Wormhole shipped to customers (n150s / n150d / n300s / n300d / Wormhole Galaxy).

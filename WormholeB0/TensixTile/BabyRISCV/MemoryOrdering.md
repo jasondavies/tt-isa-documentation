@@ -77,11 +77,11 @@ If two clients are interacting through L1, and those two clients go through the 
 
 ### Interacting through L1, different access port
 
-If two clients are interacting through L1, and those two clients go through different L1 access ports, then the point of synchronization becomes the L1 banks rather than the L1 access ports. Each bank can process at most one request per cycle, allowing a strict total order for processing of all the requests targetting any given bank.
+If two clients are interacting through L1, and those two clients go through different L1 access ports, then the point of synchronization becomes the L1 banks rather than the L1 access ports. Each bank can process at most one request per cycle, allowing a strict total order for processing of all the requests targeting any given bank.
 
 ### Interacting through other memory regions
 
-If two clients are interacting through a memory region _other_ than L1, then each client will be emitting its own stream of read/write requests against that region, and those streams will be combined into a single ordered stream as they reach the memory region. Each memory region can process at most one request per cycle, allowing a strict total order for processing of all the requests targetting any given region.
+If two clients are interacting through a memory region _other_ than L1, then each client will be emitting its own stream of read/write requests against that region, and those streams will be combined into a single ordered stream as they reach the memory region. Each memory region can process at most one request per cycle, allowing a strict total order for processing of all the requests targeting any given region.
 
 ## Examples of non-intuitive memory ordering
 
