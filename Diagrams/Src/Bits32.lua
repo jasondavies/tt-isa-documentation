@@ -1263,6 +1263,40 @@ local diagrams = {
       {31, 1, "Sign", y = 1, edge = "left"},
     }
   end,
+  NOC_AT_LEN_BE_Increment = function()
+    return Bits32{
+      {0, 2, "Ofs"},
+      {2, 5, "IntWidth"},
+      {12, 3, "1"},
+    }
+  end,
+  NOC_AT_LEN_BE_CAS = function()
+    return Bits32{
+      {0, 2, "Ofs"},
+      {2, 4, "CmpVal"},
+      {6, 4, "SetVal"},
+      {12, 3, "4"},
+    }
+  end,
+  NOC_AT_LEN_BE_SwapMask = function()
+    return Bits32{
+      {2, 8, "Mask"},
+      {12, 3, "3"},
+    }
+  end,
+  NOC_AT_LEN_BE_SwapIndex6 = function()
+    return Bits32{
+      {0, 2, "Ofs"},
+      {2, 1, "1"},
+      {12, 3, "6"},
+    }
+  end,
+  NOC_AT_LEN_BE_SwapIndex7 = function()
+    return Bits32{
+      {2, 2, "Ofs"},
+      {12, 3, "7"},
+    }
+  end,
 }
 local function do_diagram(which)
   local fn = diagrams[which] or error("Unknown diagram ".. which)
