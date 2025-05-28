@@ -45,8 +45,8 @@ In the address space of the tile(s) identified by `NOC_TARG_ADDR_MID`:
 ```c
 uint32_t Result;
 atomic {
-  Result = *(uint32_t*)NOC_TARG_ADDR;
-  uint32_t* L1Address = (uint32_t*)((NOC_TARG_ADDR & ~0xf) + (NOC_AT_LEN_BE.Ofs * 4));
+  Result = *(uint32_t*)NOC_TARG_ADDR_LO;
+  uint32_t* L1Address = (uint32_t*)((NOC_TARG_ADDR_LO & ~0xf) + (NOC_AT_LEN_BE.Ofs * 4));
   uint32_t OriginalValue = *L1Address;
   if (OriginalValue == NOC_AT_LEN_BE.CmpVal) {
     *L1Address = NOC_AT_LEN_BE.SetVal;
@@ -78,8 +78,8 @@ In the address space of the tile(s) identified by `NOC_TARG_ADDR_MID`:
 ```c
 uint32_t Result;
 atomic {
-  Result = *(uint32_t*)NOC_TARG_ADDR;
-  uint16_t* L1Address = (uint16_t*)(NOC_TARG_ADDR & ~0xf);
+  Result = *(uint32_t*)NOC_TARG_ADDR_LO;
+  uint16_t* L1Address = (uint16_t*)(NOC_TARG_ADDR_LO & ~0xf);
   uint16_t ToWrite[2] = {NOC_AT_DATA & 0xffff, NOC_AT_DATA >> 16};
   for (unsigned i = 0; i < 8; ++i) {
     if (NOC_AT_LEN_BE.Mask & (1u << i)) {
@@ -115,8 +115,8 @@ In the address space of the tile(s) identified by `NOC_TARG_ADDR_MID`:
 ```c
 uint32_t Result;
 atomic {
-  Result = *(uint32_t*)NOC_TARG_ADDR;
-  uint32_t* L1Address = (uint32_t*)((NOC_TARG_ADDR & ~0xf) + (NOC_AT_LEN_BE.Ofs * 4));
+  Result = *(uint32_t*)NOC_TARG_ADDR_LO;
+  uint32_t* L1Address = (uint32_t*)((NOC_TARG_ADDR_LO & ~0xf) + (NOC_AT_LEN_BE.Ofs * 4));
   *L1Address = NOC_AT_DATA;
 }
 ```
