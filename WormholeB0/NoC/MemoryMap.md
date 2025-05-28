@@ -130,10 +130,10 @@ This field contains some uncommonly set request flags:
 
 |First&nbsp;bit|#&nbsp;Bits|Name|Purpose|
 |--:|--:|---|---|
-|0|6|Stream ID|When `DeliverReceiverToOverlay` is `true`, the stream ID within the NoC Overlay to deliver the packet to|
+|0|6|Stream ID|When `DeliverToReceiverOverlay` is `true`, the stream ID within the NoC Overlay to deliver the packet to|
 |6|1|`DeliverToReceiverOverlay`|When write requests have this flag set to `true`, the packet will be delivered to the receiver's NoC Overlay (in addition to being written to the receiver's address space as per normal). If software does not know what value to use for this flag, it should use `false`|
-|7|1|First packet of message flag|When `DeliverReceiverToOverlay` is `true`, this flag is delivered to the receiver's NoC Overlay as part of the packet|
-|8|1|Last packet of message flag|When `DeliverReceiverToOverlay` is `true`, this flag is delivered to the receiver's NoC Overlay as part of the packet|
+|7|1|First packet of message flag|When `DeliverToReceiverOverlay` is `true`, this flag is delivered to the receiver's NoC Overlay as part of the packet|
+|8|1|Last packet of message flag|When `DeliverToReceiverOverlay` is `true`, this flag is delivered to the receiver's NoC Overlay as part of the packet|
 |9|1|`NOC_PACKET_TAG_HEADER_STORE`|If a posted write request has this flag set to `true`, then the receiver will write the first 128 bits of the packet's data to the address `NOC_AT_DATA << 4` (in addition to writing all of the packet's data to `NOC_RET_ADDR` as per normal)|
 |10|4|`NOC_PACKET_TRANSACTION_ID`|Affects which [counters](Counters.md) are incremented when software writes to `NOC_CMD_CTRL` and are then later decremented|
 |14|2|Reserved||
