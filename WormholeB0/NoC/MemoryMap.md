@@ -8,7 +8,7 @@ Each NIU ([NoC](README.md) interface unit) has an assortment of command and conf
 |Other, when accessed through NoC #0|`0xF_FFB2_0000` or `0xF_????_?000`|Cannot access
 |Other, when accessed through NoC #1|Cannot access|`0xF_FFB3_0000` or `0xF_????_?000`|
 
-The high-level contents at this address is:
+The high-level contents at this address are:
 
 |Address range start|Example address range|Contents|Software access|
 |---|---|---|---|
@@ -65,7 +65,7 @@ This field contains the request type and some commonly set request flags:
 |17|1|`NOC_CMD_BRCST_SRC_INCLUDE`|When `NOC_CMD_BRCST_PACKET` is set and the initiating NIU is part of the recipient rectangle, `true` if the NIU should indeed be a recipient of the packet, or `false` if the initiating NIU should be excluded from the recipient rectangle; ignored in other cases|
 |18|9|Reserved|Software should always write `0` to these bits, but hardware might subsequently change them|
 |27|4|`NOC_CMD_ARB_PRIORITY`|When set to value `i`, if this request is at a router and contending for virtual channel number assignment against some other request, and that other request has priority `j`, then this request will always have priority if `0 < j < i`. When set to a value other than `0`, software is responsible for ensuring that its traffic patterns do not cause deadlocks|
-|31|1|Reserved|Software should always write `0` to this bits, but hardware might subsequently change it|
+|31|1|Reserved|Software should always write `0` to this bit, but hardware might subsequently change it|
 
 ### `NOC_TARG_ADDR` and `NOC_RET_ADDR`
 
@@ -130,10 +130,10 @@ This field contains some uncommonly set request flags:
 
 |First&nbsp;bit|#&nbsp;Bits|Name|Purpose|
 |--:|--:|---|---|
-|0|6|Stream ID|When `DeliverReceiverToOverlay` is `true`, the stream ID within the NoC Overlay to deliver the packet to|
+|0|6|Stream ID|When `DeliverToReceiverOverlay` is `true`, the stream ID within the NoC Overlay to deliver the packet to|
 |6|1|`DeliverToReceiverOverlay`|When write requests have this flag set to `true`, the packet will be delivered to the receiver's NoC Overlay (in addition to being written to the receiver's address space as per normal). If software does not know what value to use for this flag, it should use `false`|
-|7|1|First packet of message flag|When `DeliverReceiverToOverlay` is `true`, this flag is delivered to the receiver's NoC Overlay as part of the packet|
-|8|1|Last packet of message flag|When `DeliverReceiverToOverlay` is `true`, this flag is delivered to the receiver's NoC Overlay as part of the packet|
+|7|1|First packet of message flag|When `DeliverToReceiverOverlay` is `true`, this flag is delivered to the receiver's NoC Overlay as part of the packet|
+|8|1|Last packet of message flag|When `DeliverToReceiverOverlay` is `true`, this flag is delivered to the receiver's NoC Overlay as part of the packet|
 |9|1|`NOC_PACKET_TAG_HEADER_STORE`|If a posted write request has this flag set to `true`, then the receiver will write the first 128 bits of the packet's data to the address `NOC_AT_DATA << 4` (in addition to writing all of the packet's data to `NOC_RET_ADDR` as per normal)|
 |10|4|`NOC_PACKET_TRANSACTION_ID`|Affects which [counters](Counters.md) are incremented when software writes to `NOC_CMD_CTRL` and are then later decremented|
 |14|2|Reserved||
