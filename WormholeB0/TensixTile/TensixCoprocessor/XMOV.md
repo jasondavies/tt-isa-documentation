@@ -20,9 +20,9 @@ TT_XMOV(0, 0)
 uint1_t StateID = ThreadConfig[CurrentThread].CFG_STATE_ID_StateID;
 auto& ConfigState = Config[StateID];
 
-Mover(ConfigState.THCON_SEC0_REG6_Destination_address,
-      ConfigState.THCON_SEC0_REG6_Source_address,
-      ConfigState.THCON_SEC0_REG6_Buffer_size,
+Mover(ConfigState.THCON_SEC0_REG6_Destination_address << 4,
+      ConfigState.THCON_SEC0_REG6_Source_address << 4,
+     (ConfigState.THCON_SEC0_REG6_Buffer_size & 0xffff) << 4,
       ConfigState.THCON_SEC0_REG6_Transfer_direction);
 ```
 

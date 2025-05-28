@@ -173,10 +173,10 @@ void TDMA_RISC_Command_Processor() {
       } else {
         Src = Params[0];
         Dst = Params[1];
-        Count = Params[2];
+        Count = Params[2] & 0xffff;
         Mode = Params[3] & 3; // 0 = XFER_L0_L1, 1 = XFER_L1_L0, 2 = XFER_L0_L0, 3 = XFER_L1_L1
       }
-      async Mover(Dst, Src, Count, Mode);
+      async Mover(Dst << 4, Src << 4, Count << 4, Mode);
       break;
     case 0x46: // Mover wait command
       while (Mover.IsBusy()) {
@@ -210,7 +210,7 @@ void TDMA_RISC_Command_Processor() {
 }
 ```
 
-For the definition of the `Mover` function, see [the mover](Mover.md). Note that it immediately performs `Src << 4`, `Dst << 4`, and `Count << 4`.
+For the definition of the `Mover` function, see [the mover](Mover.md). Note the various `<< 4` in the call to the `Mover` function.
 
 ---
 

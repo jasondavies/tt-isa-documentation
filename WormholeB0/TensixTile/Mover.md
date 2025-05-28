@@ -14,13 +14,6 @@ Other options also exist for accelerated `memcpy` from L1 to L1: the NoC can be 
 
 ```c
 void Mover(uint32_t dst, uint32_t src, uint32_t count, uint32_t mode) {
-  // Convert inputs to be byte addresses and sizes.
-  dst *= 16;
-  src *= 16;
-  count = (count & 0xFFFF) * 16;
-  // Only low two bits of mode are used.
-  mode &= 3;
-
   // Determine target address.
   if (mode == XMOV_L1_TO_L1 || XMOV_L0_TO_L1) {
     // In the "_TO_L1" modes, dst must be an address in L1.
