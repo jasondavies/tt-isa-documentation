@@ -8,7 +8,7 @@ Each NIU ([NoC](README.md) interface unit) has an assortment of command and conf
 |Other, when accessed through NoC #0|`0xF_FFB2_0000` or `0xF_????_?000`|Cannot access
 |Other, when accessed through NoC #1|Cannot access|`0xF_FFB3_0000` or `0xF_????_?000`|
 
-The high-level contents at this address is:
+The high-level contents at this address are:
 
 |Address range start|Example address range|Contents|Software access|
 |---|---|---|---|
@@ -65,7 +65,7 @@ This field contains the request type and some commonly set request flags:
 |17|1|`NOC_CMD_BRCST_SRC_INCLUDE`|When `NOC_CMD_BRCST_PACKET` is set and the initiating NIU is part of the recipient rectangle, `true` if the NIU should indeed be a recipient of the packet, or `false` if the initiating NIU should be excluded from the recipient rectangle; ignored in other cases|
 |18|9|Reserved|Software should always write `0` to these bits, but hardware might subsequently change them|
 |27|4|`NOC_CMD_ARB_PRIORITY`|When set to value `i`, if this request is at a router and contending for virtual channel number assignment against some other request, and that other request has priority `j`, then this request will always have priority if `0 < j < i`. When set to a value other than `0`, software is responsible for ensuring that its traffic patterns do not cause deadlocks|
-|31|1|Reserved|Software should always write `0` to this bits, but hardware might subsequently change it|
+|31|1|Reserved|Software should always write `0` to this bit, but hardware might subsequently change it|
 
 ### `NOC_TARG_ADDR` and `NOC_RET_ADDR`
 

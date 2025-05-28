@@ -36,7 +36,7 @@ There are various types of request packet:
   * Optionally posted (i.e. receiver does _not_ send a response packet containing acknowledgement and 32b of data)
   * Optionally broadcast to a rectangle of multiple receivers (though if so, receivers can only be Tensix tiles)
 
-NoC hardware ensures deadlock freedom for most common types of transaction, however software becomes partially responsible for this when certain advanced features are used:
+NoC hardware ensures deadlock freedom for most common types of transaction; however, software becomes partially responsible for this when certain advanced features are used:
   * Transactions containing more than one request packet (c.f. `NOC_CMD_VC_LINKED`)
   * Broadcast _without_ path reservations (c.f. `NOC_CMD_PATH_RESERVE`)
   * Arbitration priorities other than `0` (c.f. `NOC_CMD_ARB_PRIORITY`)
