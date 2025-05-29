@@ -60,7 +60,7 @@ The latency of a load instruction depends upon the memory region being accessed.
 <tr><td><a href="README.md#local-data-ram">Core-local data RAM</a></td><td>2</td><td>8</td></tr>
 <tr><td><a href="Mailboxes.md">Mailboxes</a><br/><a href="PCBufs.md">PCBufs</a><br/><a href="TTSync.md">TTSync</a><br/><a href="../TensixCoprocessor/SyncUnit.md#semaphores">Tensix semaphores</a></td><td>≥ 3 (more if waiting on an empty FIFO or waiting for a TTSync event)</td><td rowspan="4">4 (in aggregate across all of these regions)</td></tr>
 <tr><td><a href="../TensixCoprocessor/ScalarUnit.md#gprs">Tensix GPRs</a><br/><a href="../TensixCoprocessor/BackendConfiguration.md">Tensix backend configuration</a></td><td>≥ 4 (more in the case of access conflicts)</td></tr>
-<tr><td><a href="../TDMA-RISC.md">TDMA-RISC&nbsp;configuration&nbsp;and&nbsp;command</a><br/><a href="../TileControlDebugStatus.md">Tile control / debug / status</a><br/>PIC configuration and status<br/>NoC 0 configuration and command<br/>NoC 1 configuration and command<br/>NoC&nbsp;overlay&nbsp;configuration&nbsp;and&nbsp;command</td><td>≥ 7 (more in the case of access conflicts)</td></tr>
+<tr><td><a href="../TDMA-RISC.md">TDMA-RISC&nbsp;configuration&nbsp;and&nbsp;command</a><br/><a href="../TileControlDebugStatus.md">Tile control / debug / status</a><br/>PIC configuration and status<br/><a href="../../NoC/MemoryMap.md">NoC 0 configuration and command</a><br/><a href="../../NoC/MemoryMap.md">NoC 1 configuration and command</a><br/>NoC&nbsp;overlay&nbsp;configuration&nbsp;and&nbsp;command</td><td>≥ 7 (more in the case of access conflicts)</td></tr>
 <tr><td><a href="../L1.md">L1 scratchpad RAM (1464 KiB)</a></td><td>≥ 8 (more in the case of access port conflicts or bank conflicts)</td></tr>
 </table>
 
