@@ -57,10 +57,10 @@ NoC transactions are fairly weakly ordered by default, but can be made stronger 
 
 ## Performance
 
-|Hop type|Throughput|Latency|
+|Hop type|Throughput (per NoC)|Latency|
 |---|---|--:|
 |NIU to directly connected router|One flit (256 bits) per cycle|~5 cycles|
-|Router to neighbouring router|One flit (256 bits) per cycle|9 cycles|
+|Router to neighbouring router|One flit (256 bits) per cycle per axis|9 cycles|
 |Router to directly connected NIU|One flit (256 bits) per cycle|~5 cycles|
 
 [Congestion](RoutingPaths.md#congestion) can negatively impact latency. If software uses the [`NOC_CMD_VC_LINKED` and/or `NOC_CMD_VC_STATIC`](MemoryMap.md#noc_ctrl) flags to enforce particular ordering, then throughput and latency can be negatively impacted: bandwidth might be available, but go unused, because the ordering flags are forcing packets to wait. If software uses the `NOC_CMD_PATH_RESERVE` flag on broadcasts, then the latency of broadcasts is increased, as all routers in the broadcast tree must inform the initiating tile that they're ready to receive the broadcast before any data can leave the initiating tile (if this reservation process fails, then the initiating tile will automatically try again, using randomised exponential backoff).
