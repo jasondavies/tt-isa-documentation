@@ -118,8 +118,8 @@ struct StatusBitsResult {
   bool reserved : 1;
   bool command_queue_full;
   bool command_queue_empty;
-  bool parameter_credits_zero;
-  bool command_queue_empty_again;
+  bool parameter_queue_full;
+  bool parameter_queue_empty;
   unsigned reserved : 2;
   uint8_t command_queue_remaining_capacity;
   bool packer_reg_write_fifo_full : 1;
@@ -132,8 +132,8 @@ StatusBitsResult StatusBits() {
   result.mover_busy = Mover.IsBusy(); // Same control signal as STALLWAIT would use for condition C12
   result.command_queue_full = CommandQueue.IsFull();
   result.command_queue_empty = CommandQueue.IsEmpty();
-  result.parameter_credits_zero = (ParameterCredits == 0);
-  result.command_queue_empty_again = CommandQueue.IsEmpty();
+  result.parameter_queue_full = (ParameterCredits == 0);
+  result.parameter_queue_empty = (ParameterCredits == 2);
   result.command_queue_remaining_capacity = CommandQueue.Capacity() - CommandQueue.Size(); // If IsFull(), this will evaluate to zero. If IsEmpty(), it will evaluate to Capacity(), which happens to be 4.
   result.packer_reg_write_fifo_full = false; // This should never be true, but if it is, the next `PACR_SETREG` might be silently dropped.
   result.unpacker_reg_write_fifo_full = false; // This should never be true, but if it is, the next `UNPACR_NOP` performing a register write might be silently dropped.
