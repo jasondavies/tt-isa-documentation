@@ -97,16 +97,21 @@ uint32_t MovCmdBase[4];
 unsigned ParameterCredits = 2;
 
 void EnqueueCmd(uint32_t Cmd) {
+  while (CommandQueue.IsFull()) {
+    wait;
+  }
   if (Cmd >> 31) {
     // Compact command consisting of just the written 32 bits
-    while (CommandQueue.IsFull()) {
-      wait;
-    }
     CommandQueue.Push({Cmd, {0, 0, 0, 0}});
   } else {
     // Command with parameters; the written 32 bits, plus 4x32 bits from CmdParams
-    while (CommandQueue.IsFull() || ParameterCredits == 0) {
-      wait;
+    if (ParameterCredits == 0) {
+      // EnqueueCmd is meant to wait when ParameterCredits == 0, but due to a
+      // hardware bug, it does not. Software needs to avoid hitting this path.
+      // One way of achieving this is by enqueueing a NOP command (0x80000089) after
+      // enqueueing any command with parameters, as this should ensure that the
+      // CommandQueue capacity is hit before ParameterCredits == 0 is hit.
+      UndefinedBehaviour();
     }
     ParameterCredits -= 1;
     CommandQueue.Push({Cmd, {CmdParams[0], CmdParams[1], CmdParams[2], CmdParams[3]}});
