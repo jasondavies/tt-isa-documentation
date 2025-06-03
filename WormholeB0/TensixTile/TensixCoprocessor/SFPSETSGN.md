@@ -24,7 +24,7 @@ if (VD < 8 || VD == 16) {
       uint32_t c = LReg[VC].u32; // FP32.
       uint32_t Sign;
       uint32_t Exp = (c >> 23) & 0xff;
-      uint32_t Man = x & 0x7fffff;
+      uint32_t Man = c & 0x7fffff;
       if (Mod1 & SFPSETSGN_MOD1_ARG_IMM) {
         // New sign bit comes from Imm1.
         Sign = Imm1;
