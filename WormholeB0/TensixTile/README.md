@@ -4,7 +4,7 @@ Each Tensix tile contains:
   * [1464 KiB of RAM called L1](L1.md)
   * [5x "Baby" RISCV (RV32IM) cores](BabyRISCV/README.md)
   * [2x NoC connections](../NoC/README.md) allowing the local RISCV cores to access data in other tiles, and allowing other tiles to access data from this tile
-  * 1x NoC overlay - a little coprocessor that can assist with NoC transactions
+  * [1x NoC overlay](../NoC/Overlay/README.md) - a little coprocessor that can assist with NoC transactions
   * [1x Tensix coprocessor](TensixCoprocessor/README.md) - a big AI coprocessor, itself containing:
     * 2x Unpacker, for moving data from L1 into the coprocessor
     * [1x Matrix Unit (FPU)](TensixCoprocessor/MatrixUnit.md), for performing low precision matrix multiply-accumulate operations and some other matrix operations

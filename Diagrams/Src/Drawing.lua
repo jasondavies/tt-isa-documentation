@@ -103,6 +103,7 @@ function Mux(out, dims, direction)
       x[3], y[3],
       x[4], y[4],
       mux_color)
+  dims.mux = true
   return dims
 end
 
