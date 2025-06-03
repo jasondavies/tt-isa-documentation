@@ -311,12 +311,12 @@ The `AccTileSize` state is updated like so when a packer finishes a tile (i.e. a
 uint1_t StateID = ThreadConfig[CurrentThread].CFG_STATE_ID_StateID;
 auto& CurrentPackerConfig = CurrentPacker.Config[StateID];
 
-CurrentPacker.AccTileSize[CurrentThread] += Packer.LastTileSize;
+CurrentPacker.AccTileSize[CurrentThread] += CurrentPacker.LastTileSize;
 if (CurrentPackerConfig.Add_tile_header_size) {
   CurrentPacker.AccTileSize[CurrentThread] += 1;
 }
 if (CurrentPackerConfig.Enable_out_fifo && !CurrentPacker.MetadataFIFO.IsFull()) {
-  CurrentPacker.MetadataFIFO.Push({Packer.LastTileSize, Packer.AllZeroFlags});
+  CurrentPacker.MetadataFIFO.Push({CurrentPacker.LastTileSize, CurrentPacker.AllZeroFlags});
 }
 ```
 

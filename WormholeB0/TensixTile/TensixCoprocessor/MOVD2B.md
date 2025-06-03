@@ -106,7 +106,7 @@ for (; NumRows; --NumRows, ++DstRow, ++SrcRow) {
         UndefinedBehaviour();
       }
     }
-    SrcB[MatrixUnit.SrcABank][SrcRow][Column] = SrcBVal;
+    SrcB[MatrixUnit.SrcBBank][SrcRow][Column] = SrcBVal;
   }
 }
 
