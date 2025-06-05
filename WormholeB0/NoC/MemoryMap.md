@@ -43,6 +43,9 @@ Each NIU has four request initiators, starting at addresses `NIU_BASE + i * NOC_
 |`NOC_AT_DATA`|`0xFFB2_0024`|For inline writes, and most types of atomics, contains the 32 bits of immediate data|
 |[`NOC_CMD_CTRL`](#noc_cmd_ctrl)|`0xFFB2_0028`|Writing `1` to the low bit indicates that software wishes to initiate a request using the fields of this initiator; hardware will transition the bit back to `0` once the request has been initiated|
 
+> [!WARNING]
+> Software can only use the NIU request initiators in Tensix tiles and Ethernet tiles. Host software can also cause the PCI Express tile to send NoC requests, but the mechanism for doing so is different to the mechanism described here. Software can cause NoC requests to be sent _to_ other types of tile, and receive responses _from_ those tiles, but it cannot initiate NoC requests _at_ those tiles.
+
 ### `NOC_CTRL`
 
 This field contains the request type and some commonly set request flags:
