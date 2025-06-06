@@ -39,9 +39,9 @@ if (ClearSrcB) {
     ClearSrcBBank[0] = true;
     ClearSrcBBank[1] = true;
   } else if (SingleBankMatrixUnit) {
-    ClearSrcABank[MatrixUnit.SrcBBank] = true;
+    ClearSrcBBank[MatrixUnit.SrcBBank] = true;
   } else {
-    ClearSrcABank[Unpackers[1].SrcBank] = true;
+    ClearSrcBBank[Unpackers[1].SrcBank] = true;
   }
 }
 
