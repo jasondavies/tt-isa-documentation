@@ -386,7 +386,7 @@ When `DaisySel == 8` and `SignalSel == 3`:
 |105|1|`true` if a read-request is arriving at port #13, `false` otherwise|
 |106|1|`true` if a read-request is arriving at port #14, `false` otherwise|
 |107|1|`true` if a read-request is arriving at port #15, `false` otherwise|
-|108|16|Reserved|
+|108|20|Reserved|
 
 When `DaisySel == 8` and `SignalSel == 5`:
 
