@@ -42,4 +42,4 @@ Note that the `wait`s in the above happen within the memory subsystem; they prev
 
 ## Memory ordering
 
-When writing to a mailbox, it is usually the case that the programmer wants the mailbox write-request to be processed _after_ all earlier write-requests have been processed. When reading from a mailbox, it is usually the case that the programmer wants the mailbox read-response to be obtained _before_ any later read-requests are emitted. Neither of these things happen by default; see [memory ordering](MemoryOrdering.md) for details on how to avoid race conditions and ensure that do they happen.
+When writing to a mailbox, it is usually the case that the programmer wants the mailbox write-request to be processed _after_ all earlier write-requests have been processed. When reading from a mailbox, it is usually the case that the programmer wants the mailbox read-response to be obtained _before_ any later read-requests are emitted. Neither of these things happen by default; see [memory ordering](MemoryOrdering.md) for details on how to avoid race conditions and ensure that they do happen.
