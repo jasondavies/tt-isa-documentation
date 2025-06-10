@@ -237,7 +237,7 @@ To perform a write to `DR(i)` of some RISCV core, software should:
 1. Perform a write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_1` with the desired contents of `DR(i)`.
 2. Perform a write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0` with `Trigger == false` (the other fields can contain anything).
 3. Read from `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` (in a loop) until `Trigger == false` is observed. This step can usually be skipped, though it is recommended for robustness.
-4. Perform a write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0` with `DR_i == i`, `IsWrite == true`, `Which_RISCV == j`, `Trigger == false`. The transition of `Trigger` from `false` to `true` will cause hardware to act upon the other fields: it'll initiate the `DR` write (using the value from `RISCV_DEBUG_REG_RISC_DBG_CNTL_1`), and also set bit 30 of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` to `false`.
+4. Perform a write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0` with `DR_i == i`, `IsWrite == true`, `Which_RISCV == j`, `Trigger == true`. The transition of `Trigger` from `false` to `true` will cause hardware to act upon the other fields: it'll initiate the `DR` write (using the value from `RISCV_DEBUG_REG_RISC_DBG_CNTL_1`), and also set bit 30 of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` to `false`.
 5. Read from `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` (in a loop) until `Trigger == true` is observed. This step can usually be skipped, though it is recommended for robustness. If skipped, software should instead ensure that `RISCV_DEBUG_REG_RISC_DBG_CNTL_0` is not written to for another three cycles.
 
 ### Reading from `DR(i)`
