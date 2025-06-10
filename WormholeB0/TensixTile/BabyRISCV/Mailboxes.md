@@ -1,6 +1,6 @@
 # Mailboxes
 
-There are 16 mailboxes within each Tensix tile, one _from_ each of RISCV (B, T0, T1, T2) _to_ each of RISCV (B, T0, T1, T2). Note that there are no mailboxes to or from RISCV NC. Notwithstanding RISCV NC, each RISCV can read from the four mailboxes which go it, and write to the four mailboxes which go from it. Mailboxes cannot be accessed by the NoC or by the Tensix coprocessor; they are exclusively for the RISCV cores.
+There are 16 mailboxes within each Tensix tile, one _from_ each of RISCV (B, T0, T1, T2) _to_ each of RISCV (B, T0, T1, T2). Note that there are no mailboxes to or from RISCV NC. Notwithstanding RISCV NC, each RISCV can read from the four mailboxes which go to it, and write to the four mailboxes which go from it. Mailboxes cannot be accessed by the NoC or by the Tensix coprocessor; they are exclusively for the RISCV cores.
 
 Each mailbox is a FIFO queue of 32-bit values. Writes will push a value on to the queue, whereas reads will either pop a value or query whether any values are present. It is not possible to pop from an empty FIFO; a read attempting to do so will not generate a read-response until the FIFO is subsequently written to. For the purposes of memory ordering, the read and write sides of each mailbox count as separate memory regions, even though their memory addresses are identical.
 
