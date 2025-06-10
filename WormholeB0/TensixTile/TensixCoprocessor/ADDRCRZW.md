@@ -10,10 +10,10 @@
 TT_ADDRCRZW(((/* bool */ PK) << 2) +
             ((/* bool */ U1) << 1) +
               /* bool */ U0,
-              /* u3 */ Y1Inc,
-              /* u3 */ X1Inc,
-              /* u3 */ Y0Inc,
-              /* u3 */ X0Inc,
+              /* u3 */ W1Inc,
+              /* u3 */ Z1Inc,
+              /* u3 */ W0Inc,
+              /* u3 */ Z0Inc,
             ((/* bool */ W1) << 3) +
             ((/* bool */ Z1) << 2) +
             ((/* bool */ W0) << 1) +
