@@ -5,7 +5,7 @@ An overlay stream can be configured to receive messages from software (i.e. RISC
 ## Pushing messages using the receive buffer FIFO and message header array
 
 To configure the phase, software should:
-1. Set `SOURCE_ENDPOINT` within `STREAM_MISC_CFG_REG_INDEX` (and clear both `LOCAL_SOURCES_CONNECTED`and `REMOTE_SOURCE`).
+1. Set `SOURCE_ENDPOINT` within `STREAM_MISC_CFG_REG_INDEX` (and clear both `LOCAL_SOURCES_CONNECTED` and `REMOTE_SOURCE`).
 2. Allocate some space in L1 to act as the receive buffer FIFO, and set `STREAM_BUF_START_REG_INDEX` and `STREAM_BUF_SIZE_REG_INDEX` to tell the stream about it (these are both in units of 16 bytes, so `>> 4` required to convert from byte addresses).
 3. Allocate some space in L1 to act as the message header array, and write the base address to both `STREAM_MSG_INFO_PTR_REG_INDEX` and `STREAM_MSG_INFO_WR_PTR_REG_INDEX` (these are both in units of 16 bytes, so `>> 4` required to convert from byte addresses). The length of the array needs to be greater than or equal to (16 bytes times) the number of messages expected to be received during the phase.
 
@@ -22,7 +22,7 @@ To push a message to the stream, software should:
 ## Pushing messages using the receive buffer FIFO, without the message header array
 
 To configure the phase, software should:
-1. Set `SOURCE_ENDPOINT` within `STREAM_MISC_CFG_REG_INDEX` (and clear both `LOCAL_SOURCES_CONNECTED`and `REMOTE_SOURCE`).
+1. Set `SOURCE_ENDPOINT` within `STREAM_MISC_CFG_REG_INDEX` (and clear both `LOCAL_SOURCES_CONNECTED` and `REMOTE_SOURCE`).
 2. Allocate some space in L1 to act as the receive buffer FIFO, and set `STREAM_BUF_START_REG_INDEX` and `STREAM_BUF_SIZE_REG_INDEX` to tell the stream about it (these are both in units of 16 bytes, so `>> 4` required to convert from byte addresses).
 3. Decide on an arbitrary address, and write it `>> 4` to both `STREAM_MSG_INFO_PTR_REG_INDEX` and `STREAM_MSG_INFO_WR_PTR_REG_INDEX`. Writing `0` to both is acceptable; the important part is that they contain the same value.
 
@@ -43,7 +43,7 @@ To push a message, software should:
 ## Pushing messages using neither the receive buffer FIFO nor the message header array
 
 To configure the phase, software should:
-1. Set `SOURCE_ENDPOINT` within `STREAM_MISC_CFG_REG_INDEX` (and clear both `LOCAL_SOURCES_CONNECTED`and `REMOTE_SOURCE`).
+1. Set `SOURCE_ENDPOINT` within `STREAM_MISC_CFG_REG_INDEX` (and clear both `LOCAL_SOURCES_CONNECTED` and `REMOTE_SOURCE`).
 2. Set `STREAM_BUF_START_REG_INDEX` to `0` and `STREAM_BUF_SIZE_REG_INDEX` to `~0`. Other values are also acceptable, so long as all pushed messages are within the memory span that starts at `STREAM_BUF_START_REG_INDEX << 4` and continues for `STREAM_BUF_SIZE_REG_INDEX << 4` bytes.
 3. Decide on an arbitrary address, and write it `>> 4` to both `STREAM_MSG_INFO_PTR_REG_INDEX` and `STREAM_MSG_INFO_WR_PTR_REG_INDEX`. Writing `0` to both is acceptable; the important part is that they contain the same value.
 
