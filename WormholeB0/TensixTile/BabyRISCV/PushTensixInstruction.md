@@ -22,7 +22,7 @@ For the purposes of [RISCV memory ordering](MemoryOrdering.md), a `.ttinsn` inst
 
 ## Memory ordering
 
-`sw` (or `.ttinsn`) instructions to push Tensix instructions follow the usual [RISCV memory ordering](MemoryOrdering.md) rules for stores, with the added twist that the instruction's write-request counts as processed once the instruction has been pushed on to a FIFO in the coprocessor's frontend. If a RISCV core wants to wait for an instruction to have finished executing, rather than just wait for it to have been pushed, then additional mechanisms are required, for example [TTSync](TTSync.md).
+`sw` (or `.ttinsn`) instructions to push Tensix instructions follow the usual [RISCV memory ordering](MemoryOrdering.md) rules for stores, with the added twist that the instruction's write-request counts as processed once the instruction has been pushed onto a FIFO in the coprocessor's frontend. If a RISCV core wants to wait for an instruction to have finished executing, rather than just wait for it to have been pushed, then additional mechanisms are required, for example [TTSync](TTSync.md).
 
 Software must take particular care when mixing `sw` (or `.ttinsn`) instructions which push Tensix instructions with `sw` instructions which change coprocessor configuration.
 
@@ -55,8 +55,8 @@ This read-only register provides some visibility into the status of the FIFO bef
 |1|If set to `true`, the debug bus has control of the FIFO before the T1 Replay Expander. While the debug bus has control, normal writes from RISCV B are very likely to be silently discarded, as are normal writes from RISCV T1.|
 |2|If set to `true`, the debug bus has control of the FIFO before the T2 Replay Expander. While the debug bus has control, normal writes from RISCV B are very likely to be silently discarded, as are normal writes from RISCV T2.|
 |3|Reserved.|
-|4|When the debug bus has control of the FIFO before the T0 Replay Expander, the value in `RISCV_DEBUG_REG_INSTRN_BUF_CTRL1` is pushed on to said FIFO whenever software changes the value of this bit from `false` to `true`. Software should not push when said FIFO is full.|
-|5|When the debug bus has control of the FIFO before the T1 Replay Expander, the value in `RISCV_DEBUG_REG_INSTRN_BUF_CTRL1` is pushed on to said FIFO whenever software changes the value of this bit from `false` to `true`. Software should not push when said FIFO is full.|
-|6|When the debug bus has control of the FIFO before the T2 Replay Expander, the value in `RISCV_DEBUG_REG_INSTRN_BUF_CTRL1` is pushed on to said FIFO whenever software changes the value of this bit from `false` to `true`. Software should not push when said FIFO is full.|
+|4|When the debug bus has control of the FIFO before the T0 Replay Expander, the value in `RISCV_DEBUG_REG_INSTRN_BUF_CTRL1` is pushed onto said FIFO whenever software changes the value of this bit from `false` to `true`. Software should not push when said FIFO is full.|
+|5|When the debug bus has control of the FIFO before the T1 Replay Expander, the value in `RISCV_DEBUG_REG_INSTRN_BUF_CTRL1` is pushed onto said FIFO whenever software changes the value of this bit from `false` to `true`. Software should not push when said FIFO is full.|
+|6|When the debug bus has control of the FIFO before the T2 Replay Expander, the value in `RISCV_DEBUG_REG_INSTRN_BUF_CTRL1` is pushed onto said FIFO whenever software changes the value of this bit from `false` to `true`. Software should not push when said FIFO is full.|
 |7|Reserved.|
 |≥ 8|Reserved, always zero.|

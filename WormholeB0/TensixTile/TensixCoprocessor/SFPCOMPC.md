@@ -1,6 +1,6 @@
 # `SFPCOMPC` (Conditionally invert vector conditional execution state)
 
-**Summary:** Used to implement `else` when a compiler maps SIMT `if` / `else` on to the vector conditional execution stack.
+**Summary:** Used to implement `else` when a compiler maps SIMT `if` / `else` onto the vector conditional execution stack.
 
 **Backend execution unit:** [Vector Unit (SFPU)](VectorUnit.md), simple sub-unit
 

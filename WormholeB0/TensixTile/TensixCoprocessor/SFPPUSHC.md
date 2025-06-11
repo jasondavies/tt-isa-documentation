@@ -1,6 +1,6 @@
-# `SFPPUSHC` (Push on to vector conditional execution stack)
+# `SFPPUSHC` (Push onto vector conditional execution stack)
 
-**Summary:** Pushes a copy of the current lane predication masks (per-lane `LaneFlags` and `UseLaneFlagsForLaneEnable`) on to the vector conditional execution stack. The stack has a maximum capacity of eight elements, and this instruction must not be used if the stack is already full.
+**Summary:** Pushes a copy of the current lane predication masks (per-lane `LaneFlags` and `UseLaneFlagsForLaneEnable`) onto the vector conditional execution stack. The stack has a maximum capacity of eight elements, and this instruction must not be used if the stack is already full.
 
 **Backend execution unit:** [Vector Unit (SFPU)](VectorUnit.md), simple sub-unit
 

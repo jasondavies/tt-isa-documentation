@@ -98,7 +98,7 @@ for (; NumRows; --NumRows, ++DstRow, ++SrcRow) {
         SrcAVal = ShuffleBF16(DstVal);
       } else if (SrcAStyle == FP16) {
         // Treat DstVal as fp16.
-        // This branch also applies to "integer 8" data, as it is overlaid on to fp16.
+        // This branch also applies to "integer 8" data, as it is overlaid onto fp16.
         SrcAVal = ShuffleFP16(DstVal);
       } else {
         // DstVal isn't wide enough to contain fp32 or tf32 data.

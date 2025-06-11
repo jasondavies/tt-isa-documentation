@@ -1,6 +1,6 @@
 # Matrix Unit (FPU)
 
-The Matrix Unit (FPU) performs arithmetic on low-precision (≤ 19-bit) matrices in [`SrcA` and `SrcB`](SrcASrcB.md), usually accumulating the results on to matrices in [`Dst`](Dst.md) (in either 16-bit or 32-bit precision). AI workloads are expected to make heavy use of the [`MVMUL`](MVMUL.md) instruction for matrix multiplication, though there is also [`GMPOOL`](GMPOOL.md) for performing `max` reduction along columns, and [`ELWMUL`](ELWMUL.md) / [`ELWADD`](ELWADD.md) / [`ELWSUB`](ELWSUB.md) for performing element-wise matrix arithmetic. Various data movement instructions also exist.
+The Matrix Unit (FPU) performs arithmetic on low-precision (≤ 19-bit) matrices in [`SrcA` and `SrcB`](SrcASrcB.md), usually accumulating the results onto matrices in [`Dst`](Dst.md) (in either 16-bit or 32-bit precision). AI workloads are expected to make heavy use of the [`MVMUL`](MVMUL.md) instruction for matrix multiplication, though there is also [`GMPOOL`](GMPOOL.md) for performing `max` reduction along columns, and [`ELWMUL`](ELWMUL.md) / [`ELWADD`](ELWADD.md) / [`ELWSUB`](ELWSUB.md) for performing element-wise matrix arithmetic. Various data movement instructions also exist.
 
 The Vector Unit (SFPU) can be used instead of the Matrix Unit (FPU) when other operations are required, or when _all_ operands need 32-bit precision rather than just the accumulator, albeit the Vector Unit (SFPU) is not nearly as performant as the Matrix Unit (FPU).
 
@@ -11,7 +11,7 @@ Most Matrix Unit (FPU) instructions use [RWCs](RWCs.md) as part of specifying wh
 The majority of Matrix Unit (FPU) instructions can be organised based on where they read from and write/accumulate to:
 
 <table><tr><th/><th>Reads <code>Dst</code></th><th>Reads <code>SrcA</code></th><th>Reads <code>SrcB</code></th><th>Reads nothing</th></tr>
-<tr><th align="right">Accumulates on to <code>Dst</code></th><td colspan="3"><a href="MVMUL.md"><code>MVMUL</code></a>, <a href="DOTPV.md"><code>DOTPV</code></a>, <a href="GAPOOL.md"><code>GAPOOL</code></a>, <a href="GMPOOL.md"><code>GMPOOL</code></a>, <a href="ELWMUL.md"><code>ELWMUL</code></a>, <a href="ELWADD.md"><code>ELWADD</code></a>, <a href="ELWSUB.md"><code>ELWSUB</code></a></td><td/></tr>
+<tr><th align="right">Accumulates onto <code>Dst</code></th><td colspan="3"><a href="MVMUL.md"><code>MVMUL</code></a>, <a href="DOTPV.md"><code>DOTPV</code></a>, <a href="GAPOOL.md"><code>GAPOOL</code></a>, <a href="GMPOOL.md"><code>GMPOOL</code></a>, <a href="ELWMUL.md"><code>ELWMUL</code></a>, <a href="ELWADD.md"><code>ELWADD</code></a>, <a href="ELWSUB.md"><code>ELWSUB</code></a></td><td/></tr>
 <tr><th align="right">Writes to <code>Dst</code></th><td/><td><a href="MOVA2D.md"><code>MOVA2D</code></a>, <a href="MOVDBGA2D.md"><code>MOVDBGA2D</code></a></td><td><a href="MOVB2D.md"><code>MOVB2D</code></a></td><td><a href="ZEROACC.md"><code>ZEROACC</code></a></td></tr>
 <tr><th align="right">Writes to <code>SrcA</code></th><td><a href="MOVD2A.md"><code>MOVD2A</code></a></td><td><a href="SHIFTXA.md"><code>SHIFTXA</code></a></td><td><code>MOVB2A</code></td><td><a href="ZEROSRC.md"><code>ZEROSRC</code></a></td></tr>
 <tr><th align="right">Writes to <code>SrcB</code></th><td><a href="MOVD2B.md"><code>MOVD2B</code></a></td><td/><td><a href="SHIFTXB.md"><code>SHIFTXB</code></a>, <a href="TRNSPSRCB.md"><code>TRNSPSRCB</code></a></td><td><a href="ZEROSRC.md"><code>ZEROSRC</code></a></td></tr></table>
@@ -41,7 +41,7 @@ Note that instructions in _other units_ can also interact with `Dst`, `SrcA`, an
 <tr><th align="right">Writes to <code>SrcA</code></th><td>Matrix Unit (FPU)</td><td>Unpacker 0</td><td><a href="STOREIND_Src.md"><code>STOREIND</code> (<code>SrcA</code>)</a></td><td/></tr>
 <tr><th align="right">Writes to <code>SrcB</code></th><td>Matrix Unit (FPU)</td><td>Unpacker 1</td><td><a href="STOREIND_Src.md"><code>STOREIND</code> (<code>SrcB</code>)</a></td><td/></tr>
 <tr><th align="right">Writes to L1</th><td>Packers 0-3</td><td>Packer 0, <a href="XMOV.md"><code>XMOV</code></a><td><a href="STOREIND_L1.md"><code>STOREIND</code> (L1)</a>, <a href="ATSWAP.md"><code>ATSWAP</code></a></td><td/></tr>
-<tr><th align="right">Accumulates on to L1</th><td>Packers 0-3</td><td>Packer 0</td><td><a href="ATINCGET.md"><code>ATINCGET</code></a>, <a href="ATINCGETPTR.md"><code>ATINCGETPTR</code></a></td><td/></tr>
+<tr><th align="right">Accumulates onto L1</th><td>Packers 0-3</td><td>Packer 0</td><td><a href="ATINCGET.md"><code>ATINCGET</code></a>, <a href="ATINCGETPTR.md"><code>ATINCGETPTR</code></a></td><td/></tr>
 <tr><th align="right">Writes to <code>LReg</code></th><td><a href="SFPLOAD.md"><code>SFPLOAD</code></a>, <a href="SFPLOADMACRO.md"><code>SFPLOADMACRO</code></a></td><td/><td/><td>Vector Unit (SFPU)</td></tr>
 </table>
 

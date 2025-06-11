@@ -79,7 +79,7 @@ The Vector Unit (SFPU) performs arithmetic and manipulation on 32-bit floating-p
 <thead><tr><th>Instruction</th><th>IPC</th><th>Latency</th><th>Approximate semantics (see instruction page for full details)</th></tr></thead>
 <tr><td><a href="SFPENCC.md"><code>SFPENCC</code></a></td><td>1</td><td>1 cycle</td><td>Enable or disable conditional execution</td></tr>
 <tr><td><a href="SFPSETCC.md"><code>SFPSETCC</code></a>&nbsp;(†)</td><td>1</td><td>1 cycle</td><td>Set per-lane flags based on <code>VC &lt; 0</code> or <code>VC != 0</code> or <code>VC &gt;= 0</code> or <code>VC == 0</code></td></tr>
-<tr><td><a href="SFPPUSHC.md"><code>SFPPUSHC</code></a></td><td>1</td><td>1 cycle</td><td>Push flags on to flag stack</code></td></tr>
+<tr><td><a href="SFPPUSHC.md"><code>SFPPUSHC</code></a></td><td>1</td><td>1 cycle</td><td>Push flags onto flag stack</code></td></tr>
 <tr><td><a href="SFPCOMPC.md"><code>SFPCOMPC</code></a></td><td>1</td><td>1 cycle</td><td>SIMT mapping of <code>else</code> in context of <code>if</code> / <code>else</code></td></tr>
 <tr><td><a href="SFPPOPC.md"><code>SFPPOPC</code></a></td><td>1</td><td>1 cycle</td><td>Pop or peek flag stack</code></td></tr>
 <thead><tr><th colspan="4" align="left">Other instructions</th></tr></thead>
@@ -143,7 +143,7 @@ bool IsLaneEnabled(unsigned Lane) {
 
 `UseLaneFlagsForLaneEnable` is initially `false`, but once changed to `true` using [`SFPENCC`](SFPENCC.md), `LaneFlags` is used to drive `LaneEnabled` (per the definition of `IsLaneEnabled` above). In turn, `LaneFlags` can be set by the [`SFPENCC`](SFPENCC.md), [`SFPSETCC`](SFPSETCC.md), [`SFPIADD`](SFPIADD.md), [`SFPLZ`](SFPLZ.md), and [`SFPEXEXP`](SFPEXEXP.md) instructions.
 
-The `FlagStack` is used by the [`SFPPUSHC`](SFPPUSHC.md), [`SFPPOPC`](SFPPOPC.md), and [`SFPCOMPC`](SFPCOMPC.md) instructions. Compilers are encouraged to map SIMT `if` / `else` on to this stack. Some kinds of non-uniform control flow can also be accommodated using the `SFPMAD_MOD1_INDIRECT_VA` and/or `SFPMAD_MOD1_INDIRECT_VD` mode flags of the [`SFPMAD`](SFPMAD.md), [`SFPMULI`](SFPMULI.md), and [`SFPADDI`](SFPADDI.md) instructions.
+The `FlagStack` is used by the [`SFPPUSHC`](SFPPUSHC.md), [`SFPPOPC`](SFPPOPC.md), and [`SFPCOMPC`](SFPCOMPC.md) instructions. Compilers are encouraged to map SIMT `if` / `else` onto this stack. Some kinds of non-uniform control flow can also be accommodated using the `SFPMAD_MOD1_INDIRECT_VA` and/or `SFPMAD_MOD1_INDIRECT_VD` mode flags of the [`SFPMAD`](SFPMAD.md), [`SFPMULI`](SFPMULI.md), and [`SFPADDI`](SFPADDI.md) instructions.
 
 ## PRNG
 

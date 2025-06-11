@@ -455,7 +455,7 @@ uint32_t FormatConversion(uint4_t InDataFormat, uint4_t OutDataFormat, uint32_t 
     case BFP2a: DatumBits = BFP8aToFP16(DatumBits << 6, ExpBits); InDataFormat = FP16; break;
     case INT8: {
       // INT8 is either uint8_t or 8 bit sign-magnitude, and becomes "Integer 8", which is
-      // then overlaid on to FP16.
+      // then overlaid onto FP16.
       uint1_t StateID = ThreadConfig[CurrentThread].CFG_STATE_ID_StateID;
       auto& ConfigState = Config[StateID];
       bool Int8MeansUnsigned = WhichUnpacker ? ConfigState.ALU_FORMAT_SPEC_REG0_SrcBUnsigned

@@ -1,6 +1,6 @@
 # Overlay streams receiving from software
 
-An overlay stream can be configured to receive messages from software (i.e. RISCV / Tensix). If so configured, software is effectively pushing messages on to the stream. If messages are too large to be transmitted as a single packet by the underlying transport medium, the overlay will automatically split messages up into multiple packets.
+An overlay stream can be configured to receive messages from software (i.e. RISCV / Tensix). If so configured, software is effectively pushing messages onto the stream. If messages are too large to be transmitted as a single packet by the underlying transport medium, the overlay will automatically split messages up into multiple packets.
 
 ## Pushing messages using the receive buffer FIFO and message header array
 
