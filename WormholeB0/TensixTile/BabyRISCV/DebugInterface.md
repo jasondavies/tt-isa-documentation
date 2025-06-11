@@ -217,7 +217,7 @@ Access to all the `DR` registers of the various RISCV cores is multiplexed throu
 
 ### `RISCV_DEBUG_REG_RISC_DBG_STATUS_0`
 
-This register is mostly a read-only echo of `RISCV_DEBUG_REG_RISC_DBG_CNTL_0`: once software writes to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0`, hardware will at some point receive that write and echo it back through `RISCV_DEBUG_REG_RISC_DBG_STATUS_0`. Once software observes the echo, it knows that hardware has received and processed the write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0`. The low 30 bits of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` are unstable following a write to `RISCV_DEBUG_REG_RISC_DBG_STATUS_0`: software should only inspect the low 30 bits of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` once it has observed the echo of `Trigger` in bit 31.
+This register is mostly a read-only echo of `RISCV_DEBUG_REG_RISC_DBG_CNTL_0`: once software writes to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0`, hardware will at some point receive that write and echo it back through `RISCV_DEBUG_REG_RISC_DBG_STATUS_0`. Once software observes the echo, it knows that hardware has received and processed the write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0`. The low 30 bits of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` are unstable following a write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0`: software should only inspect the low 30 bits of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` once it has observed the echo of `Trigger` in bit 31.
 
 One bit of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` is _not_ an echo of `RISCV_DEBUG_REG_RISC_DBG_CNTL_0`, and instead tells software when it can safely read from `RISCV_DEBUG_REG_RISC_DBG_STATUS_1`.
 
