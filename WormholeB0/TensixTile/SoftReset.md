@@ -183,7 +183,7 @@ Part of bit 17 affects the connection between all packers and `Dst`.
 
 **Upon entering soft reset:** No particular action.
 
-**Whilst held in soft reset:** New [Scalar Unit (ThCon)](TensixCoprocessor/ScalarUnit.md), [`PACR`](TensixCoprocessor/PACR.md), [`PACR_SETREG`](TensixCoprocessor/PACR_SETREG.md), `UNPACR`, `UNPACR_NOP`, and [`XMOV`](XMOV.md) instructions will not start, and any such in-flight instructions accessing L1 might behave strangely.
+**Whilst held in soft reset:** New [Scalar Unit (ThCon)](TensixCoprocessor/ScalarUnit.md), [`PACR`](TensixCoprocessor/PACR.md), [`PACR_SETREG`](TensixCoprocessor/PACR_SETREG.md), `UNPACR`, `UNPACR_NOP`, and [`XMOV`](TensixCoprocessor/XMOV.md) instructions will not start, and any such in-flight instructions accessing L1 might behave strangely.
 
 **Upon leaving soft reset:** No additional action.
 
