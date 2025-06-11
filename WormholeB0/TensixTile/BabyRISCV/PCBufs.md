@@ -42,7 +42,7 @@ The RISCV B read behaviour is particularly interesting, as it waits for all thre
 
 ## Memory ordering
 
-When writing to a PCBuf, it is usually the case that the programmer wants the PCBuf write-request to be processed _after_ all earlier write-requests have been processed. When reading from a PCBuf, it is usually the case that the programmer wants the PCBuf read-response to be obtained _before_ any later memory requests are emitted. Neither of these things happen by default; see [memory ordering](MemoryOrdering.md) for details on how to avoid race conditions and ensure that do they happen.
+When writing to a PCBuf, it is usually the case that the programmer wants the PCBuf write-request to be processed _after_ all earlier write-requests have been processed. When reading from a PCBuf, it is usually the case that the programmer wants the PCBuf read-response to be obtained _before_ any later memory requests are emitted. Neither of these things happen by default; see [memory ordering](MemoryOrdering.md) for details on how to avoid race conditions and ensure that they do happen.
 
 ## Configuration bits
 
