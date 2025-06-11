@@ -13,7 +13,7 @@ Every Tensix tile contains a NoC Overlay coprocessor, as does every Ethernet til
 
 In order to receive messages, a stream needs a receive buffer somewhere in L1. Software can choose where to put this buffer and how large to make it: it needs to be large enough to receive at least one message (*), and larger buffers allow for more latency hiding. A stream will use its receive buffer in a circular fashion, so the receiver buffer typically referred to as a FIFO. A stream _also_ needs a message header array somewhere in L1, the size of which must be 16 bytes times the number of messages to be received during the phase. This array is used in a strictly linear (i.e. not circular) fashion. The first 16 bytes of every message will exist in both the receive buffer and the message header array.
 
-> (*) This needs to be true if a stream is receiving from software to transmitting to software. If a stream is only communicating with other streams, its receive buffer is allowed to be smaller than a single message.
+> (*) This needs to be true if a stream is receiving from software or transmitting to software. If a stream is only communicating with other streams, its receive buffer is allowed to be smaller than a single message.
 
 Streams are unidirectional: messages travel in one direction, and internal flow control packets travel in the opposite direction. If software wishes to send messages in both directions, it needs to use one stream per direction. For bidirectional messages between a pair of tiles, this will involve four streams total, as each of the two involved overlay coprocessors will need one stream for software-to-NoC and one stream for NoC-to-software.
 
