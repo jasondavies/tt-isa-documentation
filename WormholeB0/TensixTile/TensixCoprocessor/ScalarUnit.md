@@ -1,6 +1,6 @@
 # Scalar Unit (ThCon)
 
-The Scalar Unit can perform various operations on the Tensix GPRs of the issuing thread. The Configuration Unit accesses these same GPRs, and they are also mapped in to the RISCV address space. They are not used by any other backend units.
+The Scalar Unit can perform various operations on the Tensix GPRs of the issuing thread. The Configuration Unit accesses these same GPRs, and they are also mapped into the RISCV address space. They are not used by any other backend units.
 
 The Scalar Unit can accept at most one instruction per cycle, and usually takes multiple cycles to complete each instruction. Until it has completed that instruction:
 * No instructions from any other thread can pass through their Wait Gate and enter the Scalar Unit. In other words, the Scalar Unit is executing at most one instruction at a time, and has no internal pipelining.
@@ -34,7 +34,7 @@ The `[3]` is always indexed as `[CurrentThread]`, i.e. each Tensix thread has 64
 
 ## RISCV access to GPRs
 
-RISCV B has the entire `GPRs` array mapped in to its address space, starting at address `REGFILE_BASE`. Meanwhile, each RISCV T<sub>i</sub> has the `GPRs[i]` sub-array mapped in to its address space, again starting at address `REGFILE_BASE`.
+RISCV B has the entire `GPRs` array mapped into its address space, starting at address `REGFILE_BASE`. Meanwhile, each RISCV T<sub>i</sub> has the `GPRs[i]` sub-array mapped into its address space, again starting at address `REGFILE_BASE`.
 
 If a RISCV core writes to a Tensix GPR immediately prior to pushing a Tensix instruction which consumes that GPR, there is _usually_ enough latency in the instruction path for the GPR write to complete before the instruction starts executing. However, to guarantee race-free operation, one of the following approaches is recommended:
 * Push a pair of [`SETDMAREG`](SETDMAREG_Immediate.md) instructions (each writing 16 bits) instead of writing 32 bits directly to `GPRs`.

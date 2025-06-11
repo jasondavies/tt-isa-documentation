@@ -2,7 +2,7 @@
 
 **Summary:** Write four BF16 values to either [`SrcA` or `SrcB`](SrcASrcB.md), with the values coming from a pair of Tensix GPRs.
 
-The index in to [`SrcA` or `SrcB`](SrcASrcB.md) is formed using a pair of GPRs, one of which can be incremented as part of the instruction. Various pieces of Unpacker state are also used as part of forming the index.
+The index into [`SrcA` or `SrcB`](SrcASrcB.md) is formed using a pair of GPRs, one of which can be incremented as part of the instruction. Various pieces of Unpacker state are also used as part of forming the index.
 
 **Backend execution unit:** [Scalar Unit (ThCon)](ScalarUnit.md)
 

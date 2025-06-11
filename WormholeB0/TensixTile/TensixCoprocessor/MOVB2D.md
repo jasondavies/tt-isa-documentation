@@ -85,7 +85,7 @@ for (; NumRows; --NumRows, ++DstRow, SrcRow += !Broadcast1RowTo8) {
       Dst32b[DstRow][Column] = (uint32_t(Val16b) << 16) | LowMantissa;
     } else if (UseDst32bLo) {
       // This is unlikely to be useful, unless software is deliberately
-      // packing two bf16 or fp16 values in to 32 bits and storing them in Dst32b.
+      // packing two bf16 or fp16 values into 32 bits and storing them in Dst32b.
       // To store a pair of 16b values, first use MOVB2D with SrcAFmt=TF32 to
       // store the high 16b, then use MOVB2D with SrcAFmt!=TF32 and
       // UseDst32bLo=true to store the low 16b. If the first MOVB2D uses any other

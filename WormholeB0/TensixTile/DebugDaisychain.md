@@ -326,7 +326,7 @@ The `LaneEnabled` state of the Vector Unit (SFPU) can be presented on the debug 
 |32|96|Reserved|
 
 > [!CAUTION]
-> The `RISCV_DEBUG_REG_DBG_BUS_CNTL_REG.Enabled` control signal only flows in to the Vector Unit (SFPU) when the Matrix Unit (FPU) clock is active. If software wishes to use the debug daisychain to observe `LaneEnabled`, then **after** setting `RISCV_DEBUG_REG_DBG_BUS_CNTL_REG.Enabled` to `true`, it needs to activate the Matrix Unit (FPU) clock for at least one cycle. This can be done by disabling the clock gater, or by executing any Vector Unit (SFPU) instruction (for example `SFPNOP`).
+> The `RISCV_DEBUG_REG_DBG_BUS_CNTL_REG.Enabled` control signal only flows into the Vector Unit (SFPU) when the Matrix Unit (FPU) clock is active. If software wishes to use the debug daisychain to observe `LaneEnabled`, then **after** setting `RISCV_DEBUG_REG_DBG_BUS_CNTL_REG.Enabled` to `true`, it needs to activate the Matrix Unit (FPU) clock for at least one cycle. This can be done by disabling the clock gater, or by executing any Vector Unit (SFPU) instruction (for example `SFPNOP`).
 
 ## L1 access ports
 

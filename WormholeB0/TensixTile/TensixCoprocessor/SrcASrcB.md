@@ -1,6 +1,6 @@
 # `SrcA` and `SrcB`
 
-Each of `SrcA` and `SrcB` can be viewed as having 2 banks of 64 rows of 16 columns of 19-bit data. They are best considered as a temporary staging area for Matrix Unit (FPU) computation instruction operands: load up to 64 rows in to each, execute some Matrix Unit (FPU) instructions to consume those rows, load up a completely new set of up to 64 rows in to either (or both), execute some Matrix Unit (FPU) instructions to consume them, rinse and repeat. The two banks allow the Unpackers to be writing to one bank while the Matrix Unit (FPU) is using the other bank. Instruction descriptions assume the following definition of `SrcA` and `SrcB`:
+Each of `SrcA` and `SrcB` can be viewed as having 2 banks of 64 rows of 16 columns of 19-bit data. They are best considered as a temporary staging area for Matrix Unit (FPU) computation instruction operands: load up to 64 rows into each, execute some Matrix Unit (FPU) instructions to consume those rows, load up a completely new set of up to 64 rows into either (or both), execute some Matrix Unit (FPU) instructions to consume them, rinse and repeat. The two banks allow the Unpackers to be writing to one bank while the Matrix Unit (FPU) is using the other bank. Instruction descriptions assume the following definition of `SrcA` and `SrcB`:
 
 ```c
 enum class SrcClient {

@@ -99,7 +99,7 @@ The final L1 output format will be one of:
 
 For all BFP formats, there is a separate output stream in L1 for the exponents, consisting of one byte per 16 datums.
 
-For all BFP4 formats, two datums are packed in to each byte of L1. For all BFP2 formats, four datums are packed in to each byte of L1.
+For all BFP4 formats, two datums are packed into each byte of L1. For all BFP2 formats, four datums are packed into each byte of L1.
 
 ## Configuring the conversions
 

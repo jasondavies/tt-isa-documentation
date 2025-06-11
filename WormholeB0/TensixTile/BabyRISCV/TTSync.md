@@ -61,7 +61,7 @@ Other mechanisms exist for when `CoprocessorDoneCheck` or `MOPExpanderDoneCheck`
 
 ### Tensix semaphores
 
-RISCV T0 / T1 / T2 have [Tensix semaphores](../TensixCoprocessor/SyncUnit.md#semaphores) mapped in to their address space. Any Tensix thread can execute a [`STALLWAIT`](../TensixCoprocessor/STALLWAIT.md) instruction (with some wait condition bits, and at least block bit B1), followed by a [`SEMINIT`](../TensixCoprocessor/SEMINIT.md) or [`SEMPOST`](../TensixCoprocessor/SEMPOST.md) or [`SEMGET`](../TensixCoprocessor/SEMGET.md) instruction. Meanwhile, any of RISCV T0 / T1 / T2 can be executing a polling loop reading from the semaphore in question, waiting for its value to change.
+RISCV T0 / T1 / T2 have [Tensix semaphores](../TensixCoprocessor/SyncUnit.md#semaphores) mapped into their address space. Any Tensix thread can execute a [`STALLWAIT`](../TensixCoprocessor/STALLWAIT.md) instruction (with some wait condition bits, and at least block bit B1), followed by a [`SEMINIT`](../TensixCoprocessor/SEMINIT.md) or [`SEMPOST`](../TensixCoprocessor/SEMPOST.md) or [`SEMGET`](../TensixCoprocessor/SEMGET.md) instruction. Meanwhile, any of RISCV T0 / T1 / T2 can be executing a polling loop reading from the semaphore in question, waiting for its value to change.
 
 ### Common address space
 

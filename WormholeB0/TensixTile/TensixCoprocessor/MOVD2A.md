@@ -67,7 +67,7 @@ for (; NumRows; --NumRows, ++DstRow, ++SrcRow) {
       uint32_t DstVal = Dst32b[DstRow][Column];
       if (UseDst32bLo) {
         // This is unlikely to be useful, unless software has deliberately
-        // packed two bf16 or fp16 values in to 32 bits and written them to Dst32b.
+        // packed two bf16 or fp16 values into 32 bits and written them to Dst32b.
         DstVal = (DstVal << 16) | (DstVal & 0xffff);
       }
       if (SrcAStyle == BF16) {
@@ -75,7 +75,7 @@ for (; NumRows; --NumRows, ++DstRow, ++SrcRow) {
         SrcAVal = ShuffleBF16(DstVal >> 16);
       } else if (SrcAStyle == FP16) {
         // This is unlikely to be useful, unless software has deliberately
-        // packed two fp16 values in to 32 bits and written them to Dst32b.
+        // packed two fp16 values into 32 bits and written them to Dst32b.
         SrcAVal = ShuffleFP16(DstVal >> 16);
       } else if (!UseDst32bLo) {
         // Treat DstVal as fp32 or tf32, truncate to tf32.

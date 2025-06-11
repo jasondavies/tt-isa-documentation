@@ -1,6 +1,6 @@
 # Tensix Backend Configuration
 
-Instruction descriptions assume the presence of the following pair of global variables, which are also mapped (one immediately after the other) in to the address space of RISCV B / T0 / T1 / T2 starting at address `TENSIX_CFG_BASE`:
+Instruction descriptions assume the presence of the following pair of global variables, which are also mapped (one immediately after the other) into the address space of RISCV B / T0 / T1 / T2 starting at address `TENSIX_CFG_BASE`:
 
 ```c
 uint32_t Config[2][CFG_STATE_SIZE * 4];
@@ -11,7 +11,7 @@ The `ThreadConfig` variable contains assorted thread-specific configuration fiel
 
 The `Config` variable contains assorted thread-agnostic configuration fields, with two banks (any Tensix thread can access any bank). In instruction descriptions, `Config[i].Field` is shorthand for `(Config[i][Field_ADDR32] & Field_MASK) >> Field_SHAMT`.
 
-See [`cfg_defines.h`](https://github.com/tenstorrent/tt-metal/blob/bc8bf6c8d8533501480d9154777749abe1ed846a/tt_metal/hw/inc/wormhole/wormhole_b0_defines/cfg_defines.h) for all of the `Field_ADDR32`, `Field_MASK`, and `Field_SHAMT` values. Note that `cfg_defines.h` is divided up in to multiple sections; the `// Registers for THREAD` section is for indexing in to `ThreadConfig`, whereas all of the other sections are for indexing in to `Config`.
+See [`cfg_defines.h`](https://github.com/tenstorrent/tt-metal/blob/bc8bf6c8d8533501480d9154777749abe1ed846a/tt_metal/hw/inc/wormhole/wormhole_b0_defines/cfg_defines.h) for all of the `Field_ADDR32`, `Field_MASK`, and `Field_SHAMT` values. Note that `cfg_defines.h` is divided up into multiple sections; the `// Registers for THREAD` section is for indexing into `ThreadConfig`, whereas all of the other sections are for indexing into `Config`.
 
 Different instructions are used to access these two variables:
 
@@ -70,7 +70,7 @@ A few configuration fields affect RISCV cores rather than affecting backend exec
 
 Though most configuration lives in either `Config` or `ThreadConfig`, some configuration lives elsewhere:
 * The [Replay Expanders](REPLAY.md) are configured in-band using (a mode of) the [`REPLAY`](REPLAY.md) instruction.
-* The [MOP Expanders](MOPExpander.md) have separate write-only configuration mapped in to the RISCV address space.
+* The [MOP Expanders](MOPExpander.md) have separate write-only configuration mapped into the RISCV address space.
 * The majority of the configuration for the Vector Unit (SFPU) lives in its `LaneConfig` and `LoadMacroConfig`, which is set in-band using [`SFPCONFIG`](SFPCONFIG.md).
 * A few pieces of packer and unpacker configuration are set exclusively via [TDMA-RISC](../TDMA-RISC.md).
 * Packers and unpackers make use of [ADCs](ADCs.md), which are technically auto-incrementable addressing counters rather than configuration, but similarly act as implicit state used by an instruction.
@@ -78,4 +78,4 @@ Though most configuration lives in either `Config` or `ThreadConfig`, some confi
 
 ## Debug registers
 
-`Config` and `ThreadConfig` are not mapped in to the address space of RISCV NC, nor in to the address space visible to the NoC, but debug functionality exists to allow these clients to read backend configuration: if the value `x` is written to `RISCV_DEBUG_REG_CFGREG_RD_CNTL`, then a few cycles later, hardware will perform the equivalent of `RISCV_DEBUG_REG_CFGREG_RDDATA = ((uint32_t*)TENSIX_CFG_BASE)[x & 0x7ff]`. This pair of debug registers exist in the "Tile control / debug / status registers" memory region, which is accessible to all RISCV cores and to external clients via the NoC.
+`Config` and `ThreadConfig` are not mapped into the address space of RISCV NC, nor into the address space visible to the NoC, but debug functionality exists to allow these clients to read backend configuration: if the value `x` is written to `RISCV_DEBUG_REG_CFGREG_RD_CNTL`, then a few cycles later, hardware will perform the equivalent of `RISCV_DEBUG_REG_CFGREG_RDDATA = ((uint32_t*)TENSIX_CFG_BASE)[x & 0x7ff]`. This pair of debug registers exist in the "Tile control / debug / status registers" memory region, which is accessible to all RISCV cores and to external clients via the NoC.

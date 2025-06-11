@@ -67,9 +67,9 @@ Each stream within each NoC Overlay is independently navigating the following st
 
 ![](../../../Diagrams/Out/OverlayStream.svg)
 
-The message header array exists in L1; the stream itself only maintains front/back pointers in to the array.
+The message header array exists in L1; the stream itself only maintains front/back pointers into the array.
 
-The receive buffer FIFO exists in L1; the stream itself only maintains base/size/read/write pointers in to it.
+The receive buffer FIFO exists in L1; the stream itself only maintains base/size/read/write pointers into it.
 
 The message metadata FIFO exists in the stream itself. In most streams, each element of the FIFO consists of a pointer to a message (somewhere in the receive buffer) and the length of that message. Some streams augment each element of the FIFO with a full copy of the header of the message in question (its first 16 bytes).
 

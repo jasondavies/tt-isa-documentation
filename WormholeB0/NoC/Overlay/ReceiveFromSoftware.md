@@ -1,6 +1,6 @@
 # Overlay streams receiving from software
 
-An overlay stream can be configured to receive messages from software (i.e. RISCV / Tensix). If so configured, software is effectively pushing messages on to the stream. If messages are too large to be transmitted as a single packet by the underlying transport medium, the overlay will automatically split messages up in to multiple packets.
+An overlay stream can be configured to receive messages from software (i.e. RISCV / Tensix). If so configured, software is effectively pushing messages on to the stream. If messages are too large to be transmitted as a single packet by the underlying transport medium, the overlay will automatically split messages up into multiple packets.
 
 ## Pushing messages using the receive buffer FIFO and message header array
 
@@ -69,7 +69,7 @@ Read-only.
 
 Returns `true` if (and only if) both of the following are true:
 * The message metadata FIFO has space for at least one more entry.
-* `STREAM_MSG_INFO_PTR_REG_INDEX` equals `STREAM_MSG_INFO_WR_PTR_REG_INDEX`, i.e. there are no message headers sitting in L1 which hardware needs to load in to the message metadata FIFO (whenever there is space in the FIFO, hardware should promptly advance `STREAM_MSG_INFO_PTR_REG_INDEX` until the FIFO is full, though the L1 read can take a few cycles to complete).
+* `STREAM_MSG_INFO_PTR_REG_INDEX` equals `STREAM_MSG_INFO_WR_PTR_REG_INDEX`, i.e. there are no message headers sitting in L1 which hardware needs to load into the message metadata FIFO (whenever there is space in the FIFO, hardware should promptly advance `STREAM_MSG_INFO_PTR_REG_INDEX` until the FIFO is full, though the L1 read can take a few cycles to complete).
 
 ### `STREAM_BUF_SPACE_AVAILABLE_REG_INDEX`
 
