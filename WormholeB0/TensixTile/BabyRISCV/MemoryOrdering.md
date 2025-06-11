@@ -123,7 +123,7 @@ This is because the load instruction is (arguably incorrectly) allowed to enter 
 
 ### Cross-core signalling using mailboxes
 
-The following example is trying to have RISCV B write a value to L1, and have RISCV T0 read the value that was written, and use a mailbox to signal that RISCV B has finished writing and that RISCV NC can start reading:
+The following example is trying to have RISCV B write a value to L1, and have RISCV T0 read the value that was written, and use a mailbox to signal that RISCV B has finished writing and that RISCV T0 can start reading:
 <table><tr><th>RISCV B</th><th>RISCV T0</th></tr>
 <tr><td><pre><code>li t0, 0xFFEC1000 # B to T0 mailbox (B write side)
 li t1, 123
