@@ -12,7 +12,7 @@ The majority of Matrix Unit (FPU) instructions can be organised based on where t
 
 <table><tr><th/><th>Reads <code>Dst</code></th><th>Reads <code>SrcA</code></th><th>Reads <code>SrcB</code></th><th>Reads nothing</th></tr>
 <tr><th align="right">Accumulates on to <code>Dst</code></th><td colspan="3"><a href="MVMUL.md"><code>MVMUL</code></a>, <a href="DOTPV.md"><code>DOTPV</code></a>, <a href="GAPOOL.md"><code>GAPOOL</code></a>, <a href="GMPOOL.md"><code>GMPOOL</code></a>, <a href="ELWMUL.md"><code>ELWMUL</code></a>, <a href="ELWADD.md"><code>ELWADD</code></a>, <a href="ELWSUB.md"><code>ELWSUB</code></a></td><td/></tr>
-<tr><th align="right">Writes to <code>Dst</code></th><td/><td><a href="MOVA2D.md"><code>MOVA2D</code></a>, <a href="DBGMOVA2D.md"><code>DBGMOVA2D</code></a></td><td><a href="MOVB2D.md"><code>MOVB2D</code></a></td><td><a href="ZEROACC.md"><code>ZEROACC</code></a></td></tr>
+<tr><th align="right">Writes to <code>Dst</code></th><td/><td><a href="MOVA2D.md"><code>MOVA2D</code></a>, <a href="MOVDBGA2D.md"><code>MOVDBGA2D</code></a></td><td><a href="MOVB2D.md"><code>MOVB2D</code></a></td><td><a href="ZEROACC.md"><code>ZEROACC</code></a></td></tr>
 <tr><th align="right">Writes to <code>SrcA</code></th><td><a href="MOVD2A.md"><code>MOVD2A</code></a></td><td><a href="SHIFTXA.md"><code>SHIFTXA</code></a></td><td><code>MOVB2A</code></td><td><a href="ZEROSRC.md"><code>ZEROSRC</code></a></td></tr>
 <tr><th align="right">Writes to <code>SrcB</code></th><td><a href="MOVD2B.md"><code>MOVD2B</code></a></td><td/><td><a href="SHIFTXB.md"><code>SHIFTXB</code></a>, <a href="TRNSPSRCB.md"><code>TRNSPSRCB</code></a></td><td><a href="ZEROSRC.md"><code>ZEROSRC</code></a></td></tr></table>
 
@@ -28,7 +28,7 @@ Instruction latency and throughput:
 |`SHIFTXA`, `ZEROACC`, `ZEROSRC`, `TRNSPSRCB`|1|1|
 |`SHIFTXB`|0.5|2|
 |`MOVD2A`|1|2 (‡)|
-|`MOVA2D`, `DBGMOVA2D`, `MOVB2D`, `MOVB2A`|1|4 (‡)|
+|`MOVA2D`, `MOVDBGA2D`, `MOVB2D`, `MOVB2A`|1|4 (‡)|
 
 (†) If multiple fidelity phases are in use, then one instruction is required per fidelity phase, so the effective IPC decreases as the number of fidelity phases increases.
 

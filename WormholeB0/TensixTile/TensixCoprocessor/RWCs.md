@@ -63,7 +63,7 @@ The [`SETRWC`](SETRWC.md) and [`INCRWC`](INCRWC.md) instructions exist purely to
 * Matrix multiplication: [`MVMUL`](MVMUL.md), [`DOTPV`](DOTPV.md), [`GAPOOL`](GAPOOL.md)
 * Element-wise operations: [`ELWMUL`](ELWMUL.md), [`ELWADD`](ELWADD.md), [`ELWSUB`](ELWSUB.md)
 * Columnar reduction: [`GMPOOL`](GMPOOL.md)
-* Data movement: [`SHIFTXB`](SHIFTXB.md), [`MOVA2D`](MOVA2D.md), [`DBGMOVA2D`](DBGMOVA2D.md), `MOVB2A`, [`MOVB2D`](MOVB2D.md), [`MOVD2A`](MOVD2A.md), [`MOVD2B`](MOVD2B.md)
+* Data movement: [`SHIFTXB`](SHIFTXB.md), [`MOVA2D`](MOVA2D.md), [`MOVDBGA2D`](MOVDBGA2D.md), `MOVB2A`, [`MOVB2D`](MOVB2D.md), [`MOVD2A`](MOVD2A.md), [`MOVD2B`](MOVD2B.md)
 * Clearing: [`ZEROACC`](ZEROACC.md) (some modes only)
 * Legacy: `MFCONV3S1`, `CONV3S1`, `CONV3S2`, `MPOOL3S1`, `MPOOL3S2`, `APOOL3S1`, `APOOL3S2`
 * Vector: [`SFPLOAD`](SFPLOAD.md), [`SFPLOADMACRO`](SFPLOADMACRO.md), [`SFPSTORE`](SFPSTORE.md) (though they neither consume nor increment `FidelityPhase`)
