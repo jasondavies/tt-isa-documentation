@@ -142,6 +142,9 @@ This field contains some uncommonly set request flags:
 |14|2|Reserved||
 |16|16|Reserved|Writes to these bits are ignored; they always read as zero|
 
+> [!CAUTION]
+> Due to a hardware bug, when sending write requests to the PCI Express tile (or the ARC tile) with `NOC_CMD_RESP_MARKED` set, `NOC_PACKET_TRANSACTION_ID` must be set to zero. Otherwise, the counters identified by `NOC_PACKET_TRANSACTION_ID` will be incremented by the write request, but the counters at index zero will be decremented when the write acknowledgement arrives.
+
 ### `NOC_CMD_CTRL`
 
 Software instructs the NIU to initiate a NoC request by writing details of the request to the _other_ fields of the initiator, and then writing to `NOC_CMD_CTRL` with the low bit set. This will immediately cause the NIU to:
