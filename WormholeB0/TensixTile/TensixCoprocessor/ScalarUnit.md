@@ -30,7 +30,7 @@ The descriptions of various Scalar Unit and Configuration Unit instructions assu
 uint32_t GPRs[3][64];
 ```
 
-The `[3]` is always indexed as `[CurrentThread]`, i.e. each Tensix thread has 64 GPRs, and each thread has exclusive access its own GPRs (there is no cross-thread access). Some instructions access an aligned group of four GPRs, and some instructions can access either the low 16-bit or high 16-bit part of a GPR.
+The `[3]` is always indexed as `[CurrentThread]`, i.e. each Tensix thread has 64 GPRs, and each thread has exclusive access to its own GPRs (there is no cross-thread access). Some instructions access an aligned group of four GPRs, and some instructions can access either the low 16-bit or high 16-bit part of a GPR.
 
 ## RISCV access to GPRs
 
