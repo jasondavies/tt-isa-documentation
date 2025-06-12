@@ -24,7 +24,7 @@ if (VD < 8 || VD == 16) {
       uint32_t Sign = c >> 31;
       uint32_t Exp = (c >> 23) & 0xff;
       uint32_t Man = c & 0x7fffff;
-      if (Mod1 & SFPSDIVP2_MOD1_ADD) {
+      if (Mod1 & SFPDIVP2_MOD1_ADD) {
         if (Exp == 255) {
           // Infinity and NaN left unchanged.
         } else {
@@ -43,5 +43,5 @@ if (VD < 8 || VD == 16) {
 
 Supporting definitions:
 ```c
-#define SFPSDIVP2_MOD1_ADD 1
+#define SFPDIVP2_MOD1_ADD 1
 ```
