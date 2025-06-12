@@ -64,7 +64,7 @@ A few configuration fields affect RISCV cores rather than affecting backend exec
   * `Config.NCRISC_RESET_PC_OVERRIDE_Reset_PC_Override_en` and `Config.NCRISC_RESET_PC_PC` affect the initial value of `pc` when RISCV NC comes out of reset.
   * `Config.BRISC_END_PC_PC`, `Config.TRISC_END_PC_SEC0_PC`, `Config.TRISC_END_PC_SEC1_PC`, `Config.TRISC_END_PC_SEC2_PC`, and `Config.NOC_RISC_END_PC_PC` configure an address upper bound for the RISCV instruction cache prefetchers.
   * `Config.RISC_PREFETCH_CTRL_Enable_Brisc`, `Config.RISC_PREFETCH_CTRL_Enable_Trisc`, and `Config.RISC_PREFETCH_CTRL_Enable_NocRisc` are used to enable/disable the RISCV instruction cache prefetchers.
-  * `RISC_PREFETCH_CTRL_Max_Req_Count` are used to limit the number of in-flight requests each RISCV instruction cache prefetcher can have.
+  * `RISC_PREFETCH_CTRL_Max_Req_Count` is used to limit the number of in-flight requests each RISCV instruction cache prefetcher can have.
 
 ## Other configuration spaces
 
