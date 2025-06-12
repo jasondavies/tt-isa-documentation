@@ -2,7 +2,7 @@
 
 The PCI Express tile exists for PCI Express 4.0 x16 connectivity with a host system. It is the primary conduit through which customer code is uploaded to the device, and through which customer data is uploaded to and downloaded from the device. It allows the host to perform reads and writes against the address space of any tile on the [NoC](../NoC/README.md) (albeit some tiles do not expose their entire address space to the NoC), and allows any tile on the NoC to perform reads and writes against the address space of the host (or at least whatever the host's IOMMU makes available).
 
-The n300 products feature two ASICs on a single board, and both ASICs _have_ a PCI Express tile, but only one of the ASICs is wired up to the PCI Express edge connector on the board: the PCI Express tile in the other ASIC is effectively useless. The primary conduit for accessing that other ASIC is ethernet, and there are dedicated ethernet links printed on to the circuit board between the two ASICs for this purpose.
+The n300 products feature two ASICs on a single board, and both ASICs _have_ a PCI Express tile, but only one of the ASICs is wired up to the PCI Express edge connector on the board: the PCI Express tile in the other ASIC is effectively useless. The primary conduit for accessing that other ASIC is ethernet, and there are dedicated ethernet links printed onto the circuit board between the two ASICs for this purpose.
 
 ## Block Diagrams
 
@@ -24,20 +24,20 @@ Adjacent diagrams: [ARC to PCI Express](../ARCTile/README.md#tofrom-pci-express-
 
 |Arrow style|Protocol|Physical channels|Multiplexing|
 |---|---|---|---|
-|Thick colored purple/teal|NoC (256b data)|In direction of arrow: single channel carrying all requests / responses / acknowledgements. Arrows collectively form a torus; requests will use the dark colored arrows, responses / acknowledgements will come back on the light colored arrows.|16 virtual channels multiplexed on to each physical channel (12 for requests, 4 for responses).|
-|Thick black|AXI|In direction of arrow: read request channel, write request channel, write data channel. In opposite direction: read response channel, write acknowledgement channel.|Many IDs multiplexed on to each physical channel.|
-|Thick colored blue|PCI Express 4.0 x16|In direction of arrow: single channel carrying all requests / responses / flow control updates. Arrows always come in pairs; requests will use the dark colored arrows, responses will come back on the light colored arrows.|In theory, 8 virtual channels multiplexed on to each physical channel, though only 1 of these is typically used.|
+|Thick colored purple/teal|NoC (256b data)|In direction of arrow: single channel carrying all requests / responses / acknowledgements. Arrows collectively form a torus; requests will use the dark colored arrows, responses / acknowledgements will come back on the light colored arrows.|16 virtual channels multiplexed onto each physical channel (12 for requests, 4 for responses).|
+|Thick black|AXI|In direction of arrow: read request channel, write request channel, write data channel. In opposite direction: read response channel, write acknowledgement channel.|Many IDs multiplexed onto each physical channel.|
+|Thick colored blue|PCI Express 4.0 x16|In direction of arrow: single channel carrying all requests / responses / flow control updates. Arrows always come in pairs; requests will use the dark colored arrows, responses will come back on the light colored arrows.|In theory, 8 virtual channels multiplexed onto each physical channel, though only 1 of these is typically used.|
 |Thin black|APB (32b data)|In direction of arrow: combined request channel. In opposite direction: combined response / acknowledgement channel.|No|
 
 ### Major components
 
-**Host MMU:** Maps the device's bar 0 (512 MiB), bar 2 (1 MiB), and bar 4 (32 MiB) in to the address space of various processes on the host.
+**Host MMU:** Maps the device's bar 0 (512 MiB), bar 2 (1 MiB), and bar 4 (32 MiB) into the address space of various processes on the host.
 
 **PCI Express Controller and PHY:** Bidirectional bridge between the [PCI Express wire protocol](https://xillybus.com/tutorials/pci-express-tlp-pcie-primer-tutorial-guide-1) and the AXI protocol. Amongst other things, contains an iATU in each direction for address remapping, and some DMA engines.
 
 **Inbound iATU:** Configured by the kernel driver such that bar 4 address space aliases the top 32 MiB of bar 0 address space. No other major use.
 
-**[Configurable TLBs](TLBs.md):** Configure how host read / write requests (from PCI Express) get turned in to NoC read / write transactions. Each TLB can specify the [X/Y coordinates](../NoC/Coordinates.md) of a tile on either [NoC](../NoC/README.md), or a rectangle of coordinates for broadcast writes to Tensix tiles.
+**[Configurable TLBs](TLBs.md):** Configure how host read / write requests (from PCI Express) get turned into NoC read / write transactions. Each TLB can specify the [X/Y coordinates](../NoC/Coordinates.md) of a tile on either [NoC](../NoC/README.md), or a rectangle of coordinates for broadcast writes to Tensix tiles.
 
 **NoC NIUs:** Bidirectional bridge between the AXI protocol and the NoC protocol. Each NIU is connected to a [NoC](../NoC/README.md) router, with the NoC routers connected in a 2D torus spanning the entire ASIC.
 
@@ -123,11 +123,11 @@ Bar 4 can be ignored when the full 512 MiB of bar 0 is available; usage of bar 4
 >
 > Host software also needs to be careful to avoid unnecessary memory copies - if it uses bounce buffers to work around pinning requirements, then this puts additional load on the host's memory subsystem.
 
-PCI Express 4.0 x16 has theoretical maximum bandwidth of 32 GB/s in each direction simultaneously, but various overheads eat in to this. In practice, well-written software can expect to achieve somewhere between 70% and 85% of the theoretical maximum bandwidth.
+PCI Express 4.0 x16 has theoretical maximum bandwidth of 32 GB/s in each direction simultaneously, but various overheads eat into this. In practice, well-written software can expect to achieve somewhere between 70% and 85% of the theoretical maximum bandwidth.
 
 ### Host-initiated reads and writes
 
-Customer software running on the host can initiate reads or writes against device memory. This requires that some device memory be pinned in to the host address space using one of the TLB windows in the PCI Express tile, and software can choose the [ordering mode of that TLB](TLBs.md#ordering-modes), along with choosing to map it as either WC or UC. To explore the TLB configuration options, transfers between host memory and the L1 of a Tensix tile in the same row as the PCI Express tile can be performed:
+Customer software running on the host can initiate reads or writes against device memory. This requires that some device memory be pinned into the host address space using one of the TLB windows in the PCI Express tile, and software can choose the [ordering mode of that TLB](TLBs.md#ordering-modes), along with choosing to map it as either WC or UC. To explore the TLB configuration options, transfers between host memory and the L1 of a Tensix tile in the same row as the PCI Express tile can be performed:
 
 |Operation|Memory Type|TLB Ordering|Measured Throughput|Measured Latency|
 |---|---|---|--:|--:|
@@ -156,7 +156,7 @@ Customer software running on the host can initiate reads or writes against devic
 |`memcpy` from device|UC|Default|0.10 GB/s|≥ 671 ns|
 |`memcpy` from device|UC|Strict AXI|0.10 GB/s|≥ 671 ns|
 
-> (†) The translation to PCI Express turns all writes in to posted writes, so this latency is based on an `mfence` instruction, which merely guarantees that the write has been sent on its way to PCI Express.
+> (†) The translation to PCI Express turns all writes into posted writes, so this latency is based on an `mfence` instruction, which merely guarantees that the write has been sent on its way to PCI Express.
 
 A few conclusions can be drawn from the above table:
 * WC memory gives much better performance than UC memory; the tradeoff being that software needs to occasionally insert `sfence` instructions when it needs guaranteed ordering.
@@ -194,7 +194,7 @@ Performance of host-initiated operations also depends on the kind of device memo
 |`memcpy` from device|DRAM tile (same column)|0.09 GB/s|≥ 771 ns|
 |`memcpy` from device|DRAM tile|0.08 GB/s|≥ 862 ns|
 
-> (†) The translation to PCI Express turns all writes in to posted writes, so this latency is based on an `mfence` instruction, which merely guarantees that the write has been sent on its way to PCI Express.
+> (†) The translation to PCI Express turns all writes into posted writes, so this latency is based on an `mfence` instruction, which merely guarantees that the write has been sent on its way to PCI Express.
 
 ### Device-initiated reads and writes
 
@@ -214,4 +214,4 @@ Using a Tensix or Ethernet tile in a different row to the PCI Express tile:
     * ~430ns for middle of the PCI Express Controller ↔ host memory
 * Write throughput (L1 to host) is 26.4 GB/s, roundtrip latency is ≥ 370ns (†)
 
-> (†) The translation to PCI Express turns all writes in to posted writes, so this latency is based on the "fake" write acknowledgement provided by the middle of the PCI Express Controller.
+> (†) The translation to PCI Express turns all writes into posted writes, so this latency is based on the "fake" write acknowledgement provided by the middle of the PCI Express Controller.
