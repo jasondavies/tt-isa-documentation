@@ -1,6 +1,6 @@
 # Gather from several overlay streams to one
 
-Several streams within the same NoC Overlay coprocessor can be joined together to perform gather operations. When so configured, messages received on _any_ of the gather input streams will be internally transferred to the gather output stream (without having the copy the message around in L1), and then transmitted by the gather output stream. Any stream can act as a gather input stream (transmit to gatherer), but only certain streams can act as a gather output stream (receive in gather mode); see [stream capabilities](README.md#stream-capabilities) for details. Additionally, a stream cannot simultaneously receive in gather mode and transmit to a gatherer.
+Several streams within the same NoC Overlay coprocessor can be joined together to perform gather operations. When so configured, messages received on _any_ of the gather input streams will be internally transferred to the gather output stream (without having to copy the message around in L1), and then transmitted by the gather output stream. Any stream can act as a gather input stream (transmit to gatherer), but only certain streams can act as a gather output stream (receive in gather mode); see [stream capabilities](README.md#stream-capabilities) for details. Additionally, a stream cannot simultaneously receive in gather mode and transmit to a gatherer.
 
 Gather output streams have a concept of _groups_, where a group can be:
 * A single gather input stream.
