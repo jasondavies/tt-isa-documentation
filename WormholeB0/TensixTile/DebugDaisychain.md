@@ -105,6 +105,7 @@ Set `DaisySel == 7` and set `SignalSel` according to the desired RISCV and desir
 |--:|--:|---|
 |0|94|Reserved|
 |94|17|The low 17 bits of the most recent response of a read-request against the mailbox from RISCV B to RISCV B|
+|111|4|Reserved|
 |115|1|`false` if RISCV B is trying to read from the mailbox from RISCV B to RISCV B and the mailbox is empty, `true` otherwise|
 |116|1|`false` if RISCV T0 is trying to read from the mailbox from RISCV B to RISCV T0 and said mailbox is empty, `true` otherwise|
 |117|1|`false` if RISCV T1 is trying to read from the mailbox from RISCV B to RISCV T1 and said mailbox is empty, `true` otherwise|
@@ -117,10 +118,12 @@ Set `DaisySel == 7` and set `SignalSel` according to the desired RISCV and desir
 |--:|--:|---|
 |0|70|Reserved|
 |70|32|The most recent response of a read-request against the mailbox from RISCV T<sub>i</sub> to RISCV B|
-|102|1|`false` if RISCV B is trying to read from the mailbox from RISCV T<sub>i</sub> to RISCV B and the mailbox is empty, `true` otherwise|
-|103|1|`false` if RISCV T0 is trying to read from the mailbox from RISCV T<sub>i</sub> to RISCV T0 and said mailbox is empty, `true` otherwise|
-|104|1|`false` if RISCV T1 is trying to read from the mailbox from RISCV T<sub>i</sub> to RISCV T1 and said mailbox is empty, `true` otherwise|
-|105|1|`false` if RISCV T2 is trying to read from the mailbox from RISCV T<sub>i</sub> to RISCV T2 and said mailbox is empty, `true` otherwise|
+|102|4|Reserved|
+|106|1|`false` if RISCV B is trying to read from the mailbox from RISCV T<sub>i</sub> to RISCV B and the mailbox is empty, `true` otherwise|
+|107|1|`false` if RISCV T0 is trying to read from the mailbox from RISCV T<sub>i</sub> to RISCV T0 and said mailbox is empty, `true` otherwise|
+|108|1|`false` if RISCV T1 is trying to read from the mailbox from RISCV T<sub>i</sub> to RISCV T1 and said mailbox is empty, `true` otherwise|
+|109|1|`false` if RISCV T2 is trying to read from the mailbox from RISCV T<sub>i</sub> to RISCV T2 and said mailbox is empty, `true` otherwise|
+|110|9|Reserved|
 |119|9|If `!PCBuf[i].FIFO.empty`, the low 9 bits of `PCBuf[i].FIFO.peek()`. If the FIFO is empty, these bits instead come from _some_ recent FIFO contents. See group D for the remainder of this.|
 
 ### Group D (RISCV T<sub>i</sub> only):

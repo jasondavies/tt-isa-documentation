@@ -185,6 +185,7 @@ function ThickArrow(out, x1, y1, heads, x2, y2, color, size)
 end
 
 function MultiLine(out, data)
+  if data.thick then data.stroke_width = data.thick * 4 end
   local x = data[1]
   local y = data[2]
   out:putf([[<path d="M %g %g]], x, y)
@@ -219,22 +220,64 @@ function MultiLine(out, data)
     out:putf(" Q %g %g %g %g", x1, y1, in_dir_of(x1, y1, x2, y2))
   end
   x, y = xs[#xs], ys[#ys]
-  out:putf([[ L %g %g" stroke="black" fill="transparent" stroke-width="%g"/>]], x, y, data.stroke_width or 1)
-  if data.head ~= false then
+  local x0, y0
+  if data.thick then
+    local dx, dy = in_dir_of(0, 0, xs[#xs - 1] - x, ys[#ys - 1] - y)
+    x0 = x + dx * data.stroke_width / 3
+    y0 = y + dy * data.stroke_width / 3
+  end
+  local color = data.color or "black"
+  out:putf([[ L %g %g" stroke="%s" fill="transparent" stroke-width="%g"/>]], x0 or x, y0 or y, color, data.stroke_width or 1)
+  if data.thick then
+    ThickArrow(out, x0, y0, "->", x, y, color, data.thick)
+  elseif data.head ~= false then
     local dx, dy = in_dir_of(0, 0, xs[#xs - 1] - x, ys[#ys - 1] - y)
     local nx, ny = dy, -dx
-    out:putf([[<path d="M %g %g L %g %g L %g %g" stroke="black" fill="transparent" stroke-width="1"/>]],
+    out:putf([[<path d="M %g %g L %g %g L %g %g" stroke="%s" fill="transparent" stroke-width="1"/>]],
       x + dx + nx, y + dy + ny,
       x, y,
-      x + dx - nx, y + dy - ny)
+      x + dx - nx, y + dy - ny,
+      color)
   end
   if data.head == "both" then
     x, y = xs[1], ys[1]
     local dx, dy = in_dir_of(0, 0, xs[2] - x, ys[2] - y)
     local nx, ny = dy, -dx
-    out:putf([[<path d="M %g %g L %g %g L %g %g" stroke="black" fill="transparent" stroke-width="1"/>]],
+    out:putf([[<path d="M %g %g L %g %g L %g %g" stroke="%s" fill="transparent" stroke-width="1"/>]],
       x + dx + nx, y + dy + ny,
       x, y,
-      x + dx - nx, y + dy - ny)
+      x + dx - nx, y + dy - ny,
+      color)
   end
+end
+
+function MultiLineWithGaps(out, data)
+  local x = data[1]
+  local y = data[2]
+  local sub_data = {x, y}
+  for i = 3, #data, 2 do
+    local cmd = data[i]
+    local val = data[i + 1]
+    if cmd:sub(1, 1) == " " then
+      sub_data.head = false
+      MultiLine(out, sub_data)
+      sub_data = {}
+      cmd = cmd:sub(2, 2)
+    end
+    if cmd == ">" or cmd == "<" then
+      x = val
+    elseif cmd == "^" or cmd == "v" then
+      y = val
+    else
+      error("Invalid command ".. cmd)
+    end
+    if #sub_data == 0 then
+      sub_data[1] = x
+      sub_data[2] = y
+    else
+      sub_data[#sub_data + 1] = cmd
+      sub_data[#sub_data + 1] = val
+    end
+  end
+  MultiLine(out, sub_data)
 end

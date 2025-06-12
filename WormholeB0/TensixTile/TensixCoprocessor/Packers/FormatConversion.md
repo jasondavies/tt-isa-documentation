@@ -196,4 +196,4 @@ It is usually the case that `IntermediateFormat` and `LateToFormat` should be se
 
 (†) Only actually _means_ BFP in `LateToFormat`. Elsewhere it usually represents a type with the same exponent and mantissa width as the BFP format, but with the exponent being per-datum rather than one common exponent per 16 datums. In the case of BFP8, this gives a type almost identical to BF16.
 
-(‡) Only valid in `LateFromFormat`, not valid in `IntermediateFormat` or `LateFromFormat`.
+(‡) Only valid in `LateToFormat`, not valid in `IntermediateFormat` or `LateFromFormat`.
