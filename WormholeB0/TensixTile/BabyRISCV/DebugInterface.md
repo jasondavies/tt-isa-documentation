@@ -60,7 +60,7 @@ The low 9 bits of `DR(1)` contains a bitmask of potential debugger actions: any 
 
 ### Slow execution mode
 
-Software can put a RISCV in to slow execution mode by setting bit 31 of [`DR(1)`](#command-and-control-bitmask), and the RISCV will remain in this mode until software clears bit 31. Whilst in this mode:
+Software can put a RISCV into slow execution mode by setting bit 31 of [`DR(1)`](#command-and-control-bitmask), and the RISCV will remain in this mode until software clears bit 31. Whilst in this mode:
 
 <ul><li>The capacity of the Load/Store Unit's store queue is reduced from four entries down to one entry, and the capacity of the Load/Store Unit's retire-order queue is reduced from eight entries down to one entry (if these queues initially contain more than one entry, then the existing entries are allowed to naturally drain out). Once these queues contain at most one element, <a href="MemoryOrdering.md">memory ordering</a> is greatly simplified: a load's read-response will always be obtained before a subsequent memory operation's request is emitted, and a store's write-request will always be emitted before a subsequent memory operation's request is emitted. The tradeoff is that the core is no longer able to hide the latency of loads</li>
 <li>The capacity of some queues within the Frontend is similarly reduced down to just a single entry. This will make it harder for the core to hide the latency of fetching instructions</li>
@@ -117,7 +117,7 @@ Most RISCV instructions will always complete in a finite number of cycles. Howev
 * Loads from [TDMA-RISC](../TDMA-RISC.md) can wait for an indeterminate amount of time when `MetadataFIFO.Peek()` is part of the read behaviour.
 * Loads from unmapped memory might wait forever.
 * Stores to a [PCBuf](PCBufs.md) or to a [mailbox](Mailboxes.md) can remain in the store queue for as long as the FIFO is full, which can cause subsequent instructions to be stalled for an indeterminate amount of time.
-* Stores to [push a Tensix instruction](PushTensixInstruction.md) can remain in the store queue for as long as the FIFOs in the Tensix frontend are full, and the FIFOs can remain full for an indeterminate amount of time if there's a in-flight [`STALLWAIT`](../TensixCoprocessor/STALLWAIT.md), [`SEMWAIT`](../TensixCoprocessor/SEMWAIT.md), [`ATGETM`](../TensixCoprocessor/ATGETM.md), [`ATCAS`](../TensixCoprocessor/ATCAS.md), or [`ATINCGETPTR`](../TensixCoprocessor/ATINCGETPTR.md) Tensix instruction. If so, this can cause subsequent RISCV instructions to be stalled for an indeterminate amount of time.
+* Stores to [push a Tensix instruction](PushTensixInstruction.md) can remain in the store queue for as long as the FIFOs in the Tensix frontend are full, and the FIFOs can remain full for an indeterminate amount of time if there's an in-flight [`STALLWAIT`](../TensixCoprocessor/STALLWAIT.md), [`SEMWAIT`](../TensixCoprocessor/SEMWAIT.md), [`ATGETM`](../TensixCoprocessor/ATGETM.md), [`ATCAS`](../TensixCoprocessor/ATCAS.md), or [`ATINCGETPTR`](../TensixCoprocessor/ATINCGETPTR.md) Tensix instruction. If so, this can cause subsequent RISCV instructions to be stalled for an indeterminate amount of time.
 * Stores to unmapped memory might remain in the store queue forever, which can cause subsequent instructions to be stalled forever.
 
 The above instructions present two problems for the GDB/Debug interface:
@@ -149,20 +149,20 @@ If not using slow execution mode, _some_ other viable approaches exist:
 
 ## Reading GPRs
 
-If a core is paused waiting for a debugger to inspect it or resume it, and [`DR(1)`](#command-and-control-bitmask) is written to, and the value being written has bit 3 set, then a GPR read or `pc` read is performed. Prior to writing to `DR(1)`, software should put the desired GPR index (`0` through `31`) in to `DR(2)`, or put the value `32` in `DR(2)` if it wishes to read `pc`. The value of the GPR or of `pc` will be copied to `DR(4)`, which software can subsequently read.
+If a core is paused waiting for a debugger to inspect it or resume it, and [`DR(1)`](#command-and-control-bitmask) is written to, and the value being written has bit 3 set, then a GPR read or `pc` read is performed. Prior to writing to `DR(1)`, software should put the desired GPR index (`0` through `31`) into `DR(2)`, or put the value `32` in `DR(2)` if it wishes to read `pc`. The value of the GPR or of `pc` will be copied to `DR(4)`, which software can subsequently read.
 
 The reported `pc` will be the address of the instruction that [meets the requirements for leaving the Load/Store Unit](MemoryOrdering.md#mechanical-description), and the reported GPR values will be as of the point in time that said instruction read from GPRs (unless the debugger has modified GPRs), but said instruction's GPR write (if any) will not yet have been performed.
 
 ## Writing GPRs
 
-If a core is paused waiting for a debugger to inspect it or resume it, and [`DR(1)`](#command-and-control-bitmask) is written to, and the value being written has bit 4 set, then a GPR write is performed. Prior to writing to `DR(1)`, software should put the desired GPR index (`1` through `31`) in to `DR(2)` and the desired value of that GPR in to `DR(3)`. If a core is paused waiting for a debugger to inspect it or resume it, and [`DR(1)`](#command-and-control-bitmask) is written to, and the value being written has bit 7 set, then a bulk GPR write is performed: this is equivalent to individually writing `0` to all of `x1` through `x31`.
+If a core is paused waiting for a debugger to inspect it or resume it, and [`DR(1)`](#command-and-control-bitmask) is written to, and the value being written has bit 4 set, then a GPR write is performed. Prior to writing to `DR(1)`, software should put the desired GPR index (`1` through `31`) into `DR(2)` and the desired value of that GPR into `DR(3)`. If a core is paused waiting for a debugger to inspect it or resume it, and [`DR(1)`](#command-and-control-bitmask) is written to, and the value being written has bit 7 set, then a bulk GPR write is performed: this is equivalent to individually writing `0` to all of `x1` through `x31`.
 
 Note that instructions already in the RISCV pipeline might have already performed their GPR reads, and the instruction that [meets the requirements for leaving the Load/Store Unit](MemoryOrdering.md#mechanical-description) will _definitely_ have already performed its GPR reads. As such, debuggers should expect that several subsequent instructions will need to execute before GPR writes become visible to instructions.
 
 ## Writing `pc`
 
 If a core is paused waiting for a debugger to inspect it or resume it, and [`DR(1)`](#command-and-control-bitmask) is written to, and the value being written has bit 8 set, then several things happen:
-* All in-flight instructions in the RISCV pipeline are aborted. Any in-flight stores might or might not have already sent their write-request in to the memory subsystem. Any in-flight loads might or might not have already sent their read-request in to the memory subsystem.
+* All in-flight instructions in the RISCV pipeline are aborted. Any in-flight stores might or might not have already sent their write-request into the memory subsystem. Any in-flight loads might or might not have already sent their read-request into the memory subsystem.
 * Branch predictor history is forgotten.
 * A new value is written to `pc`. If in [slow execution mode](#slow-execution-mode), the value in `DR(4)` is written to `pc`. Otherwise, `pc` is set as per a [soft reset](../SoftReset.md#riscv-soft-reset) of the core.
 * Execution resumes at the new `pc` (though if [bit 2 of `DR(1)`](#resuming-execution) is not simultaneously set, instructions will still be unable to _leave_ the Load/Store Unit, so only a limited amount of execution can happen).
@@ -173,13 +173,13 @@ The usual safety concerns around the contents of the Load/Store Unit when resumi
 
 ## Reading memory
 
-If a core is paused waiting for a debugger to inspect it or resume it, and [`DR(1)`](#command-and-control-bitmask) is written to, and the value being written has bit 5 set, then a memory read is performed. This cannot be simultaneously combined with bits 1 or 2 or 6. Prior to writing to `DR(1)`, software should put the desired memory address in to `DR(2)`. The core will then be temporarily busy while it performs the read, and bit 0 of [`DR(0)`](#status-bitmask) will be `false` while the core is busy. Once the read completes, the result of the read will be put in `DR(4)` and bit 0 of `DR(0)` will simultaneously revert to `true`. Software is expected to poll `DR(0)` until bit 0 reverts to `true`, and then read from `DR(4)`.
+If a core is paused waiting for a debugger to inspect it or resume it, and [`DR(1)`](#command-and-control-bitmask) is written to, and the value being written has bit 5 set, then a memory read is performed. This cannot be simultaneously combined with bits 1 or 2 or 6. Prior to writing to `DR(1)`, software should put the desired memory address into `DR(2)`. The core will then be temporarily busy while it performs the read, and bit 0 of [`DR(0)`](#status-bitmask) will be `false` while the core is busy. Once the read completes, the result of the read will be put in `DR(4)` and bit 0 of `DR(0)` will simultaneously revert to `true`. Software is expected to poll `DR(0)` until bit 0 reverts to `true`, and then read from `DR(4)`.
 
 The read will be performed as if it were an `lw` instruction executed by the core, and any part of the [memory map](../BabyRISCV/README.md#memory-map) can be accessed. Notably, this allows a debugger to inspect [RISCV local data RAM](README.md#local-data-ram).
 
 ## Writing memory
 
-If a core is paused waiting for a debugger to inspect it or resume it, and [`DR(1)`](#command-and-control-bitmask) is written to, and the value being written has bit 6 set, then a memory write is performed. This cannot be simultaneously combined with bits 1 or 2 or 5. Prior to writing to `DR(1)`, software should put the desired memory address in to `DR(2)` and the desired value of that memory in to `DR(3)`. The core will then be temporarily busy while it performs the write, and bit 0 of [`DR(0)`](#status-bitmask) will be `false` while the core is busy. Once the write completes, bit 0 of `DR(0)` will revert to `true`. Software is expected to poll `DR(0)` until bit 0 reverts to `true`.
+If a core is paused waiting for a debugger to inspect it or resume it, and [`DR(1)`](#command-and-control-bitmask) is written to, and the value being written has bit 6 set, then a memory write is performed. This cannot be simultaneously combined with bits 1 or 2 or 5. Prior to writing to `DR(1)`, software should put the desired memory address into `DR(2)` and the desired value of that memory into `DR(3)`. The core will then be temporarily busy while it performs the write, and bit 0 of [`DR(0)`](#status-bitmask) will be `false` while the core is busy. Once the write completes, bit 0 of `DR(0)` will revert to `true`. Software is expected to poll `DR(0)` until bit 0 reverts to `true`.
 
 The write will be performed as if it were an `sw` instruction executed by the core, and any part of the [memory map](../BabyRISCV/README.md#memory-map) can be accessed. Notably, this allows a debugger to inspect [RISCV local data RAM](README.md#local-data-ram).
 
@@ -217,7 +217,7 @@ Access to all the `DR` registers of the various RISCV cores is multiplexed throu
 
 ### `RISCV_DEBUG_REG_RISC_DBG_STATUS_0`
 
-This register is mostly a read-only echo of `RISCV_DEBUG_REG_RISC_DBG_CNTL_0`: once software writes to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0`, hardware will at some point receive that write and echo it back through `RISCV_DEBUG_REG_RISC_DBG_STATUS_0`. Once software observes the echo, it knows that hardware has received and processed the write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0`. The low 30 bits of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` are unstable following a write to `RISCV_DEBUG_REG_RISC_DBG_STATUS_0`: software should only inspect the low 30 bits of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` once it has observed the echo of `Trigger` in bit 31.
+This register is mostly a read-only echo of `RISCV_DEBUG_REG_RISC_DBG_CNTL_0`: once software writes to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0`, hardware will at some point receive that write and echo it back through `RISCV_DEBUG_REG_RISC_DBG_STATUS_0`. Once software observes the echo, it knows that hardware has received and processed the write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0`. The low 30 bits of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` are unstable following a write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0`: software should only inspect the low 30 bits of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` once it has observed the echo of `Trigger` in bit 31.
 
 One bit of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` is _not_ an echo of `RISCV_DEBUG_REG_RISC_DBG_CNTL_0`, and instead tells software when it can safely read from `RISCV_DEBUG_REG_RISC_DBG_STATUS_1`.
 
@@ -237,7 +237,7 @@ To perform a write to `DR(i)` of some RISCV core, software should:
 1. Perform a write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_1` with the desired contents of `DR(i)`.
 2. Perform a write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0` with `Trigger == false` (the other fields can contain anything).
 3. Read from `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` (in a loop) until `Trigger == false` is observed. This step can usually be skipped, though it is recommended for robustness.
-4. Perform a write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0` with `DR_i == i`, `IsWrite == true`, `Which_RISCV == j`, `Trigger == false`. The transition of `Trigger` from `false` to `true` will cause hardware to act upon the other fields: it'll initiate the `DR` write (using the value from `RISCV_DEBUG_REG_RISC_DBG_CNTL_1`), and also set bit 30 of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` to `false`.
+4. Perform a write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0` with `DR_i == i`, `IsWrite == true`, `Which_RISCV == j`, `Trigger == true`. The transition of `Trigger` from `false` to `true` will cause hardware to act upon the other fields: it'll initiate the `DR` write (using the value from `RISCV_DEBUG_REG_RISC_DBG_CNTL_1`), and also set bit 30 of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` to `false`.
 5. Read from `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` (in a loop) until `Trigger == true` is observed. This step can usually be skipped, though it is recommended for robustness. If skipped, software should instead ensure that `RISCV_DEBUG_REG_RISC_DBG_CNTL_0` is not written to for another three cycles.
 
 ### Reading from `DR(i)`
@@ -246,6 +246,6 @@ To perform a read of `DR(i)` of some RISCV core, software should:
 
 1. Perform a write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0` with `Trigger == false` (the other fields can contain anything).
 2. Read from `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` (in a loop) until `Trigger == false` is observed. This step can usually be skipped, though it is recommended for robustness.
-3. Perform a write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0` with `DR_i == i`, `IsWrite == false`, `Which_RISCV == j`, `Trigger == true`. The transition of `Trigger` from `false` to `true` will cause hardware to act upon the other fields: it'll initiate the `DR` read, and also set bit 30 of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` to `false`. Once the read completes, hardware will put the result in to `RISCV_DEBUG_REG_RISC_DBG_STATUS_1` and simultaneously transition bit 30 of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` to `true`.
+3. Perform a write to `RISCV_DEBUG_REG_RISC_DBG_CNTL_0` with `DR_i == i`, `IsWrite == false`, `Which_RISCV == j`, `Trigger == true`. The transition of `Trigger` from `false` to `true` will cause hardware to act upon the other fields: it'll initiate the `DR` read, and also set bit 30 of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` to `false`. Once the read completes, hardware will put the result into `RISCV_DEBUG_REG_RISC_DBG_STATUS_1` and simultaneously transition bit 30 of `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` to `true`.
 4. Read from `RISCV_DEBUG_REG_RISC_DBG_STATUS_0` (in a loop) until `Trigger == true` is observed and bit 30 of this register is `true`.
 5. Read from `RISCV_DEBUG_REG_RISC_DBG_STATUS_1`, which will contain the contents of `DR(i)`.

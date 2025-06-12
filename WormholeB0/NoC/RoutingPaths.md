@@ -56,7 +56,7 @@ When request packets have both `NOC_CMD_BRCST_PACKET` and `NOC_CMD_BRCST_XY` set
 
 ## Congestion
 
-Congestion occurs when two packets want to use the same link between routers (or the same link between a router and an NIU). Congestion does _not_ occur when two packets pass through the same router on distinct links, even if the paths of those packets cross over one another _within_ the router. When congestion occurs, if the two packets have the same virtual circuit number, then one packet will wait for the other. Otherwise, the two packets will be interleaved on to the link.
+Congestion occurs when two packets want to use the same link between routers (or the same link between a router and an NIU). Congestion does _not_ occur when two packets pass through the same router on distinct links, even if the paths of those packets cross over one another _within_ the router. When congestion occurs, if the two packets have the same virtual circuit number, then one packet will wait for the other. Otherwise, the two packets will be interleaved onto the link.
 
 ## Cut-through
 

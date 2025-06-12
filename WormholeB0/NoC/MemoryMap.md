@@ -1,6 +1,6 @@
 # NIU Memory Map
 
-Each NIU ([NoC](README.md) interface unit) has an assortment of command and configuration and status registers mapped in to the address space of the containing tile. Each tile will contain two NIUs; NIU #0 will be connected to a NoC #0 router, and NIU #1 will be connected to a NoC #1 router. The two NIUs are identical, other than which NoC they're part of and where in the address space they are presented. The base address for where they are presented (`NIU_BASE`) is:
+Each NIU ([NoC](README.md) interface unit) has an assortment of command and configuration and status registers mapped into the address space of the containing tile. Each tile will contain two NIUs; NIU #0 will be connected to a NoC #0 router, and NIU #1 will be connected to a NoC #1 router. The two NIUs are identical, other than which NoC they're part of and where in the address space they are presented. The base address for where they are presented (`NIU_BASE`) is:
 
 |Tile type|`NIU_BASE` for NoC #0|`NIU_BASE` for NoC #1|
 |---|---|---|

@@ -193,11 +193,11 @@ If multiple condition bits are set in the condition mask, then the `STALLWAIT` i
 ||Notes|
 |---|---|
 |**C0**|Can be used after `LOADIND` or `LOADREG` or `ATINCGET` to ensure that the memory request has completed and that the destination GPR contains the result.|
-|**C1, C2**|The block mask should include bit B3 (or B0) to prevent new instructions from this thread flowing in to the unpackers.|
-|**C3, C4, C5, C6**|The block mask should include bit B2 (or B0) to prevent new instructions from this thread flowing in to the packers.|
-|**C7**|The block mask should include bit B6 to prevent new instructions from this thread flowing in to the Matrix Unit (FPU).|
+|**C1, C2**|The block mask should include bit B3 (or B0) to prevent new instructions from this thread flowing into the unpackers.|
+|**C3, C4, C5, C6**|The block mask should include bit B2 (or B0) to prevent new instructions from this thread flowing into the packers.|
+|**C7**|The block mask should include bit B6 to prevent new instructions from this thread flowing into the Matrix Unit (FPU).|
 |**C8, C9**|Rarely needed, as unpack instructions automatically wait for this condition.|
 |**C10, C11**|Rarely needed, as Matrix Unit (FPU) instructions which read from `SrcA` or `SrcB` automatically wait for this condition.|
 |**C12**|The block mask should include bit B4 (or B0) to prevent new `XMOV` instructions from this thread flowing into the mover. This won't prevent other threads (or TDMA-RISC) from issuing new instructions to the mover though, and those new instructions will cause this thread to continue to wait.|
 |**C13**|If a RISCV T core issues an `sw` against Tensix GPRs or Tensix Backend Configuration or TDMA-RISC, and then issues an `sw` for a `STALLWAIT` instruction with C13 set, any Tensix instructions blocked by that `STALLWAIT` are guaranteed to execute _after_ the original `sw` has been processed.|
-|**C14**|The block mask should include bit B8 to prevent new instructions from this thread flowing in to the Vector Unit (SFPU).|
+|**C14**|The block mask should include bit B8 to prevent new instructions from this thread flowing into the Vector Unit (SFPU).|

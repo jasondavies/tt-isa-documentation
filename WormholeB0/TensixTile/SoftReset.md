@@ -157,7 +157,7 @@ Each packer has a single reset bit associated with it. Note that bit 17 also aff
 
 Part of bit 17 affects the connection between all packers and `Dst`.
 
-**Upon entering soft reset:** Invokes [the `Reset` function](Packers/ExponentHistogram.md#functional-model) on the exponent histogram of all four packers (software is encouraged to use [`CLREXPHIST`](TensixCoprocessor/CLREXPHIST.md) for this, rather than relying heavily on soft reset).
+**Upon entering soft reset:** Invokes [the `Reset` function](TensixCoprocessor/Packers/ExponentHistogram.md#functional-model) on the exponent histogram of all four packers (software is encouraged to use [`CLREXPHIST`](TensixCoprocessor/CLREXPHIST.md) for this, rather than relying heavily on soft reset).
 
 **Whilst held in soft reset:** [`PACR`](TensixCoprocessor/PACR.md) instructions reading from `Dst` will behave strangely.
 
@@ -183,7 +183,7 @@ Part of bit 17 affects the connection between all packers and `Dst`.
 
 **Upon entering soft reset:** No particular action.
 
-**Whilst held in soft reset:** New [Scalar Unit (ThCon)](TensixCoprocessor/ScalarUnit.md), [`PACR`](TensixCoprocessor/PACR.md), [`PACR_SETREG`](TensixCoprocessor/PACR_SETREG.md), `UNPACR`, `UNPACR_NOP`, and [`XMOV`](XMOV.md) instructions will not start, and any such in-flight instructions accessing L1 might behave strangely.
+**Whilst held in soft reset:** New [Scalar Unit (ThCon)](TensixCoprocessor/ScalarUnit.md), [`PACR`](TensixCoprocessor/PACR.md), [`PACR_SETREG`](TensixCoprocessor/PACR_SETREG.md), `UNPACR`, `UNPACR_NOP`, and [`XMOV`](TensixCoprocessor/XMOV.md) instructions will not start, and any such in-flight instructions accessing L1 might behave strangely.
 
 **Upon leaving soft reset:** No additional action.
 

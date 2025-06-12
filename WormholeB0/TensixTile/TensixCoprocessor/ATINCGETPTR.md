@@ -54,10 +54,10 @@ atomic {
     uint32_t FIFOCapacity = IntWidth ? (1u << (IntWidth - 1)) : 0x8000;
     bool FIFOFull = (((FIFOSize % FIFOCapacity) == 0) && !FIFOEmpty);
     if (FIFOFull) {
-      goto retry; // Cannot push on to a full FIFO.
+      goto retry; // Cannot push onto a full FIFO.
     }
     // If Ofs == 1, the increment below is incrementing Wr, i.e. pushing
-    // on to the FIFO. ResultReg will end up containing the value of Wr
+    // onto the FIFO. ResultReg will end up containing the value of Wr
     // from before the increment.
   } else {
     if (FIFOEmpty) {

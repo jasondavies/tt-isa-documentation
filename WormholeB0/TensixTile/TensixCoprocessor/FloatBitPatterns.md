@@ -92,7 +92,7 @@ The coprocessor's packers and unpackers support a variety of block float formats
 
 ### BFP8 and BFP8a
 
-<table><thead><tr><th>Sign</th><th>Exp<th>Mag&nbsp;(7b)</th><th>BFP8 Meaning</th><th>BFP8a Meaning</th></tr></thead>
+<table><thead><tr><th>Sign</th><th>Exp</th><th>Mag&nbsp;(7b)</th><th>BFP8 Meaning</th><th>BFP8a Meaning</th></tr></thead>
 <tr><td>0</td><td>Any</td><td>1 - 127</td><td>Mag/2<sup>6</sup> * 2<sup>Exp-127</sup></td><td>Mag/2<sup>6</sup> * 2<sup>Exp-15</sup></td></tr>
 <tr><td>0</td><td>Any</td><td>0</td><td>+0</td><td>+0</td></tr>
 <tr><td>1</td><td>Any</td><td>1 - 127</td><td>-Mag/2<sup>6</sup> * 2<sup>Exp-127</sup></td><td>-Mag/2<sup>6</sup> * 2<sup>Exp-15</sup></td></tr>
@@ -100,7 +100,7 @@ The coprocessor's packers and unpackers support a variety of block float formats
 
 ### BFP4 and BFP4a
 
-<table><thead><tr><th>Sign</th><th>Exp<th>Mag&nbsp;(3b)</th><th>BFP4 Meaning</th><th>BFP4a Meaning</th></tr></thead>
+<table><thead><tr><th>Sign</th><th>Exp</th><th>Mag&nbsp;(3b)</th><th>BFP4 Meaning</th><th>BFP4a Meaning</th></tr></thead>
 <tr><td>0</td><td>Any</td><td>1 - 7</td><td>Mag/2<sup>2</sup> * 2<sup>Exp-127</sup></td><td>Mag/2<sup>2</sup> * 2<sup>Exp-15</sup></td></tr>
 <tr><td>0</td><td>Any</td><td>0</td><td>+0</td><td>+0</td></tr>
 <tr><td>1</td><td>Any</td><td>1 - 7</td><td>-Mag/2<sup>2</sup> * 2<sup>Exp-127</sup></td><td>-Mag/2<sup>2</sup> * 2<sup>Exp-15</sup></td></tr>
@@ -108,7 +108,7 @@ The coprocessor's packers and unpackers support a variety of block float formats
 
 ### BFP2 and BFP2a
 
-<table><thead><tr><th>Sign</th><th>Exp<th>Mag&nbsp;(1b)</th><th>BFP2 Meaning</th><th>BFP2a Meaning</th></tr></thead>
+<table><thead><tr><th>Sign</th><th>Exp</th><th>Mag&nbsp;(1b)</th><th>BFP2 Meaning</th><th>BFP2a Meaning</th></tr></thead>
 <tr><td>0</td><td>Any</td><td>1</td><td>2<sup>Exp-127</sup></td><td>2<sup>Exp-15</sup></td></tr>
 <tr><td>0</td><td>Any</td><td>0</td><td>+0</td><td>+0</td></tr>
 <tr><td>1</td><td>Any</td><td>1</td><td>-2<sup>Exp-127</sup></td><td>-2<sup>Exp-15</sup></td></tr>

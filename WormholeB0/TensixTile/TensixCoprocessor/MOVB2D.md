@@ -1,6 +1,6 @@
 # `MOVB2D` (Move rows from `SrcB` to `Dst`, with optional broadcasting)
 
-**Summary:** Move one row of datums from `SrcB` to `Dst`, or move an aligned block of row rows of datums from `SrcB` to `Dst`, or broadcast one row of `SrcB` to an aligned block of eight rows of `Dst`. Furthermore, within each row, there can optionally be broadcasting of column 0 to all columns. To bridge the gap between [`SrcB` data types](SrcASrcB.md#data-types) and [`Dst` data types](Dst.md#data-types), TF32 / BF16 in `SrcB` can be converted to FP32 in `Dst`, and any of BF16 / FP16 / Integer "8" in `SrcB` can be passed through unchanged to `Dst`. If used with care, software can also use a pair of `MOVB2D` instructions to lanewise combine two spans of 16-bit data in `SrcB` to form a single span of 32-bit data in `Dst`.
+**Summary:** Move one row of datums from `SrcB` to `Dst`, or move an aligned block of four rows of datums from `SrcB` to `Dst`, or broadcast one row of `SrcB` to an aligned block of eight rows of `Dst`. Furthermore, within each row, there can optionally be broadcasting of column 0 to all columns. To bridge the gap between [`SrcB` data types](SrcASrcB.md#data-types) and [`Dst` data types](Dst.md#data-types), TF32 / BF16 in `SrcB` can be converted to FP32 in `Dst`, and any of BF16 / FP16 / Integer "8" in `SrcB` can be passed through unchanged to `Dst`. If used with care, software can also use a pair of `MOVB2D` instructions to lanewise combine two spans of 16-bit data in `SrcB` to form a single span of 32-bit data in `Dst`.
 
 **Backend execution unit:** [Matrix Unit (FPU)](MatrixUnit.md)
 
@@ -85,7 +85,7 @@ for (; NumRows; --NumRows, ++DstRow, SrcRow += !Broadcast1RowTo8) {
       Dst32b[DstRow][Column] = (uint32_t(Val16b) << 16) | LowMantissa;
     } else if (UseDst32bLo) {
       // This is unlikely to be useful, unless software is deliberately
-      // packing two bf16 or fp16 values in to 32 bits and storing them in Dst32b.
+      // packing two bf16 or fp16 values into 32 bits and storing them in Dst32b.
       // To store a pair of 16b values, first use MOVB2D with SrcAFmt=TF32 to
       // store the high 16b, then use MOVB2D with SrcAFmt!=TF32 and
       // UseDst32bLo=true to store the low 16b. If the first MOVB2D uses any other

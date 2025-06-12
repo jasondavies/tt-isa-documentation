@@ -1,6 +1,6 @@
 # `LOADREG` (MMIO register read to GPR)
 
-**Summary:** Read 32 bits from a small window of the MMIO address space, placing the result in to a Tensix GPR. The instruction completes execution as soon as the read-request has been sent towards the MMIO device, at which point the thread's next instruction can execute.
+**Summary:** Read 32 bits from a small window of the MMIO address space, placing the result into a Tensix GPR. The instruction completes execution as soon as the read-request has been sent towards the MMIO device, at which point the thread's next instruction can execute.
 
 **Backend execution unit:** [Scalar Unit (ThCon)](ScalarUnit.md)
 

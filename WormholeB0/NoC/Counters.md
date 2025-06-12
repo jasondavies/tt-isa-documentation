@@ -159,7 +159,7 @@ for (unsigned i = 0; i < 16; ++i) {
 
 ## Automatic request splitting
 
-Each individual NoC packet can contain up to 256 data flits, and as each flit consists of 256 bits (32 bytes), this means that the maximum packet payload is 8192 bytes. If software wishes to transfer more than 8192 bytes, then the transfer needs to be split in to multiple packets. Software can either do this itself, or rely on hardware to do it. If relying on hardware to do it:
+Each individual NoC packet can contain up to 256 data flits, and as each flit consists of 256 bits (32 bytes), this means that the maximum packet payload is 8192 bytes. If software wishes to transfer more than 8192 bytes, then the transfer needs to be split into multiple packets. Software can either do this itself, or rely on hardware to do it. If relying on hardware to do it:
 * `NOC_AT_LEN_BE` should be set to the total length in bytes.
 * Both of `NOC_TARG_ADDR_LO` and `NOC_RET_ADDR_LO` need to be aligned to 16 byte boundaries.
 * After writing `1` to `NOC_CMD_CTRL` of the relevant request initiator, software must not write to `NOC_CMD_CTRL` of _any_ request initiator until `NOC_CMD_CTRL` of the relevant request initiator reverts back to `0`.

@@ -14,7 +14,7 @@ Software writes to this register to control the debug daisychain.
 |25|2|`Read32Sel`|Selects which 32-bits of the 128-bit debug data are presented in `RISCV_DEBUG_REG_DBG_RD_DATA`: `0` for bits 0 through 31, `1` for bits 32 through 63, `2` for bits 64 through 95, `3` for bits 96 through 127.|
 |27|2|Reserved||
 |29|1|`Enabled`|Must be set to `true` to use the debug daisychain. Should be set to `false` at all other times to conserve power.|
-|30|1|Reserved||
+|30|2|Reserved||
 
 After changing the values in `Enabled` or `DaisySel` or `SignalSel`, software should wait at least five cycles before trying to obtain data from the debug daisychain. Software should also expect that any data obtained from the debug daisychain is at least five cycles stale. Data can be obtained in one of three ways:
 * Software can read 32 bits by reading from `RISCV_DEBUG_REG_DBG_RD_DATA`.
@@ -329,7 +329,7 @@ The `LaneEnabled` state of the Vector Unit (SFPU) can be presented on the debug 
 |32|96|Reserved|
 
 > [!CAUTION]
-> The `RISCV_DEBUG_REG_DBG_BUS_CNTL_REG.Enabled` control signal only flows in to the Vector Unit (SFPU) when the Matrix Unit (FPU) clock is active. If software wishes to use the debug daisychain to observe `LaneEnabled`, then **after** setting `RISCV_DEBUG_REG_DBG_BUS_CNTL_REG.Enabled` to `true`, it needs to activate the Matrix Unit (FPU) clock for at least one cycle. This can be done by disabling the clock gater, or by executing any Vector Unit (SFPU) instruction (for example `SFPNOP`).
+> The `RISCV_DEBUG_REG_DBG_BUS_CNTL_REG.Enabled` control signal only flows into the Vector Unit (SFPU) when the Matrix Unit (FPU) clock is active. If software wishes to use the debug daisychain to observe `LaneEnabled`, then **after** setting `RISCV_DEBUG_REG_DBG_BUS_CNTL_REG.Enabled` to `true`, it needs to activate the Matrix Unit (FPU) clock for at least one cycle. This can be done by disabling the clock gater, or by executing any Vector Unit (SFPU) instruction (for example `SFPNOP`).
 
 ## L1 access ports
 
@@ -389,7 +389,7 @@ When `DaisySel == 8` and `SignalSel == 3`:
 |105|1|`true` if a read-request is arriving at port #13, `false` otherwise|
 |106|1|`true` if a read-request is arriving at port #14, `false` otherwise|
 |107|1|`true` if a read-request is arriving at port #15, `false` otherwise|
-|108|16|Reserved|
+|108|20|Reserved|
 
 When `DaisySel == 8` and `SignalSel == 5`:
 

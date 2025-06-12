@@ -1,6 +1,6 @@
 # Tensix Backend Configuration
 
-Instruction descriptions assume the presence of the following pair of global variables, which are also mapped (one immediately after the other) in to the address space of RISCV B / T0 / T1 / T2 starting at address `TENSIX_CFG_BASE`:
+Instruction descriptions assume the presence of the following pair of global variables, which are also mapped (one immediately after the other) into the address space of RISCV B / T0 / T1 / T2 starting at address `TENSIX_CFG_BASE`:
 
 ```c
 uint32_t Config[2][CFG_STATE_SIZE * 4];
@@ -11,7 +11,7 @@ The `ThreadConfig` variable contains assorted thread-specific configuration fiel
 
 The `Config` variable contains assorted thread-agnostic configuration fields, with two banks (any Tensix thread can access any bank). In instruction descriptions, `Config[i].Field` is shorthand for `(Config[i][Field_ADDR32] & Field_MASK) >> Field_SHAMT`.
 
-See [`cfg_defines.h`](https://github.com/tenstorrent/tt-metal/blob/bc8bf6c8d8533501480d9154777749abe1ed846a/tt_metal/hw/inc/wormhole/wormhole_b0_defines/cfg_defines.h) for all of the `Field_ADDR32`, `Field_MASK`, and `Field_SHAMT` values. Note that `cfg_defines.h` is divided up in to multiple sections; the `// Registers for THREAD` section is for indexing in to `ThreadConfig`, whereas all of the other sections are for indexing in to `Config`.
+See [`cfg_defines.h`](https://github.com/tenstorrent/tt-metal/blob/bc8bf6c8d8533501480d9154777749abe1ed846a/tt_metal/hw/inc/wormhole/wormhole_b0_defines/cfg_defines.h) for all of the `Field_ADDR32`, `Field_MASK`, and `Field_SHAMT` values. Note that `cfg_defines.h` is divided up into multiple sections; the `// Registers for THREAD` section is for indexing into `ThreadConfig`, whereas all of the other sections are for indexing into `Config`.
 
 Different instructions are used to access these two variables:
 
@@ -58,19 +58,19 @@ In most cases, writes to `Config` or `ThreadConfig` will be picked up by a subse
   * Writing to `ThreadConfig[i][UNPACK_MISC_CFG_CfgContextCntReset_0_ADDR32]` or `ThreadConfig[i][UNPACK_MISC_CFG_CfgContextCntReset_1_ADDR32]` (using `SETC16`) will reset the unpacker configuration context counters associated with thread `i`.
 
 A few configuration fields affect RISCV cores rather than affecting backend execution:
-  * `Config[0].DISABLE_RISC_BP_Disable_main`, `Config[0].DISABLE_RISC_BP_Disable_trisc`, and `DISABLE_RISC_BP_Disable_ncrisc` are used to entirely disable the RISCV branch predictors.
+  * `Config[0].DISABLE_RISC_BP_Disable_main`, `Config[0].DISABLE_RISC_BP_Disable_trisc`, and `Config[0].DISABLE_RISC_BP_Disable_ncrisc` are used to entirely disable the RISCV branch predictors.
   * `Config[0].DISABLE_RISC_BP_Disable_bmp_clear_main`, `Config[0].DISABLE_RISC_BP_Disable_bmp_clear_trisc`, and `Config[0].DISABLE_RISC_BP_Disable_bmp_clear_ncrisc` are used to partially disable one feature of the RISCV branch predictors. The RISCV cores are not designed to operate with a partially disabled branch predictor, so software should leave these fields set to false.
   * `Config.TRISC_RESET_PC_OVERRIDE_Reset_PC_Override_en`, `Config.TRISC_RESET_PC_SEC0_PC`, `Config.TRISC_RESET_PC_SEC1_PC`, and `Config.TRISC_RESET_PC_SEC2_PC` affect the initial value of `pc` when RISCV T0 / T1 / T2 come out of reset.
   * `Config.NCRISC_RESET_PC_OVERRIDE_Reset_PC_Override_en` and `Config.NCRISC_RESET_PC_PC` affect the initial value of `pc` when RISCV NC comes out of reset.
   * `Config.BRISC_END_PC_PC`, `Config.TRISC_END_PC_SEC0_PC`, `Config.TRISC_END_PC_SEC1_PC`, `Config.TRISC_END_PC_SEC2_PC`, and `Config.NOC_RISC_END_PC_PC` configure an address upper bound for the RISCV instruction cache prefetchers.
   * `Config.RISC_PREFETCH_CTRL_Enable_Brisc`, `Config.RISC_PREFETCH_CTRL_Enable_Trisc`, and `Config.RISC_PREFETCH_CTRL_Enable_NocRisc` are used to enable/disable the RISCV instruction cache prefetchers.
-  * `RISC_PREFETCH_CTRL_Max_Req_Count` are used to limit the number of in-flight requests each RISCV instruction cache prefetcher can have.
+  * `RISC_PREFETCH_CTRL_Max_Req_Count` is used to limit the number of in-flight requests each RISCV instruction cache prefetcher can have.
 
 ## Other configuration spaces
 
 Though most configuration lives in either `Config` or `ThreadConfig`, some configuration lives elsewhere:
 * The [Replay Expanders](REPLAY.md) are configured in-band using (a mode of) the [`REPLAY`](REPLAY.md) instruction.
-* The [MOP Expanders](MOPExpander.md) have separate write-only configuration mapped in to the RISCV address space.
+* The [MOP Expanders](MOPExpander.md) have separate write-only configuration mapped into the RISCV address space.
 * The majority of the configuration for the Vector Unit (SFPU) lives in its `LaneConfig` and `LoadMacroConfig`, which is set in-band using [`SFPCONFIG`](SFPCONFIG.md).
 * A few pieces of packer and unpacker configuration are set exclusively via [TDMA-RISC](../TDMA-RISC.md).
 * Packers and unpackers make use of [ADCs](ADCs.md), which are technically auto-incrementable addressing counters rather than configuration, but similarly act as implicit state used by an instruction.
@@ -78,4 +78,4 @@ Though most configuration lives in either `Config` or `ThreadConfig`, some confi
 
 ## Debug registers
 
-`Config` and `ThreadConfig` are not mapped in to the address space of RISCV NC, nor in to the address space visible to the NoC, but debug functionality exists to allow these clients to read backend configuration: if the value `x` is written to `RISCV_DEBUG_REG_CFGREG_RD_CNTL`, then a few cycles later, hardware will perform the equivalent of `RISCV_DEBUG_REG_CFGREG_RDDATA = ((uint32_t*)TENSIX_CFG_BASE)[x & 0x7ff]`. This pair of debug registers exist in the "Tile control / debug / status registers" memory region, which is accessible to all RISCV cores and to external clients via the NoC.
+`Config` and `ThreadConfig` are not mapped into the address space of RISCV NC, nor into the address space visible to the NoC, but debug functionality exists to allow these clients to read backend configuration: if the value `x` is written to `RISCV_DEBUG_REG_CFGREG_RD_CNTL`, then a few cycles later, hardware will perform the equivalent of `RISCV_DEBUG_REG_CFGREG_RDDATA = ((uint32_t*)TENSIX_CFG_BASE)[x & 0x7ff]`. This pair of debug registers exist in the "Tile control / debug / status registers" memory region, which is accessible to all RISCV cores and to external clients via the NoC.

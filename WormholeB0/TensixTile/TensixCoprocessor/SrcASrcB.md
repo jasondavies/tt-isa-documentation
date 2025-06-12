@@ -1,6 +1,6 @@
 # `SrcA` and `SrcB`
 
-Each of `SrcA` and `SrcB` can be viewed as having 2 banks of 64 rows of 16 columns of 19-bit data. They are best considered as a temporary staging area for Matrix Unit (FPU) computation instruction operands: load up to 64 rows in to each, execute some Matrix Unit (FPU) instructions to consume those rows, load up a completely new set of up to 64 rows in to either (or both), execute some Matrix Unit (FPU) instructions to consume them, rinse and repeat. The two banks allow the Unpackers to be writing to one bank while the Matrix Unit (FPU) is using the other bank. Instruction descriptions assume the following definition of `SrcA` and `SrcB`:
+Each of `SrcA` and `SrcB` can be viewed as having 2 banks of 64 rows of 16 columns of 19-bit data. They are best considered as a temporary staging area for Matrix Unit (FPU) computation instruction operands: load up to 64 rows into each, execute some Matrix Unit (FPU) instructions to consume those rows, load up a completely new set of up to 64 rows into either (or both), execute some Matrix Unit (FPU) instructions to consume them, rinse and repeat. The two banks allow the Unpackers to be writing to one bank while the Matrix Unit (FPU) is using the other bank. Instruction descriptions assume the following definition of `SrcA` and `SrcB`:
 
 ```c
 enum class SrcClient {
@@ -27,9 +27,9 @@ uint1_t Unpackers[1]::SrcBank = 0; // For SrcB
 
 Each datum in `SrcA` or `SrcB` is up to 19 bits wide, holding one of:
 * **TF32 (1 sign bit, 8 bit exponent, 10 bit mantissa)**. FP32 can be converted to TF32, though the conversion involves throwing away the low 13 bits of mantissa.
-* **BF16 (1 sign bit, 8 bit exponent, 7 bit mantissa)**. Unpackers can losslessly convert BFP8 / BFP4 / BFP2 to BF16. Internally, this type is overlaid on to TF32, with the three least significant bits of the TF32 mantissa set to zero.
+* **BF16 (1 sign bit, 8 bit exponent, 7 bit mantissa)**. Unpackers can losslessly convert BFP8 / BFP4 / BFP2 to BF16. Internally, this type is overlaid onto TF32, with the three least significant bits of the TF32 mantissa set to zero.
 * **FP16 (1 sign bit, 5 bit exponent, 10 bit mantissa)**. Unpackers can losslessly convert FP8 (1 sign bit, 5 bit exponent, 3 bit mantissa) to FP16. They can also losslessly convert BFP8a / BFP4a / BFP2a to FP16.
-* **Integer "8" (1 sign bit, 10 bit magnitude)**. The range of this type is -1023 through +1023, albeit the majority of hardware conversions to/from this type involve a range of -127 through +127 or 0 through 255. Internally, this type is overlaid on to FP16, using a fixed raw exponent of 16 (or sometimes a raw exponent of 0 when the magnitude is zero).
+* **Integer "8" (1 sign bit, 10 bit magnitude)**. The range of this type is -1023 through +1023, albeit the majority of hardware conversions to/from this type involve a range of -127 through +127 or 0 through 255. Internally, this type is overlaid onto FP16, using a fixed raw exponent of 16 (or sometimes a raw exponent of 0 when the magnitude is zero).
 * **Integer "16" (1 sign bit, 15 bit magnitude)**. This type is intended only for opaque data transfer of 16 bits; there are no computation instructions involving this type. If used for opaque data transfer, this type can be used to contain _any_ 16 bits, including unsigned 16-bit data.
 
 Note that the coprocessor does not entirely conform to IEEE 754 for TF32 / BF16 / FP16. See [floating-point bit patterns](FloatBitPatterns.md) for details.

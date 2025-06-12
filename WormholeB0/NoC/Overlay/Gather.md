@@ -1,6 +1,6 @@
 # Gather from several overlay streams to one
 
-Several streams within the same NoC Overlay coprocessor can be joined together to perform gather operations. When so configured, messages received on _any_ of the gather input streams will be internally transferred to the gather output stream (without having the copy the message around in L1), and then transmitted by the gather output stream. Any stream can act as a gather input stream (transmit to gatherer), but only certain streams can act as a gather output stream (receive in gather mode); see [stream capabilities](README.md#stream-capabilities) for details. Additionally, a stream cannot simultaneously receive in gather mode and transmit to a gatherer.
+Several streams within the same NoC Overlay coprocessor can be joined together to perform gather operations. When so configured, messages received on _any_ of the gather input streams will be internally transferred to the gather output stream (without having to copy the message around in L1), and then transmitted by the gather output stream. Any stream can act as a gather input stream (transmit to gatherer), but only certain streams can act as a gather output stream (receive in gather mode); see [stream capabilities](README.md#stream-capabilities) for details. Additionally, a stream cannot simultaneously receive in gather mode and transmit to a gatherer.
 
 Gather output streams have a concept of _groups_, where a group can be:
 * A single gather input stream.
@@ -16,8 +16,8 @@ A gather output stream does not need a message header array in L1, nor a receive
 To configure the phase at the receiver (the gather output stream), software should:
 1. Set `LOCAL_SOURCES_CONNECTED` within `STREAM_MISC_CFG_REG_INDEX` (and clear both `REMOTE_SOURCE` and `SOURCE_ENDPOINT`).
 2. Set [`STREAM_GATHER_REG_INDEX`](#stream_gather_reg_index) to configure the group size and whether groups are iterated in-order or round-robin arbitration of whatever groups have messages available.
-3. [`STREAM_GATHER_CLEAR_REG_INDEX`](#stream_gather_clear_reg_index) to configure how many messages to receive from each stream within a group every time a group is been selected.
-4. Set `STREAM_LOCAL_SRC_MASK_REG_INDEX` and `STREAM_LOCAL_SRC_MASK_REG_INDEX + 1` and `STREAM_LOCAL_SRC_MASK_REG_INDEX + 2` with a bitmask of which stream IDs are being gathered from. Each of these registers contains 24 bits of mask in the low bits, with the high 8 bits unused: `STREAM_LOCAL_SRC_MASK_REG_INDEX` is used for streams 0 through 23, `STREAM_LOCAL_SRC_MASK_REG_INDEX + 1` for 24 through 47, and `STREAM_LOCAL_SRC_MASK_REG_INDEX` for 48 through 63. If the bitmask includes _any_ stream in a group, it must include _all_ the streams in that group.
+3. [`STREAM_GATHER_CLEAR_REG_INDEX`](#stream_gather_clear_reg_index) to configure how many messages to receive from each stream within a group every time a group has been selected.
+4. Set `STREAM_LOCAL_SRC_MASK_REG_INDEX` and `STREAM_LOCAL_SRC_MASK_REG_INDEX + 1` and `STREAM_LOCAL_SRC_MASK_REG_INDEX + 2` with a bitmask of which stream IDs are being gathered from. Each of these registers contains 24 bits of mask in the low bits, with the high 8 bits unused: `STREAM_LOCAL_SRC_MASK_REG_INDEX` is used for streams 0 through 23, `STREAM_LOCAL_SRC_MASK_REG_INDEX + 1` for 24 through 47, and `STREAM_LOCAL_SRC_MASK_REG_INDEX + 2` for 48 through 63. If the bitmask includes _any_ stream in a group, it must include _all_ the streams in that group.
 
 To configure the phase at each transmitter (the gather input streams), software should:
 1. Set `LOCAL_RECEIVER` within `STREAM_MISC_CFG_REG_INDEX` (and clear both `REMOTE_RECEIVER` and `RECEIVER_ENDPOINT`).

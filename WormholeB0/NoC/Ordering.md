@@ -2,7 +2,7 @@
 
 ## Ordering properties of a single packet
 
-A single write request packet or read response packet will involve reading some bytes out of the address space of one tile, and writing those bytes in to the address space of another tile. When the reads or writes are against a tile's [L1](../TensixTile/L1.md), they will be broken up in to aligned 16 byte units, where each read of 16 bytes is atomic, and each write of 16 bytes is atomic, but the various reads could happen in any order, and the various writes could also happen in any order, and the reads / writes can be interleaved with other agents acting on L1. Software can inspect [counters](Counters.md) to determine once _all_ the reads have happened or _all_ the writes have happened, but should not assume anything about the order in which the individual reads or writes happen.
+A single write request packet or read response packet will involve reading some bytes out of the address space of one tile, and writing those bytes into the address space of another tile. When the reads or writes are against a tile's [L1](../TensixTile/L1.md), they will be broken up into aligned 16 byte units, where each read of 16 bytes is atomic, and each write of 16 bytes is atomic, but the various reads could happen in any order, and the various writes could also happen in any order, and the reads / writes can be interleaved with other agents acting on L1. Software can inspect [counters](Counters.md) to determine once _all_ the reads have happened or _all_ the writes have happened, but should not assume anything about the order in which the individual reads or writes happen.
 
 ## Ordering properties of two packets
 
