@@ -28,8 +28,8 @@ Adjacent diagrams: [DRAM](../DRAMTile/README.md#block-diagram)
 
 |Arrow style|Protocol|Physical channels|Multiplexing|
 |---|---|---|---|
-|Thick colored purple/teal|NoC (256b data)|In direction of arrow: single channel carrying all requests / responses / acknowledgements. Arrows collectively form a torus; requests will use the dark colored arrows, responses / acknowledgements will come back on the light colored arrows.|16 virtual channels multiplexed on to each physical channel (12 for requests, 4 for responses).|
-|Thick black|AXI|In direction of arrow: read request channel, write request channel, write data channel. In opposite direction: read response channel, write acknowledgement channel.|Many IDs multiplexed on to each physical channel.|
+|Thick colored purple/teal|NoC (256b data)|In direction of arrow: single channel carrying all requests / responses / acknowledgements. Arrows collectively form a torus; requests will use the dark colored arrows, responses / acknowledgements will come back on the light colored arrows.|16 virtual channels multiplexed onto each physical channel (12 for requests, 4 for responses).|
+|Thick black|AXI|In direction of arrow: read request channel, write request channel, write data channel. In opposite direction: read response channel, write acknowledgement channel.|Many IDs multiplexed onto each physical channel.|
 |Thick colored blue|ARC memory|Proprietary information|Proprietary information|
 |Thin black|APB (32b data)|In direction of arrow: combined request channel. In opposite direction: combined response / acknowledgement channel.|No|
 

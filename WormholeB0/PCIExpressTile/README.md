@@ -2,7 +2,7 @@
 
 The PCI Express tile exists for PCI Express 4.0 x16 connectivity with a host system. It is the primary conduit through which customer code is uploaded to the device, and through which customer data is uploaded to and downloaded from the device. It allows the host to perform reads and writes against the address space of any tile on the [NoC](../NoC/README.md) (albeit some tiles do not expose their entire address space to the NoC), and allows any tile on the NoC to perform reads and writes against the address space of the host (or at least whatever the host's IOMMU makes available).
 
-The n300 products feature two ASICs on a single board, and both ASICs _have_ a PCI Express tile, but only one of the ASICs is wired up to the PCI Express edge connector on the board: the PCI Express tile in the other ASIC is effectively useless. The primary conduit for accessing that other ASIC is ethernet, and there are dedicated ethernet links printed on to the circuit board between the two ASICs for this purpose.
+The n300 products feature two ASICs on a single board, and both ASICs _have_ a PCI Express tile, but only one of the ASICs is wired up to the PCI Express edge connector on the board: the PCI Express tile in the other ASIC is effectively useless. The primary conduit for accessing that other ASIC is ethernet, and there are dedicated ethernet links printed onto the circuit board between the two ASICs for this purpose.
 
 ## Block Diagrams
 
@@ -24,9 +24,9 @@ Adjacent diagrams: [ARC to PCI Express](../ARCTile/README.md#tofrom-pci-express-
 
 |Arrow style|Protocol|Physical channels|Multiplexing|
 |---|---|---|---|
-|Thick colored purple/teal|NoC (256b data)|In direction of arrow: single channel carrying all requests / responses / acknowledgements. Arrows collectively form a torus; requests will use the dark colored arrows, responses / acknowledgements will come back on the light colored arrows.|16 virtual channels multiplexed on to each physical channel (12 for requests, 4 for responses).|
-|Thick black|AXI|In direction of arrow: read request channel, write request channel, write data channel. In opposite direction: read response channel, write acknowledgement channel.|Many IDs multiplexed on to each physical channel.|
-|Thick colored blue|PCI Express 4.0 x16|In direction of arrow: single channel carrying all requests / responses / flow control updates. Arrows always come in pairs; requests will use the dark colored arrows, responses will come back on the light colored arrows.|In theory, 8 virtual channels multiplexed on to each physical channel, though only 1 of these is typically used.|
+|Thick colored purple/teal|NoC (256b data)|In direction of arrow: single channel carrying all requests / responses / acknowledgements. Arrows collectively form a torus; requests will use the dark colored arrows, responses / acknowledgements will come back on the light colored arrows.|16 virtual channels multiplexed onto each physical channel (12 for requests, 4 for responses).|
+|Thick black|AXI|In direction of arrow: read request channel, write request channel, write data channel. In opposite direction: read response channel, write acknowledgement channel.|Many IDs multiplexed onto each physical channel.|
+|Thick colored blue|PCI Express 4.0 x16|In direction of arrow: single channel carrying all requests / responses / flow control updates. Arrows always come in pairs; requests will use the dark colored arrows, responses will come back on the light colored arrows.|In theory, 8 virtual channels multiplexed onto each physical channel, though only 1 of these is typically used.|
 |Thin black|APB (32b data)|In direction of arrow: combined request channel. In opposite direction: combined response / acknowledgement channel.|No|
 
 ### Major components
