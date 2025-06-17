@@ -56,7 +56,7 @@ At the start of the phase, if the _previous_ phase specified `NEXT_PHASE_DEST_CH
 3. Send a handshake request packet to (all) the receiver(s).
 4. Wait to receive appropriate handshake response packets from (all) the receiver(s). This should happen due to the transmitter's step 2 or step 3 above.
 
-If `NEXT_PHASE_DEST_CHANGE` was _not_ specified, then the transmitter skips the above, and can start transmitting straight way.
+If `NEXT_PHASE_DEST_CHANGE` was _not_ specified, then the transmitter skips the above, and can start transmitting straight away.
 
 ## Flow control
 
