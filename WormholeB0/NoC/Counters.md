@@ -39,6 +39,9 @@ Each NIU contains an array of counters, which software can use to monitor the st
 
 Various counters are incremented (or occasionally decremented) at various points in the lifetime of a NoC request, with this varying based on the type of request. See below sections for details.
 
+> [!WARNING]
+> If software initiates an NIU request [by writing to `NOC_CMD_CTRL`](MemoryMap.md#noc_cmd_ctrl) and then immediately reads from an NIU counter, [RISCV memory ordering](../TensixTile/BabyRISCV/MemoryOrdering.md) rules should be consulted to ensure that the read and the write are not reordered. To ensure correct ordering in this particular scenario, it suffices to read back from `NOC_CMD_CTRL` before performing the first counter read.
+
 ## Atomic requests
 
 At the initiating NIU, as software writes to `NOC_CMD_CTRL`:
@@ -161,6 +164,6 @@ for (unsigned i = 0; i < 16; ++i) {
 
 Each individual NoC packet can contain up to 256 data flits, and as each flit consists of 256 bits (32 bytes), this means that the maximum packet payload is 8192 bytes. If software wishes to transfer more than 8192 bytes, then the transfer needs to be split into multiple packets. Software can either do this itself, or rely on hardware to do it. If relying on hardware to do it:
 * `NOC_AT_LEN_BE` should be set to the total length in bytes.
-* Both of `NOC_TARG_ADDR_LO` and `NOC_RET_ADDR_LO` need to be aligned to 16 byte boundaries.
-* After writing `1` to `NOC_CMD_CTRL` of the relevant request initiator, software must not write to `NOC_CMD_CTRL` of _any_ request initiator until `NOC_CMD_CTRL` of the relevant request initiator reverts back to `0`.
-* Counters are incremented and decremented as they normally would be for a sequence of individual requests, except that the initial increments of `NIU_MST_REQS_OUTSTANDING_ID` and `NIU_MST_WRITE_REQS_OUTGOING_ID` (if applicable) are done all at once rather than one at a time. If software is relying on these counters, it needs to be aware that these counters are only 8 bits wide, so a large increment could cause overflow.
+* Both of `NOC_TARG_ADDR_LO` and `NOC_RET_ADDR_LO` need to be aligned to 32 byte boundaries.
+* After writing `1` to `NOC_CMD_CTRL` of the relevant request initiator, software must not write to `NOC_CMD_CTRL` of _any_ request initiator (at the same NIU) until `NOC_CMD_CTRL` of the relevant request initiator reverts back to `0`.
+* Counters are incremented and decremented as they normally would be for a sequence of individual requests, except that the initial increments of `NIU_MST_REQS_OUTSTANDING_ID` and `NIU_MST_WRITE_REQS_OUTGOING_ID` (if applicable) are done all at once rather than one at a time. If software is relying on these counters, it needs to be aware that these counters are only 8 bits wide, so a large increment could cause overflow. In practice, this limits the maximum total length to just under 2 MiB.

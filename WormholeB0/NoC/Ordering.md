@@ -2,7 +2,9 @@
 
 ## Ordering properties of a single packet
 
-A single write request packet or read response packet will involve reading some bytes out of the address space of one tile, and writing those bytes into the address space of another tile. When the reads or writes are against a tile's [L1](../TensixTile/L1.md), they will be broken up into aligned 16 byte units, where each read of 16 bytes is atomic, and each write of 16 bytes is atomic, but the various reads could happen in any order, and the various writes could also happen in any order, and the reads / writes can be interleaved with other agents acting on L1. Software can inspect [counters](Counters.md) to determine once _all_ the reads have happened or _all_ the writes have happened, but should not assume anything about the order in which the individual reads or writes happen.
+A single write request packet or read response packet will involve reading some bytes out of the address space of one tile, and writing those bytes into the address space of another tile. When the reads or writes are against a tile's [L1](../TensixTile/L1.md), they will be broken up into aligned 16 byte units, where each read of 16 bytes is atomic, and each write of 16 bytes is atomic, but the various reads could happen in any order, and the various writes could also happen in any order, and the reads / writes can be interleaved with other agents acting on L1. Software can inspect [counters](Counters.md) to determine once _all_ the reads have happened or _all_ the writes have happened, but should not assume anything about the order in which the individual reads or writes happen, other than the one scenario outlined in the next paragraph.
+
+For writes to L1, the write will be decomposed into two separate streams by the receiving NIU: byte addresses which are between `0 mod 32` and `15 mod 31` (inclusive) will go to stream 0, whereas byte addresses which are between `16 mod 32` and `31 mod 32` (inclusive) will go to stream 1. Within each stream, ordering is guaranteed: the writes from a single packet will happen in ascending address order.
 
 ## Ordering properties of two packets
 
@@ -19,8 +21,11 @@ The final place of interest is the recipient NIU, which receives a request packe
 1. If the 1<sup>st</sup> packet is a write request, and the 2<sup>nd</sup> packet is a read request, then all of the writes from the 1<sup>st</sup> packet will be committed to memory before any of the reads for the 2<sup>nd</sup> packet start.
 2. If the 1<sup>st</sup> packet is a read request with `NOC_CMD_VC_LINKED` set, and the 2<sup>nd</sup> packet is any kind of request, then all of the memory reads for the 1<sup>st</sup> packet will be performed before any of the reads or writes from the 2<sup>nd</sup> packet.
 3. If the 1<sup>st</sup> packet is an atomic request with `NOC_CMD_RESP_MARKED` set, and the 2<sup>nd</sup> packet is also an atomic request, then the atomic operation from the 1<sup>st</sup> packet will complete before the atomic operation from the 2<sup>nd</sup> packet starts.
-4. If both packets are write requests to MMIO addresses, the write for the 1<sup>st</sup> packet will be sent to the relevant MMIO device before the write for the 2<sup>nd</sup> packet is sent to the relevant MMIO device. If the two requests are to the same MMIO device, ordering will be maintained all the way to the device, which will process the requests in order.
-5. If both packets are read requests, and either packet is reading from an MMIO address, the read for the 1<sup>st</sup> packet will finish before the read for the 2<sup>nd</sup> packet starts.
+4. If both packets are write requests to L1, and their address ranges overlap, then every byte in the overlapping range will receive the write from the 1<sup>st</sup> packet before receiving the write from the 2<sup>nd</sup> packet (note that this applies to each byte individually, not to the range as a whole).
+5. If both packets are write requests to MMIO addresses, the write for the 1<sup>st</sup> packet will be sent to the relevant MMIO device before the write for the 2<sup>nd</sup> packet is sent to the relevant MMIO device. If the two requests are to the same MMIO device, ordering will be maintained all the way to the device, which will process the requests in order.
+6. If both packets are read requests, and either packet is reading from an MMIO address, the read for the 1<sup>st</sup> packet will finish before the read for the 2<sup>nd</sup> packet starts.
+
+Note that there are no ordering guarantees when a write to L1 is followed by a write to an MMIO address: the MMIO write _can_ race ahead of the L1 write.
 
 ## Stronger ordering
 
