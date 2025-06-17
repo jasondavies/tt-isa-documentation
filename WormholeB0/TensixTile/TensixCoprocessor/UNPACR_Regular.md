@@ -131,8 +131,8 @@ unsigned FirstDatum;
 unsigned InputNumDatums;
 unsigned DecompressDrop = 0;
 unsigned DecompressNumDatums = UINT32_MAX;
-auto& ADC_XY = ADCs[WhichADC     ].Unpackers[WhichUnpacker].Channel[0];
-auto& ADC_ZW = ADCs[CurrentThread].Unpackers[WhichUnpacker].Channel[0];
+auto& ADC_XY = ADCs[WhichADC     ].Unpacker[WhichUnpacker].Channel[0];
+auto& ADC_ZW = ADCs[CurrentThread].Unpacker[WhichUnpacker].Channel[0];
 if (IsUncompressed) {
   unsigned XPos;
   unsigned YPos;
@@ -140,7 +140,7 @@ if (IsUncompressed) {
   if (!RowSearch) {
     XPos = ADC_XY.X;
     YPos = ADC_XY.Y;
-    XEnd = ADCs[WhichADC].Unpackers[WhichUnpacker].Channel[1].X + 1;
+    XEnd = ADCs[WhichADC].Unpacker[WhichUnpacker].Channel[1].X + 1;
   } else if (ConfigDescriptor.BlobsPerXYPlane) {
     uint4_t BlobsYStart[8];
     if (MultiContextMode && WhichUnpacker == 0) {
@@ -159,7 +159,7 @@ if (IsUncompressed) {
   } else {
     XPos = 0;
     YPos = ADC_XY.Y;
-    XEnd = ADCs[WhichADC].Unpackers[WhichUnpacker].Channel[1].X;
+    XEnd = ADCs[WhichADC].Unpacker[WhichUnpacker].Channel[1].X;
   }
   FirstDatum = ((ADC_ZW.W * ZDim + ADC_ZW.Z) * YDim + YPos) * XDim + XPos;
   InputNumDatums = XEnd - XPos;
@@ -169,11 +169,11 @@ if (IsUncompressed) {
   FirstDatum = InAddr_RowStart[ADC_XY.Y & 0xff];
   if (RowSearch) {
     InputNumDatums = InAddr_RowStart[(ADC_XY.X & 0xff) + 1] - FirstDatum;
-  } else if (ADC_XY.X == 0 && ADCs[WhichADC].Unpackers[WhichUnpacker].Channel[1].X == XDim-1) {
+  } else if (ADC_XY.X == 0 && ADCs[WhichADC].Unpacker[WhichUnpacker].Channel[1].X == XDim-1) {
     InputNumDatums = InAddr_RowStart[(ADC_XY.Y & 0xff) + 1] - FirstDatum;
   } else {
     DecompressDrop = ADC_XY.X;
-    DecompressNumDatums = ADCs[WhichADC].Unpackers[WhichUnpacker].Channel[1].X + 1 - DecompressDrop;
+    DecompressNumDatums = ADCs[WhichADC].Unpacker[WhichUnpacker].Channel[1].X + 1 - DecompressDrop;
     InputNumDatums = UINT32_MAX; // Using DecompressNumDatums instead.
   }
 }
@@ -228,7 +228,7 @@ if (WhichUnpacker == 0) {
   Transpose = false;
 }
 
-auto& ADC_Out = ADCs[CurrentThread].Unpackers[WhichUnpacker].Channel[1];
+auto& ADC_Out = ADCs[CurrentThread].Unpacker[WhichUnpacker].Channel[1];
 unsigned OutAddr = ConfigState.UNP[WhichUnpacker].ADDR_BASE_REG_1_Base
      + ADC_Out.Y * ConfigState.UNP[WhichUnpacker].ADDR_CTRL_XY_REG_1_Ystride
      + ADC_Out.Z * ConfigState.UNP[WhichUnpacker].ADDR_CTRL_XY_REG_1_Zstride
@@ -380,10 +380,10 @@ if (MultiContextMode && UseContextCounter) {
 }
 for (unsigned i = 0; i < 3; ++i) {
   if (i == CurrentThread || i == WhichADC) {
-    auto& Ch0 = ADCs[i].Unpackers[WhichUnpacker].Channel[0];
+    auto& Ch0 = ADCs[i].Unpacker[WhichUnpacker].Channel[0];
     Ch0.Y += Ch0YInc;
     Ch0.Z += Ch0ZInc;
-    auto& Ch1 = ADCs[i].Unpackers[WhichUnpacker].Channel[1];
+    auto& Ch1 = ADCs[i].Unpacker[WhichUnpacker].Channel[1];
     Ch1.Y += Ch1YInc;
     Ch1.Z += Ch1ZInc;
   }
