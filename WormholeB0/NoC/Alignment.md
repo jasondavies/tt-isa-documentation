@@ -50,7 +50,7 @@ Meaning of table cells:
 
 In Tensix tiles and Ethernet tiles, addresses are a mixture of MMIO and L1. L1 addresses are those `< 0xFF00_0000`, and MMIO addresses are those `≥ 0xFF00_0000`.
 
-In other types of tile, all addresses are other addresses. Note that `NOC_CMD_WR_INLINE` cannot be used when writing to these types of tile. If an AXI/APB bridge is crossed in order to get to the address, then the byte enable mask must select either all of none of each aligned 4-byte group.
+In other types of tile, all addresses are other addresses. Note that `NOC_CMD_WR_INLINE` cannot be used when writing to these types of tile. If an AXI/APB bridge is crossed in order to get to the address, then the byte enable mask must select either all or none of each aligned 4-byte group.
 
 ## When `NOC_AT_LEN_BE` contains atomic opcode and operands
 
