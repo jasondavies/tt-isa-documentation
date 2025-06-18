@@ -65,73 +65,97 @@ local function WireTextRight(out, x, y, text)
   out:putf([[<text x="%d" y="%d" text-anchor="start" dominant-baseline="middle">%s</text>]], x2, y + 1, text)
 end
 
-local function L1()
+local function L1(args)
+  local eth = args.eth
   local out = buffer.new()
   local nul = buffer.new()
-  local dims = {w = 655, h = 960}
+  local dims = {w = 655, h = eth and 600 or 960}
   out:putf([[<svg version="1.1" width="%u" height="%u" xmlns="http://www.w3.org/2000/svg">]], dims.w, dims.h)
   out:putf([[<rect width="%u" height="%u" rx="15" stroke="transparent" fill="white"/>]], dims.w, dims.h)
 
   local y_pad_mux = 15
 
-  local client_id = {1, 0, 9, 10, 11, 2, 8, 3, 4, 5, 6, 7, 12, 13, 14, 15}
-  local client_list = {
-    {
+  local client_id
+  local client_list
+  if eth then
+    client_id = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15}
+    client_list = {
+      "NoC 1 (write or atomic)",
+      "NoC 1 (write or atomic)",
+      "NoC 1 (read)",
+      "NoC 1 (read)",
+      "NoC 0 (write or atomic)",
+      "NoC 0 (write or atomic)",
+      "NoC 0 (read)",
+      "NoC 0 (read)",
       "ECC Scrubber (atomic)",
-      "Packer 1 (write or accumulate)",
-      "Unpacker 1 (read)"
-    },
-    "Unpacker 0 (read)",
-    {
+      "RISCV E (read or write)",
+      "Ethernet TX (read)",
+      "Ethernet TX (read)",
+      "Ethernet RX (write)",
+      "Ethernet RX (write)",
+      "Debug Daisychain (read or write)",
+    }
+  else
+    client_id = {1, 0, 9, 10, 11, 2, 8, 3, 4, 5, 6, 7, 12, 13, 14, 15}
+    client_list = {
+      {
+        "ECC Scrubber (atomic)",
+        "Packer 1 (write or accumulate)",
+        "Unpacker 1 (read)"
+      },
       "Unpacker 0 (read)",
-      "Unpacker 1 (read)"
-    },
-    {
-      "Unpacker 0 (read)",
-      "Unpacker 1 (read)"
-    },
-    {
-      "Unpacker 0 (read)",
-      "Unpacker 1 (read)"
-    },
-    {
+      {
+        "Unpacker 0 (read)",
+        "Unpacker 1 (read)"
+      },
+      {
+        "Unpacker 0 (read)",
+        "Unpacker 1 (read)"
+      },
+      {
+        "Unpacker 0 (read)",
+        "Unpacker 1 (read)"
+      },
       {
         {
-          "Unpacker 0 (read, for BFP exponents)",
-          "Unpacker 1 (read, for BFP exponents)",
+          {
+            "Unpacker 0 (read, for BFP exponents)",
+            "Unpacker 1 (read, for BFP exponents)",
+          },
+          "Packer 0 (read, for L1-to-L1 pack operations)",
+          "Packer 2 (write or accumulate)",
+          "ThCon (read or write or atomic)",
+          "Mover (read)",
         },
-        "Packer 0 (read, for L1-to-L1 pack operations)",
-        "Packer 2 (write or accumulate)",
-        "ThCon (read or write or atomic)",
-        "Mover (read)",
+        "RISCV B (read or write)",
+        "RISCV NC (read or write)",
+        "RISCV T0 (read or write)",
       },
-      "RISCV B (read or write)",
-      "RISCV NC (read or write)",
-      "RISCV T0 (read or write)",
-    },
-    "Packer 0 (write or accumulate)",
-    {
-      "RISCV T1 (read or write)",
-      "RISCV T2 (read or write)",
+      "Packer 0 (write or accumulate)",
       {
-        "Mover (write)",
-        "TDMA-RISC (write)",
-        "Packer 3 (write or accumulate)",
-      }
-    },
-    "NoC 0 (write or atomic)",
-    "NoC 0 (write or atomic)",
-    "NoC 0 (read)",
-    "NoC 0 (read)",
-    "NoC 1 (write or atomic)",
-    "NoC 1 (write or atomic)",
-    "NoC 1 (read)",
-    {
+        "RISCV T1 (read or write)",
+        "RISCV T2 (read or write)",
+        {
+          "Mover (write)",
+          "TDMA-RISC (write)",
+          "Packer 3 (write or accumulate)",
+        }
+      },
+      "NoC 0 (write or atomic)",
+      "NoC 0 (write or atomic)",
+      "NoC 0 (read)",
+      "NoC 0 (read)",
+      "NoC 1 (write or atomic)",
+      "NoC 1 (write or atomic)",
       "NoC 1 (read)",
-      "Debug Timestamper (write)",
-      "Debug Daisychain (read or write)"
-    },
-  }
+      {
+        "NoC 1 (read)",
+        "Debug Timestamper (write)",
+        "Debug Daisychain (read or write)"
+      },
+    }
+  end
   local function render_clients(x, y, client_list)
     if type(client_list) == "string" then
       WireTextRight(out, x, y, client_list)
@@ -154,14 +178,16 @@ local function L1()
   end
   local ports = {}
   local y = 15.5 + 3
-  local client_x = 290
+  local client_x = eth and 350 or 290
   for i, client in ipairs(client_list) do
-    if i == 4 or i == 5 then
+    if eth then
+      y = y + 15
+    elseif 10 <= i and i <= 15 then
+      y = y + 11
+    elseif i == 4 or i == 5 then
       y = y + 8
     end
-    if 10 <= i and i <= 15 then
-      y = y + 11
-    end
+    
     local wire
     y, wire = render_clients(client_x, y, client)
     ports[i] = Drawing.RectText(out, {right = client_x, y_middle = wire, w = 80, h = 30, color = xu_color}, "Port #".. client_id[i])
@@ -180,7 +206,7 @@ local function L1()
       this_h = this_h + 1
       error_term = error_term - 1
     end
-    banks[i] = Drawing.RectText(out, {x = 3.5, y = y, w = 80, h = this_h, color = data_color}, {"Bank #".. (i - 1), "91½ KiB"})
+    banks[i] = Drawing.RectText(out, {x = 3.5, y = y, w = eth and 140 or 80, h = this_h, color = data_color}, eth and {"Bank #".. (i - 1) .."; 16 KiB"} or {"Bank #".. (i - 1), "91½ KiB"})
     y = banks[i].bottom + bank_y_spacing
   end
 
@@ -200,3 +226,4 @@ local function L1()
 end
 
 assert(io.open(own_dir .."../Out/L1.svg", "w")):write(L1{})
+assert(io.open(own_dir .."../Out/L1_Eth.svg", "w")):write(L1{eth=true})

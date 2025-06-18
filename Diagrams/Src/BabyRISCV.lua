@@ -23,10 +23,11 @@ local function WireTextRight(out, x, y, text)
   out:putf([[<text x="%d" y="%d" text-anchor="start" dominant-baseline="middle">%s</text>]], x2, y + 1, text)
 end
 
-local function BabyRISC()
+local function BabyRISC(args)
+  local eth = args.eth
   local out = buffer.new()
   local nul = buffer.new()
-  local dims = {w = 665, h = 583}
+  local dims = {w = 665, h = eth and 431 or 583}
   out:putf([[<svg version="1.1" width="%u" height="%u" xmlns="http://www.w3.org/2000/svg">]], dims.w, dims.h)
   out:putf([[<rect width="%u" height="%u" rx="15" stroke="transparent" fill="white"/>]], dims.w, dims.h)
 
@@ -34,8 +35,8 @@ local function BabyRISC()
   local y_pad_mux = 15
   local y_spacing_mem = 5
 
-  local iram = Drawing.RectText(out, {x = 330.5, y = 5.5, w = 200, h = 50, color = data_color}, {"Instruction RAM", "16 KiB (NC only)"})
-  local ic = Drawing.RectText(out, {x = iram.x, y = iram.bottom + y_spacing_mem, w = iram.w, h_text = iram.h, h = iram.h + 30, color = data_color}, {"Instruction Cache", "½ KiB or 2 KiB"})
+  local iram = Drawing.RectText(out, {x = 330.5, y = 5.5, w = 200, h = 50, color = data_color}, {"Instruction RAM", "16 KiB".. (eth and "" or " (NC only)")})
+  local ic = Drawing.RectText(out, {x = iram.x, y = iram.bottom + y_spacing_mem, w = iram.w, h_text = iram.h, h = iram.h + 30, color = data_color}, {"Instruction Cache", eth and "½ KiB" or "½ KiB or 2 KiB"})
   local pf_pad_x = 15
   local prefetcher = Drawing.RectText(out, {x = ic.x + pf_pad_x, right = ic.right - pf_pad_x, h = 27, bottom = ic.bottom - y_spacing_mem, color = xu_color}, "Prefetcher")
   local iram_ic_mux = Drawing.Mux(out, {right = iram.x - 20, y = iram.y_middle - y_pad_mux, w = 10, bottom = ic.y_middle + y_pad_mux}, "<")
@@ -61,22 +62,31 @@ local function BabyRISC()
   WireTextRight(out, l1_mux.right, l1_mux.y_middle, "L1")
   Drawing.LineTextAbove(out, {iram_ic_mux.right, ls_l1_y}, {l1_mux.x, ls_l1_y})
 
-  local lram = Drawing.RectText(out, {x = iram.x, y = ls_l1_y + 1 + y_spacing_mem, w = iram.w, h = iram.h, color = data_color}, {"Local Data RAM", "2 KiB or 4 KiB"})
-  local mop_cfg = Drawing.RectText(out, {x = lram.x, y = lram.bottom + y_spacing_mem, w = lram.w, h = lram.h, color = data_color}, {"MOP Expander Configuration", "9x 32b (T only)"})
-  for _, mem in ipairs{lram, mop_cfg} do
+  local lram = Drawing.RectText(out, {x = iram.x, y = ls_l1_y + 1 + y_spacing_mem, w = iram.w, h = iram.h, color = data_color}, {"Local Data RAM", eth and "4 KiB" or "2 KiB or 4 KiB"})
+  local mop_cfg = Drawing.RectText(eth and nul or out, {x = lram.x, y = lram.bottom + y_spacing_mem, w = lram.w, h = lram.h, color = data_color}, {"MOP Expander Configuration", "9x 32b (T only)"})
+  for _, mem in ipairs(eth and {lram} or {lram, mop_cfg}) do
     Drawing.LineTextAbove(out, {iram_ic_mux.right, mem.y_middle}, {mem.x, mem.y_middle})
   end
-  local mop = Drawing.RectText(out, {x = mop_cfg.right + 20, y = mop_cfg.y, w = 108, h = mop_cfg.h, color = xu_color}, {"MOP Expander", "(T only)"})
-  Drawing.LineTextAbove(out, {mop_cfg.right, mop.y_middle}, {mop.x, mop.y_middle})
-
-  local ls_mux_y = mop_cfg.bottom + y_spacing_mem + 12
   local ls_mux_bottom
-  MultiLine(out, {mop.right - 20, mop.bottom + 2, "v", ls_mux_y - 2})
-  MultiLine(out, {mop.right - 40, ls_mux_y - 2, "^", mop.bottom + 2})
-  for _, target in ipairs{"Push Tensix instruction (not NC)", "Tensix backend configuration (not NC)", "Tensix GPRs (not NC)", "Tensix semaphores (T only)", "TTSync (T only)", "PCBufs (not NC)", "Mailboxes (not NC)", "NoC 0 configuration and command", "NoC 1 configuration and command", "NoC overlay configuration and command", "TDMA-RISC configuration and command", "PIC configuration and status", "Tile control / debug / status"} do
-    WireTextRight(out, iram_ic_mux.right, ls_mux_y, target)
-    ls_mux_bottom = ls_mux_y + y_pad_mux
-    ls_mux_y = ls_mux_y + 24
+  if eth then
+    local ls_mux_y = lram.bottom + y_spacing_mem + 12
+    for _, target in ipairs{"Ethernet TX configuration and command", "Ethernet RX configuration", "Ethernet MAC configuration", "Ethernet PCS configuration", "NoC 0 configuration and command", "NoC 1 configuration and command", "NoC overlay configuration and command", "PIC configuration and status", "Tile control / debug / status"} do
+      WireTextRight(out, iram_ic_mux.right, ls_mux_y, target)
+      ls_mux_bottom = ls_mux_y + y_pad_mux
+      ls_mux_y = ls_mux_y + 24
+    end
+  else
+    local mop = Drawing.RectText(out, {x = mop_cfg.right + 20, y = mop_cfg.y, w = 108, h = mop_cfg.h, color = xu_color}, {"MOP Expander", "(T only)"})
+    Drawing.LineTextAbove(out, {mop_cfg.right, mop.y_middle}, {mop.x, mop.y_middle})
+    
+    local ls_mux_y = mop_cfg.bottom + y_spacing_mem + 12
+    MultiLine(out, {mop.right - 20, mop.bottom + 2, "v", ls_mux_y - 2})
+    MultiLine(out, {mop.right - 40, ls_mux_y - 2, "^", mop.bottom + 2})
+    for _, target in ipairs{"Push Tensix instruction (not NC)", "Tensix backend configuration (not NC)", "Tensix GPRs (not NC)", "Tensix semaphores (T only)", "TTSync (T only)", "PCBufs (not NC)", "Mailboxes (not NC)", "NoC 0 configuration and command", "NoC 1 configuration and command", "NoC overlay configuration and command", "TDMA-RISC configuration and command", "PIC configuration and status", "Tile control / debug / status"} do
+      WireTextRight(out, iram_ic_mux.right, ls_mux_y, target)
+      ls_mux_bottom = ls_mux_y + y_pad_mux
+      ls_mux_y = ls_mux_y + 24
+    end
   end
   local ls_mux = Drawing.Mux(out, {x = iram_ic_mux.x, y = ls_l1_y - y_pad_mux, w = iram_ic_mux.w, bottom = ls_mux_bottom}, "<")
 
@@ -119,3 +129,4 @@ local function BabyRISC()
 end
 
 assert(io.open(own_dir .."../Out/BabyRISCV.svg", "w")):write(BabyRISC{})
+assert(io.open(own_dir .."../Out/BabyRISCV_Eth.svg", "w")):write(BabyRISC{eth = true})

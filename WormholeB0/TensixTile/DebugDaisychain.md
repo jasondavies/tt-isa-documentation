@@ -72,6 +72,7 @@ Set `DaisySel == 7` and set `SignalSel` according to the desired RISCV and desir
 |**RISCV T1**|`14`|`15`|`20`|`21`|
 |**RISCV T2**|`16`|`17`|`22`|`23`|
 |**RISCV NC**|`24`|`25`|N/A|N/A|
+|**RISCV E**|`18`|`19`|N/A|N/A|
 
 ### Group A:
 

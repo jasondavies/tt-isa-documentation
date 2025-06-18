@@ -113,6 +113,8 @@ The NoC Overlay uses `MSG_HEADER_WORD_CNT_OFFSET` and `MSG_HEADER_WORD_CNT_BITS`
 
 This register exists once per NoC Overlay. For the purpose of `STREAM_REG_ADDR`, it's part of stream ID 0, but it relates to all streams.
 
+Note that when using the NoC Overlay over Ethernet, [`ETH_RXQ_TILE_HEADER_FORMAT`](../../EthernetTile/EthernetTxRx.md) also needs to be configured with details of the message length field.
+
 ### `STREAM_MISC_CFG_REG_INDEX`
 
 |First&nbsp;bit|#&nbsp;Bits|Name|Purpose|

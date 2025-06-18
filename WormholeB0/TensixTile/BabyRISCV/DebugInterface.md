@@ -70,7 +70,8 @@ Software can put a RISCV into slow execution mode by setting bit 31 of [`DR(1)`]
 <tr><th>RISCV T0</th><td><code>Config[0].DISABLE_RISC_BP_Disable_trisc</code> (low bit thereof)</td></tr>
 <tr><th>RISCV T1</th><td><code>Config[0].DISABLE_RISC_BP_Disable_trisc</code> (middle bit thereof)</td></tr>
 <tr><th>RISCV T2</th><td><code>Config[0].DISABLE_RISC_BP_Disable_trisc</code> (high bit thereof)</td></tr>
-<tr><th>RISCV NC</th><td><code>Config[0].DISABLE_RISC_BP_Disable_ncrisc</code></td></tr></table>Unfortunately, Tensix backend configuration is not part of the address space made available over the NoC, so there is no particularly convenient way for an external debugger to disable the branch predictor until it has <i>already</i> commandeered a core (and can therefore perform memory writes as if it were the core).</li></ul>
+<tr><th>RISCV NC</th><td><code>Config[0].DISABLE_RISC_BP_Disable_ncrisc</code></td></tr>
+<tr><th>RISCV E</th><td>Cannot be disabled</td></tr></table>Unfortunately, Tensix backend configuration is not part of the address space made available over the NoC, so there is no particularly convenient way for an external debugger to disable the branch predictor until it has <i>already</i> commandeered a core (and can therefore perform memory writes as if it were the core).</li></ul>
 
 ## Breakpoints and memory watchpoints
 
@@ -211,7 +212,7 @@ Access to all the `DR` registers of the various RISCV cores is multiplexed throu
 |0|11|`DR_i`|Software should set to `i` in order to access `DR(i)`|
 |11|5||Ignored|
 |16|1|`IsWrite`|Software should set to `true` to perform a `DR` write, or `false` to perform a `DR` read|
-|17|2|`Which_RISCV`|Software should set according to which RISCV it wishes to access the `DR` register of:<br/><ul><li><code>0</code> for RISCV B</li><li><code>1</code> for RISCV T0</li><li><code>2</code> for RISCV T1</li><li><code>3</code> for RISCV T2</li></ul>|
+|17|2|`Which_RISCV`|Software should set according to which RISCV it wishes to access the `DR` register of:<br/><ul><li><code>0</code> for RISCV B (Tensix tiles) or RISCV E (Ethernet tiles)</li><li><code>1</code> for RISCV T0</li><li><code>2</code> for RISCV T1</li><li><code>3</code> for RISCV T2</li></ul>|
 |19|12||Ignored|
 |31|1|`Trigger`|A read or write of `DR(i)` is triggered whenever software changes the value of this field from `false` to `true`|
 
