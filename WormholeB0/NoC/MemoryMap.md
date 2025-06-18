@@ -94,7 +94,7 @@ The combination of the `LO` field and the `MID` field forms 64 bits. For unicast
 
 |First&nbsp;bit|#&nbsp;Bits|Contents|
 |--:|--:|---|
-|0|36|Memory address (the high 4 bits of which are usually zero)|
+|0|36|Memory address (the high 4 bits of which are usually zero). Some [alignment requirements](Alignment.md) apply.|
 |36|6|[X coordinate](Coordinates.md)|
 |42|6|[Y coordinate](Coordinates.md)|
 |48|12|Reserved (do not affect the request or response in any way)|
@@ -104,7 +104,7 @@ For broadcast request packets (which are allowed for atomic requests and write r
 
 |First&nbsp;bit|#&nbsp;Bits|Contents|
 |--:|--:|---|
-|0|36|Memory address (the high 4 bits of which are usually zero)|
+|0|36|Memory address (the high 4 bits of which are usually zero). Some [alignment requirements](Alignment.md) apply.|
 |36|6|[EndX coordinate](Coordinates.md)|
 |42|6|[EndY coordinate](Coordinates.md)|
 |48|6|[StartX coordinate](Coordinates.md)|
