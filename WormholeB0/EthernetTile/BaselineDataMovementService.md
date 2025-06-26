@@ -240,7 +240,7 @@ Ordering is described for each stage individually.
 
 Host software is responsible for ordering in stage 1; it must ensure that the write to advance the submission queue's `wr_idx` happens after all of the writes to populate the `routing_cmd_t` (and `buffers[i]`, if applicable), and ensure that reordering does not happen between multiple distinct writes to `wr_idx`. Device software will consume the submission queue in order, doing a mixture of:
 1. For read requests, push an entry to the completion queue. These entries are allocated in order, with `flags` initially set to zero, but then _potentially_ filled in out of order.
-2. For requests with `CMD_DATA_BLOCK_DRAM` set, if `data_block_length` is greater than 1024, internally split the request in to multiple sub-requests, each with `data_block_length ≤ 1024`. The sub-requests will then be consumed in order.
+2. For requests with `CMD_DATA_BLOCK_DRAM` set, if `data_block_length` is greater than 1024, internally split the request into multiple sub-requests, each with `data_block_length ≤ 1024`. The sub-requests will then be consumed in order.
 3. For write requests with `CMD_DATA_BLOCK_DRAM` set, use a NoC read (against the PCI Express tile) to pull in the data.
 4. Pass the request off to stage 2, or if already in the correct ASIC, skip stage 2 and go straight to stage 3.
 

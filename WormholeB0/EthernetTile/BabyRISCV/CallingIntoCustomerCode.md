@@ -1,4 +1,4 @@
-# Calling in to customer code
+# Calling into customer code
 
 Customer software has complete control over Tensix tiles, so it can assume control by putting the relevant RISCV cores into [soft reset](../../TensixTile/SoftReset.md#riscv-soft-reset) and then taking them out of reset at a known `pc`. Doing the same thing on Ethernet tiles is disruptive to the Tenstorrent code running on the RISCV core, so a different mechanism is preferred.
 
