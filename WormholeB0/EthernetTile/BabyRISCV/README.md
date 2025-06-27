@@ -10,7 +10,7 @@ The baby RISCV core in every Ethernet tile is very similar to [the baby RISCV co
     * Initial [configuration](../EthernetTxRx.md#associating-tx-queues-with-rx-queues) and training of the Ethernet link.
     * Retraining the Ethernet link in response to link drops.
     * Providing a [baseline data movement service](../BaselineDataMovementService.md) to host software.
-    * [Calling in to customer code](CallingInToCustomerCode.md).
+    * [Calling into customer code](CallingIntoCustomerCode.md).
 
 ## Instruction set
 
