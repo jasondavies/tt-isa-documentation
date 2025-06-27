@@ -160,6 +160,10 @@ for (unsigned i = 0; i < 16; ++i) {
 }
 ```
 
+There are a few reasons why software might wish to clear counters in this manner:
+1. It is performing a NoC transaction where the read response or write acknowledgement is sent to an NIU other than the originating NIU, as this will cause counter increments at the originating NIU, but counter decrements at the other NIU, leaving both NIUs with non-zero counters.
+2. It is performing a NoC transaction with both `NOC_CMD_BRCST_PACKET` and `NOC_CMD_RESP_MARKED` set, as this will cause one counter increment when the request is initiated, but a counter decrement for _every_ response received, likely leaving the counter non-zero.
+
 ## Automatic request splitting
 
 Each individual NoC packet can contain up to 256 data flits, and as each flit consists of 256 bits (32 bytes), this means that the maximum packet payload is 8192 bytes. If software wishes to transfer more than 8192 bytes, then the transfer needs to be split into multiple packets. Software can either do this itself, or rely on hardware to do it. If relying on hardware to do it:
