@@ -60,7 +60,7 @@ The latency of a load instruction depends upon the memory region being accessed.
 <tr><td><a href="README.md#local-data-ram">Core-local data RAM</a></td><td>2</td><td>8</td></tr>
 <tr><td><a href="Mailboxes.md">Mailboxes</a><br/><a href="PCBufs.md">PCBufs</a><br/><a href="TTSync.md">TTSync</a><br/><a href="../TensixCoprocessor/SyncUnit.md#semaphores">Tensix semaphores</a></td><td>≥ 3 (more if waiting on an empty FIFO or waiting for a TTSync event)</td><td rowspan="4">4 (in aggregate across all of these regions)</td></tr>
 <tr><td><a href="../TensixCoprocessor/ScalarUnit.md#gprs">Tensix GPRs</a><br/><a href="../TensixCoprocessor/BackendConfiguration.md">Tensix backend configuration</a></td><td>≥ 4 (more in the case of access conflicts)</td></tr>
-<tr><td><a href="../TDMA-RISC.md">TDMA-RISC&nbsp;configuration&nbsp;and&nbsp;command</a><br/><a href="../TileControlDebugStatus.md">Tile control / debug / status</a><br/>PIC configuration and status<br/><a href="../../NoC/MemoryMap.md">NoC 0 configuration and command</a><br/><a href="../../NoC/MemoryMap.md">NoC 1 configuration and command</a><br/><a href="../../NoC/Overlay/README.md">NoC&nbsp;overlay&nbsp;configuration&nbsp;and&nbsp;command</a></td><td>≥ 7 (more in the case of access conflicts)</td></tr>
+<tr><td><a href="../TDMA-RISC.md">TDMA-RISC&nbsp;configuration&nbsp;and&nbsp;command</a><br/><a href="../TileControlDebugStatus.md">Tile control / debug / status</a><br/><a href="../PIC.md">PIC configuration and status</a><br/><a href="../../NoC/MemoryMap.md">NoC 0 configuration and command</a><br/><a href="../../NoC/MemoryMap.md">NoC 1 configuration and command</a><br/><a href="../../NoC/Overlay/README.md">NoC&nbsp;overlay&nbsp;configuration&nbsp;and&nbsp;command</a></td><td>≥ 7 (more in the case of access conflicts)</td></tr>
 <tr><td><a href="../L1.md">L1 scratchpad RAM (1464 KiB)</a></td><td>≥ 8 (more in the case of access port conflicts or bank conflicts)</td></tr>
 </table>
 
@@ -82,7 +82,7 @@ The "NoC" column indicates which parts of the address space are made available t
 <tr><td><code>0xFFB0_0800</code> to <code>0xFFB0_0FFF</code></td><td colspan="3">Unmapped</td></tr>
 <tr><td><code>RISCV_TDMA_REGS_START_ADDR</code><br/><code>0xFFB1_1000</code> to <code>0xFFB1_1FFF</code></td><td colspan="6"><a href="../TDMA-RISC.md">TDMA-RISC configuration registers and command interface</a></td></tr>
 <tr><td><code>RISCV_DEBUG_REGS_START_ADDR</code><br/><code>0xFFB1_2000</code> to <code>0xFFB1_2FFF</code></td><td colspan="6"><a href="../TileControlDebugStatus.md">Tile control / debug / status registers</a></td></tr>
-<tr><td><code>0xFFB1_3000</code> to <code>0xFFB1_3FFF</code></td><td colspan="6">PIC configuration and status registers</td></tr>
+<tr><td><code>0xFFB1_3000</code> to <code>0xFFB1_3FFF</code></td><td colspan="6"><a href="../PIC.md">PIC configuration and status registers</a></td></tr>
 <tr><td><code>NOC0_REGS_START_ADDR</code><br/><code>0xFFB2_0000</code> to <code>0xFFB2_FFFF</code></td><td colspan="6"><a href="../../NoC/MemoryMap.md">NoC 0 configuration registers and command interface</a></td></tr>
 <tr><td><code>NOC1_REGS_START_ADDR</code><br/><code>0xFFB3_0000</code> to <code>0xFFB3_FFFF</code></td><td colspan="6"><a href="../../NoC/MemoryMap.md">NoC 1 configuration registers and command interface</a></td></tr>
 <tr><td><code>NOC_OVERLAY_START_ADDR</code><br/><code>0xFFB4_0000</code> to <code>0xFFB7_FFFF</code></td><td colspan="6"><a href="../../NoC/Overlay/README.md">NoC overlay configuration registers and command interface</a></td></tr>
