@@ -53,7 +53,7 @@ Note that software is free to use the IRQ raising and clearing features of the P
 
 ### `PIC_STATUS`
 
-Reading from `PIC_STATUS` returns the bitmask of pending IRQs, and not does modify any state in any way.
+Reading from `PIC_STATUS` returns the bitmask of pending IRQs, and does not modify any state in any way.
 
 Writing to `PIC_STATUS` will atomically clear the specified bits from the bitmask of pending IRQs. If an IRQ is not pending, then clearing it has no effect.
 
