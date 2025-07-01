@@ -249,6 +249,13 @@ local diagrams = {
       {24, 8, "0xB0"},
     }
   end,
+  RDCFG = function()
+    return Bits32{
+      {0, 11, "CfgIndex"},
+      {16, 6, "ResultReg"},
+      {24, 8, "0xB1"},
+    }
+  end,
   SETC16 = function()
     return Bits32{
       {0, 16, "NewValue"},

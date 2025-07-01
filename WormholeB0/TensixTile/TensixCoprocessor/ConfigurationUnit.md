@@ -6,7 +6,7 @@ The Configuration Unit can read or write [backend configuration](BackendConfigur
 <tr><td><code><a href="SETC16.md">SETC16</a></code></td><td>1 cycle</td><td>Issue one per thread per cycle</td></tr>
 <tr><td><code><a href="WRCFG.md">WRCFG</a></code></td><td>2 cycles</td><td>Issue one per cycle</td></tr>
 <tr><td><code><a href="RMWCIB.md">RMWCIB</a></code></td><td>1 cycle</td><td rowspan="5">Issue at most one of these per cycle, provided neither <code>RDCFG</code> nor <code>WRCFG</code> issued in previous cycle by any thread</td></tr>
-<tr><td><code>RDCFG</code></td><td>≥&nbsp;2&nbsp;cycles</td></tr>
+<tr><td><code><a href="RDCFG.md">RDCFG</a></code></td><td>≥&nbsp;2&nbsp;cycles</td></tr>
 <tr><td>RISCV&nbsp;read&nbsp;request</td><td>1 cycle</td></tr>
 <tr><td>RISCV&nbsp;write&nbsp;request</td><td>1 cycle</td></tr>
 <tr><td>Mover&nbsp;write&nbsp;request</td><td>1 cycle</td></tr>
