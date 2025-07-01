@@ -6,7 +6,7 @@ The ADC manipulation instructions are:
 
 |Dimension|Set Instructions|Increment Instruction|CR Increment Instruction|
 |---:|---|---|---|
-|**X**|[`SETADC`](SETADC.md), [`SETADCXY`](SETADCXY.md), [`SETADCXX`](SETADCXY.md)|[`INCADCXY`](INCADCXY.md)|[`ADDRCRXY`](ADDRCRXY.md)|
+|**X**|[`SETADC`](SETADC.md), [`SETADCXY`](SETADCXY.md), [`SETADCXX`](SETADCXX.md)|[`INCADCXY`](INCADCXY.md)|[`ADDRCRXY`](ADDRCRXY.md)|
 |**Y**|[`SETADC`](SETADC.md), [`SETADCXY`](SETADCXY.md)|[`INCADCXY`](INCADCXY.md)|[`ADDRCRXY`](ADDRCRXY.md)|
 |**Z**|[`SETADC`](SETADC.md), [`SETADCZW`](SETADCZW.md)|[`INCADCZW`](INCADCZW.md)|[`ADDRCRZW`](ADDRCRZW.md)|
 |**W**|[`SETADC`](SETADC.md), [`SETADCZW`](SETADCZW.md)|[`INCADCZW`](INCADCZW.md)|[`ADDRCRZW`](ADDRCRZW.md)|
