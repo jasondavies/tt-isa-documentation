@@ -15,4 +15,4 @@ Note that the Scalar Unit (ThCon) instruction [`REG2FLOP`](REG2FLOP_ADC.md) can 
 
 The instructions which live in the Miscellaneous Unit because they don't fit anywhere else are:
 * [`SETDVALID`](SETDVALID.md)
-* `NOP`
+* [`NOP`](NOP.md)

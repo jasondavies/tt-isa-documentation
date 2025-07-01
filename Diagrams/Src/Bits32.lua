@@ -378,6 +378,11 @@ local diagrams = {
       {24, 8, "0x5E"},
     }
   end,
+  NOP = function()
+    return Bits32{
+      {24, 8, "0x02"},
+    }
+  end,
   SEMINIT = function()
     return Bits32{
       {2, 8, "SemaphoreMask"},
