@@ -436,6 +436,15 @@ local diagrams = {
       {24, 8, "0x0A"},
     }
   end,
+  MOVB2A = function()
+    return Bits32{
+      {0, 6, "SrcBRow"},
+      {13, 1, "Move4Rows", y = 2},
+      {15, 2, "AddrMod", y = 1},
+      {17, 6, "SrcARow"},
+      {24, 8, "0x0B"},
+    }
+  end,
   MOVDBGA2D = function()
     return Bits32{
       {0, 10, "DstRow"},
