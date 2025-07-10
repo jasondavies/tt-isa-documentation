@@ -1202,6 +1202,58 @@ local diagrams = {
       {24, 8, "0x42"},
     }
   end,
+  UNPACR_NOP_OverlayClear0 = function()
+    return Bits32{
+      {0, 3, "0x0"},
+      {23, 1, "WhichUnpacker", y = 2},
+      {24, 8, "0x43"},
+    }
+  end,
+  UNPACR_NOP_OverlayClear3 = function()
+    return Bits32{
+      {0, 3, "0x3"},
+      {4, 11, "ClearCount"},
+      {16, 6, "WhichStream"},
+      {23, 1, "WhichUnpacker", y = 2},
+      {24, 8, "0x43"},
+    }
+  end,
+  UNPACR_NOP_ZEROSRC = function()
+    return Bits32{
+      {0, 2, "0x1"},
+      {2, 1, "NegativeInfSrcA", y = 3, edge = "right"},
+      {3, 1, "BothBanks", y = 2, edge = "right"},
+      {4, 1, "WaitLikeUnpacr", y = 1, edge = "right"},
+      {6, 1, "0"},
+      {23, 1, "WhichUnpacker", y = 1},
+      {24, 8, "0x43"},
+    }
+  end,
+  UNPACR_NOP_Nop = function()
+    return Bits32{
+      {0, 3, "0x2"},
+      {23, 1, "WhichUnpacker", y = 1},
+      {24, 8, "0x43"},
+    }
+  end,
+  UNPACR_NOP_SETREG = function()
+    return Bits32{
+      {0, 3, "0x4"},
+      {3, 1, "Accumulate", y = 1},
+      {4, 11, "Value11"},
+      {16, 6, "AddrMid"},
+      {22, 1, "AddrSel", y = 1, edge = "left"},
+      {23, 1, "WhichUnpacker", y = 2},
+      {24, 8, "0x43"},
+    }
+  end,
+  UNPACR_NOP_SETDVALID = function()
+    return Bits32{
+      {0, 3, "0x7"},
+      {23, 1, "WhichUnpacker", y = 1},
+      {24, 8, "0x43"},
+    }
+  end,
   Src_TF32 = function()
     return Bits32{nbits = 19,
       {0, 8, "Exponent"},

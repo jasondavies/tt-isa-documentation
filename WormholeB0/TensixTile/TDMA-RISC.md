@@ -249,8 +249,8 @@ uint32_t ScalarsAndStatus(uint32_t which_unpacker) {
     // thread T2.
     if (Packers[i].IsBusyForThread(2)) result |= (1u << (27 + i));
   }
-  if (Unpackers[which_unpacker].reg_wr_msg_count_acc & 0x10000) {
-    // See UnpackerPackerAcc for the low 16 bits of reg_wr_msg_count_acc.
+  if (Unpackers[which_unpacker].SetRegAcc & 0x10000) {
+    // See UnpackerPackerAcc for the low 16 bits of SetRegAcc.
     result |= (1u << 31);
   }
   return result;
@@ -299,7 +299,7 @@ void ResetPackerAccTileSize(uint32_t new_val) {
 
 uint32_t UnpackerPackerAcc(uint32_t which_packer, uint32_t which_thread) {
   uint16_t lo = Packers[which_packer].AccTileSize[which_thread];
-  uint16_t hi = Unpackers[which_packer & 1].reg_wr_msg_count_acc & 0xffff;
+  uint16_t hi = Unpackers[which_packer & 1].SetRegAcc & 0xffff;
   return (uint32_t(hi) << 16) + lo;
 }
 ```
