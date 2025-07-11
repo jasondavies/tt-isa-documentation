@@ -24,10 +24,38 @@ local function TileLabel(x, y)
     return "T".. i
   end
 end
+local function TileLabel_BH(x, y)
+  if x == 0 or x == 9 then
+    local map = {[0] = 0, 0, 1, 1, 2, 3, 3, 3, 2, 2, 1, 0}
+    return "D".. (map[y] + (x / 9 * 4))
+  elseif x == 8 then
+    local map = {[0] = "ARC", "", "SEC", "CPU 0-3", "", "CPU 8-11", "", "CPU 12-15", "", "CPU 4-7", "", ""}
+    return map[y]
+  elseif y == 1 then
+    local map = {"E0", "E2", "E4", "E6", "E8", "E10", "E12", "", "", "E13", "E11", "E9", "E7", "E5", "E3", "E1"}
+    return map[x]
+  elseif y == 0 then
+    local map = {[2] = "PCIe 0", [11] = "PCIe 1"}
+    return map[x] or ""
+  else
+    local i = (y - 2) * 14 + (x - (x >= 10 and 3 or 1))
+    return "T".. i
+  end
+end
+local TileLabel_Arch = {
+  wh = TileLabel,
+  bh = TileLabel_BH,
+}
+local NocSize_Arch = {
+  wh = {w = 10, h = 12},
+  bh = {w = 17, h = 12},
+}
 local tile_colors = {
   P = "#ffd3e2",
   E = "#dae4ff",
   A = "#f2fad3",
+  C = "#d2fad2",
+  S = "#ffd4f9",
   D = "#d6fff8",
   T = "#ffebd3",
   X = "white",
@@ -40,7 +68,9 @@ local function NoC(noc_id, args)
 
   local out = buffer.new()
   local cell_dims = {w = 75, h = 75}
-  local noc_size = {w = 10, h = 12}
+  local arch = args.arch or "wh"
+  local TileLabel = TileLabel_Arch[arch]
+  local noc_size = NocSize_Arch[arch]
   local dims = {w = cell_dims.w * noc_size.w + 15, h = cell_dims.h * noc_size.h + 15}
   out:putf([[<svg version="1.1" width="%u" height="%u" xmlns="http://www.w3.org/2000/svg">]], dims.w, dims.h)
   out:putf([[<rect width="%u" height="%u" rx="15" stroke="transparent" fill="white"/>]], dims.w, dims.h)
@@ -245,6 +275,7 @@ local function NoC(noc_id, args)
         local color = tile_colors[label:sub(1, 1)]
         out:putf([[<rect x="%g" y="%g" width="%g" height="%g" stroke="black" fill="%s" stroke-width="1" rx="5" ry="5"/>]], x0, y0, w, h, color)
         if label ~= "" then
+          label = label:gsub(" .*", "")
           out:putf([[<text x="%d" y="%d" text-anchor="middle" dominant-baseline="middle">%s</text>]], x0 + w * 0.5, y0 + h * (noc_id == 0 and 0.78 or 0.25), label)
         end
       end
@@ -299,9 +330,13 @@ local function NoC(noc_id, args)
   return tostring(out)
 end
 
-local function NoC_Coords(noc_id, style)
-  local noc_size = {w = 10, h = 12}
+local function NoC_Coords(args)
+  local noc_id = args.noc_id or 0
+  local style = args.style
+  local arch = args.arch or "wh"
+  local noc_size = NocSize_Arch[arch]
   local margin = {top = 0, left = 0, right = 0, bottom = 0}
+  local TileLabel = TileLabel_Arch[arch]
 
   if style then
     margin.top = 25
@@ -314,7 +349,10 @@ local function NoC_Coords(noc_id, style)
     end
   end
 
+  local hide = {}
+  local harv_x = {}
   local harv_y = {}
+  local harv_label = {}
   local untrans_x = {}
   local untrans_y = {}
   if style == "translation" then
@@ -348,11 +386,75 @@ local function NoC_Coords(noc_id, style)
         i = i + 1
       end
     end
+  elseif style == "bh_y01" then
+    for y = 0, 1 do
+      untrans_y[y] = y
+    end
+    for y = 2, 11 do
+      untrans_y[y] = hide
+    end
+  elseif style == "bh_y211" then
+    untrans_x[0] = 0
+    untrans_x[8] = 8
+    untrans_x[9] = 9
+    for y = 0, 1 do
+      untrans_y[y] = hide
+    end
+    for y = 2, 11 do
+      untrans_y[y] = y
+    end
+    harv_x[5] = true
+    harv_x[11] = true
+    local i = 1
+    for x = 1, 16 do
+      if not untrans_x[x] and not harv_x[x] then
+        untrans_x[x] = i
+        i = i + 1
+        if i == 8 then i = 10 end
+      end
+    end
+    for x = 1, 16 do
+      if not untrans_x[x] then
+        untrans_x[x] = i
+        i = i + 1
+      end
+    end
+  elseif style == "bh_y1223" then
+    for x = 1, 16 do
+      untrans_x[x] = hide
+    end
+    untrans_x[0] = 18
+    untrans_x[9] = 17
+    harv_label.D2 = true
+    untrans_y = {[0] = 12, 13, 15, 17, 22, 18, 20, 19, 23, 21, 16, 14}
+  elseif style == "bh_y24" then
+    for x = 0, 16 do
+      untrans_x[x] = hide
+    end
+    for y = 0, 11 do
+      untrans_y[y] = hide
+    end
+    untrans_x[2] = 19
+    untrans_y[0] = 24
+    harv_label["PCIe 1"] = true
+  elseif style == "bh_y25" then
+    for y = 0, 11 do
+      untrans_y[y] = hide
+    end
+    untrans_y[1] = 25
+    untrans_x = {[0] = hide, 20, 22, 24, 25, hide, 28, 30, hide, hide, 31, 29, 27, 26, hide, 23, 21}
+    harv_label.E8 = true
+    harv_label.E5 = true
+  elseif style == "bh_x8" then
+    for x = 0, 16 do
+      untrans_x[x] = hide
+    end
+    untrans_x[8] = 8
+    untrans_y = {[0] = 0, hide, 30, 26, hide, 28, hide, 29, hide, 27, hide, hide}
   end
 
   local out = buffer.new()
   local cell_dims = {w = 60, h = 60}
-  
   
   local dims = {w = cell_dims.w * noc_size.w + 1 + margin.left + margin.right, h = cell_dims.h * noc_size.h + 1 + margin.top + margin.bottom}
   out:putf([[<svg version="1.1" width="%u" height="%u" xmlns="http://www.w3.org/2000/svg">]], dims.w, dims.h)
@@ -367,7 +469,9 @@ local function NoC_Coords(noc_id, style)
       local x0 = x * cell_dims.w + tpad
       local y0 = y * cell_dims.h + tpad
       local label = TileLabel(x, y)
-      if harv_y[y] and label:sub(1, 1) == "T" then
+      if (harv_x[x] or harv_y[y]) and label:sub(1, 1) == "T" then
+        label = "X"
+      elseif harv_label[label] then
         label = "X"
       end
       local color = tile_colors[label:sub(1, 1)]
@@ -380,7 +484,20 @@ local function NoC_Coords(noc_id, style)
         out:putf([[<path d="M %g %g L %g %g" stroke="red" fill="transparent" stroke-width="%g"/>]], x0 - sl, y0 - sl, x0 + sl, y0 + sl, sw)
         out:putf([[<path d="M %g %g L %g %g" stroke="red" fill="transparent" stroke-width="%g"/>]], x0 - sl, y0 + sl, x0 + sl, y0 - sl, sw)
       elseif label ~= "" then
-        out:putf([[<text x="%d" y="%d" text-anchor="middle" dominant-baseline="middle">%s</text>]], x0, y0, label)
+        local split = label:find(" ")
+        local opacity = ""
+        if untrans_x[x] == hide or untrans_y[y] == hide then
+          opacity = ' fill-opacity="20%"'
+        end
+        if split then
+          local line2 = label:sub(split + 1)
+          label = label:sub(1, split - 1)
+          local dy = h * 0.2
+          out:putf([[<text x="%d" y="%d" text-anchor="middle" dominant-baseline="middle"%s>%s</text>]], x0, y0 - dy, opacity, label)
+          out:putf([[<text x="%d" y="%d" text-anchor="middle" dominant-baseline="middle"%s>%s</text>]], x0, y0 + dy, opacity, line2)
+        else
+          out:putf([[<text x="%d" y="%d" text-anchor="middle" dominant-baseline="middle"%s>%s</text>]], x0, y0, opacity, label)
+        end
       end
     end
   end
@@ -392,22 +509,30 @@ local function NoC_Coords(noc_id, style)
       Drawing.ThickArrow(out, -1, tpad, "->", -1, 4 + cell_dims.h * noc_size.h, noc_color, 1)
       for x = 0, noc_size.w - 1 do
         local tx = untrans_x[x] or x
-        out:putf([[<text x="%d" y="%d" text-anchor="middle" dominant-baseline="auto" fill="%s">x = %u</text>]], (x + 0.5) * cell_dims.w, -8, noc_color, tx)
+        if tx ~= hide then
+          out:putf([[<text x="%d" y="%d" text-anchor="middle" dominant-baseline="auto" fill="%s">x = %u</text>]], (x + 0.5) * cell_dims.w, -8, noc_color, tx)
+        end
       end
       for y = 0, noc_size.h - 1 do
         local ty = untrans_y[y] or y
-        out:putf([[<text x="%d" y="%d" text-anchor="end" dominant-baseline="middle" fill="%s">y = %u</text>]], -8, (y + 0.5) * cell_dims.h, noc_color, ty)
+        if ty ~= hide then
+          out:putf([[<text x="%d" y="%d" text-anchor="end" dominant-baseline="middle" fill="%s">y = %u</text>]], -8, (y + 0.5) * cell_dims.h, noc_color, ty)
+        end
       end
     else
       Drawing.ThickArrow(out, -1, cell_dims.h * noc_size.h + 4, "<-", cell_dims.w * noc_size.w - tpad, cell_dims.h * noc_size.h + 4, noc_color, 1)
       Drawing.ThickArrow(out, cell_dims.w * noc_size.w + 4, -1, "<-", cell_dims.w * noc_size.w + 4, cell_dims.h * noc_size.h - tpad, noc_color, 1)
       for x = 0, noc_size.w - 1 do
         local tx = untrans_x[x] or noc_size.w - 1 - x
-        out:putf([[<text x="%d" y="%d" text-anchor="middle" dominant-baseline="hanging" fill="%s">x = %u</text>]], (x + 0.5) * cell_dims.w, cell_dims.h * noc_size.h + 8, noc_color, tx)
+        if tx ~= hide then
+          out:putf([[<text x="%d" y="%d" text-anchor="middle" dominant-baseline="hanging" fill="%s">x = %u</text>]], (x + 0.5) * cell_dims.w, cell_dims.h * noc_size.h + 8, noc_color, tx)
+        end
       end
       for y = 0, noc_size.h - 1 do
         local ty = untrans_y[y] or noc_size.h - 1 - y
-        out:putf([[<text x="%d" y="%d" text-anchor="start" dominant-baseline="middle" fill="%s">y = %u</text>]], cell_dims.w * noc_size.w + 8, (y + 0.5) * cell_dims.h, noc_color, ty)
+        if ty ~= hide then
+          out:putf([[<text x="%d" y="%d" text-anchor="start" dominant-baseline="middle" fill="%s">y = %u</text>]], cell_dims.w * noc_size.w + 8, (y + 0.5) * cell_dims.h, noc_color, ty)
+        end
       end
     end
   end
@@ -418,17 +543,27 @@ local function NoC_Coords(noc_id, style)
   return tostring(out)
 end
 
-local diagrams = {
-  Layout = function() return NoC_Coords(0) end,
-}
-for noc_id = 0, 1 do
-  diagrams[noc_id ..""] = function() return NoC(noc_id, {}) end
-  diagrams[noc_id .."_Unicast"] = function() return NoC(noc_id, {plot_unicast = true}) end
-  for b = 0, 1 do
-    diagrams[noc_id .."_Broadcast".. b] = function() return NoC(noc_id, {plot_broadcast = b}) end
+local diagrams = {}
+for arch, fname in pairs{wh = "", bh = "BH_"} do
+  diagrams[fname .."Layout"] = function() return NoC_Coords{arch = arch} end
+  for noc_id = 0, 1 do
+    diagrams[fname .. noc_id ..""] = function() return NoC(noc_id, {arch = arch}) end
+    diagrams[fname .. noc_id .."_Unicast"] = function() return NoC(noc_id, {plot_unicast = true, arch = arch}) end
+    for b = 0, 1 do
+      diagrams[fname .. noc_id .."_Broadcast".. b] = function() return NoC(noc_id, {plot_broadcast = b, arch = arch}) end
+    end
+    diagrams[fname .. noc_id .."_Coords"] = function() return NoC_Coords{noc_id = noc_id, style = "noc", arch = arch} end
+    if arch == "wh" then
+      diagrams[fname .. noc_id .."_TranslationCoords"] = function() return NoC_Coords{noc_id = noc_id, style = "translation", arch = arch} end
+    else
+      diagrams[fname .. noc_id .."_Y01Coords"] = function() return NoC_Coords{noc_id = noc_id, style = "bh_y01", arch = arch} end
+      diagrams[fname .. noc_id .."_Y211Coords"] = function() return NoC_Coords{noc_id = noc_id, style = "bh_y211", arch = arch} end
+      diagrams[fname .. noc_id .."_Y1223Coords"] = function() return NoC_Coords{noc_id = noc_id, style = "bh_y1223", arch = arch} end
+      diagrams[fname .. noc_id .."_Y24Coords"] = function() return NoC_Coords{noc_id = noc_id, style = "bh_y24", arch = arch} end
+      diagrams[fname .. noc_id .."_Y25Coords"] = function() return NoC_Coords{noc_id = noc_id, style = "bh_y25", arch = arch} end
+      diagrams[fname .. noc_id .."_X8Coords"] = function() return NoC_Coords{noc_id = noc_id, style = "bh_x8", arch = arch} end
+    end
   end
-  diagrams[noc_id .."_Coords"] = function() return NoC_Coords(noc_id, "noc") end
-  diagrams[noc_id .."_TranslationCoords"] = function() return NoC_Coords(noc_id, "translation") end
 end
 local function do_diagram(which)
   local fn = diagrams[which] or error("Unknown diagram ".. which)

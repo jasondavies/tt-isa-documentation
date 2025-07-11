@@ -22,7 +22,7 @@ NIUs support a coordinate translation feature. When this feature is enabled, the
 * On products where one or two rows of Tensix tiles have been harvested (fused off) for yield reasons, renumber rows so that harvested rows are always at the end
 * Still allow software to use raw NoC coordinates if it wants to
 
-(*) Except when performing broadcasts, where StartX ↔ EndX need to be swapped by software, and likewise StartY ↔ EndY need to be swapped. This is because coordinate translation does not change the direction of data flow.
+> (*) Except when performing broadcasts, where StartX ↔ EndX need to be swapped by software, and likewise StartY ↔ EndY need to be swapped. This is because coordinate translation does not change the direction of data flow.
 
 The firmware-configured translation table for the X axis is:
 

@@ -10,8 +10,9 @@ The typical software stack for these architectures, from highest level to lowest
 
 The material in this repository is intended for software developers writing code at, or below, the level of TT-LLK.
 
-At the moment, only one architecture is covered in this repository:
+At the moment, two architectures are covered in this repository:
 * [Wormhole B0](WormholeB0/README.md) - The version of Wormhole shipped to customers (n150s / n150d / n300s / n300d / Wormhole Galaxy).
+* [Blackhole A0](BlackholeA0/README.md) - The version of Blackhole shipped to customers (p100 / p150).
 
 -----
 
