@@ -1,6 +1,6 @@
 # `UNPACR` (Move datums from L1 to `SrcA` or `SrcB` or `Dst`)
 
-**Summary:**
+**Summary:** Issue work to one unpacker, moving some number of datums from L1 to [`SrcA` or `SrcB`](SrcASrcB.md) or [`Dst`](Dst.md).
 
 **Backend execution unit:** [Unpackers](Unpackers/README.md)
 

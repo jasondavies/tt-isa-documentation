@@ -1,5 +1,7 @@
 # `UNPACR_NOP` (Set `SrcA` or `SrcB` to zero, sequenced with UNPACR)
 
+**Summary:** Similar to a [`ZEROSRC`](ZEROSRC.md) instruction, but sequenced after previous instructions to the same unpacker.
+
 **Backend execution unit:** [Unpackers](Unpackers/README.md)
 
 ## Syntax

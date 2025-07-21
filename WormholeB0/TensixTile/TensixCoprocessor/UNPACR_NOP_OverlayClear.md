@@ -1,5 +1,7 @@
 # `UNPACR_NOP` (MMIO register write to Overlay `STREAM_MSG_DATA_CLEAR_REG_INDEX`, sequenced with UNPACR)
 
+**Summary:** Like [`UNPACR_NOP` (MMIO register write sequenced with UNPACR)](UNPACR_NOP_SETREG.md), but for writing to very specific NoC Overlay registers.
+
 **Backend execution unit:** [Unpackers](Unpackers/README.md)
 
 ## Syntax

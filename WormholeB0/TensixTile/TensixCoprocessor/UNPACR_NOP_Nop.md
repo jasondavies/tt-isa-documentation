@@ -1,5 +1,7 @@
 # `UNPACR_NOP` (Occupy Unpacker for one cycle)
 
+**Summary:** Does nothing other than occupying an unpacker for one cycle.
+
 **Backend execution unit:** [Unpackers](Unpackers/README.md)
 
 ## Syntax

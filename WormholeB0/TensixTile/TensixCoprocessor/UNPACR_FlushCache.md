@@ -1,6 +1,6 @@
 # `UNPACR` (Flush unpacker decompression row start cache)
 
-**Summary:**
+**Summary:** Flush the cache which unpacker input address generators use for determining the byte-level start/end points within compressed data. Software might need to use this between [`UNPACR` (Move datums from L1 to `SrcA` or `SrcB` or `Dst`)](UNPACR_Regular.md) instructions if performing decompression as part of unpacking, and it is rapidly reusing the memory containing compressed data.
 
 **Backend execution unit:** [Unpackers](Unpackers/README.md)
 

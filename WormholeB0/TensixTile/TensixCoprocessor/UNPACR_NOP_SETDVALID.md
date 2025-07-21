@@ -1,5 +1,7 @@
 # `UNPACR_NOP` (Give `SrcA` or `SrcB` banks to Matrix Unit, sequenced with UNPACR)
 
+**Summary:** Similar to a [`SETDVALID`](SETDVALID.md) instruction, but sequenced after previous instructions to the same unpacker.
+
 **Backend execution unit:** [Unpackers](Unpackers/README.md)
 
 ## Syntax
@@ -25,3 +27,7 @@ if (WhichUnpacker == 0) {
   Unpackers[1].SrcRow[CurrentThread] = ThreadConfig[CurrentThread].SRCB_SET_Base << 4;
 }
 ```
+
+## Instruction scheduling
+
+This instruction does not automatically wait at the Wait Gate to ensure that `AllowedClient == SrcClient::Unpackers`, so unless sequenced after an [`UNPACR` (Move datums from L1 to `SrcA` or `SrcB` or `Dst`)](UNPACR_Regular.md) or [`UNPACR_NOP` (Set `SrcA` or `SrcB` to zero, sequenced with UNPACR)](UNPACR_NOP_ZEROSRC.md) instruction which performs the desired wait, software may wish to use [`STALLWAIT`](STALLWAIT.md) (with block bit B3 and condition code C10 or C11) prior to `UNPACR_NOP`.

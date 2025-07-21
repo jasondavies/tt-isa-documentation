@@ -1,6 +1,6 @@
 # `UNPACR` (Increment context counter)
 
-**Summary:**
+**Summary:** When in `MultiContextMode`, [`UNPACR` (Move datums from L1 to `SrcA` or `SrcB` or `Dst`)](UNPACR_Regular.md) can use a counter to quickly switch between multiple distinct sets of configuration. This instruction increments said counter.
 
 **Backend execution unit:** [Unpackers](Unpackers/README.md)
 
