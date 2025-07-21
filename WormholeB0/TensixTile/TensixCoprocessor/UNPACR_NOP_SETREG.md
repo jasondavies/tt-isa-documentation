@@ -2,7 +2,7 @@
 
 **Summary:** Once previous `UNPACR` instructions have finished their L1 reads, perform a 32-bit memory write within a small window of the MMIO address space.
 
-**Backend execution unit:** Unpackers
+**Backend execution unit:** [Unpackers](Unpackers/README.md)
 
 ## Syntax
 

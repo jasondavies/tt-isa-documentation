@@ -45,7 +45,7 @@ At the end of each frontend is the Wait Gate, which controls flow of instruction
 
 Once instructions pass through the Wait Gate in the frontend, they'll be dispatched to one of nine different backend execution units:
 1. [Sync Unit](SyncUnit.md)
-2. Unpackers
+2. [Unpackers](Unpackers/README.md)
 3. [Matrix Unit (FPU)](MatrixUnit.md)
 4. [Packers](Packers/README.md)
 5. [Vector Unit (SFPU)](VectorUnit.md)

@@ -32,4 +32,4 @@ Compression can be performed during packing; see `PerformingCompression` and `Ro
 
 ## Decompressing during unpacking
 
-Unpackers can consume the format described on this page.
+Unpackers can consume the format described on this page; see [unpacker decompression](../Unpackers/README.md#decompression) for details.
