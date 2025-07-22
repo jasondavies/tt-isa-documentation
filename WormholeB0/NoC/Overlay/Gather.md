@@ -82,7 +82,7 @@ This register is present in the receiving stream.
 |First&nbsp;bit|#&nbsp;Bits|Name|Purpose|
 |--:|--:|---|---|
 |0|16|`MSG_LOCAL_STREAM_CLEAR_NUM`|After selecting a group to receive from, the number of messages to receive from each stream within the group before choosing a new group to receive from.|
-|16|1|`MSG_GROUP_STREAM_CLEAR_TYPE`|Controls the loop order within `ReceiveFromGroup`, which has an effect both of `MSG_ARB_GROUP_SIZE` and `MSG_LOCAL_STREAM_CLEAR_NUM` are greater than one.|
+|16|1|`MSG_GROUP_STREAM_CLEAR_TYPE`|Controls the loop order within `ReceiveFromGroup`, which has an effect if both of `MSG_ARB_GROUP_SIZE` and `MSG_LOCAL_STREAM_CLEAR_NUM` are greater than one.|
 |17|15|Reserved|Writes ignored, reads as zero|
 
 The functional model of `ReceiveFromGroup` is then:
