@@ -31,7 +31,7 @@ All three diagrams should be considered in unison to see the full scope of how t
 There are three copies of the frontend - one per thread. Each copy of the frontend has three major stages:
 1. [The MOP Expander](MOPExpander.md)
 2. [The Replay Expander](REPLAY.md)
-3. The Wait Gate
+3. [The Wait Gate](WaitGate.md)
 
 The frontend is strictly in-order; instructions leave the frontend in the same order as RISCV cores push them into the frontend, and no re-ordering happens as instructions flow through the frontend. Once an instruction passes through the Wait Gate and enters a backend execution unit, re-ordering can start to occur, as all the backend units are processing in parallel, and each one can take a different number of cycles to process a given instruction. Software should use the Wait Gate to ensure that undesirable re-ordering does not happen.
 
