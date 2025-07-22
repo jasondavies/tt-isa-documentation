@@ -6,7 +6,7 @@ Each Tensix tile contains:
   * [2x NoC connections](../NoC/README.md) allowing the local RISCV cores to access data in other tiles, and allowing other tiles to access data from this tile
   * [1x NoC overlay](../NoC/Overlay/README.md) - a little coprocessor that can assist with NoC transactions
   * [1x Tensix coprocessor](TensixCoprocessor/README.md) - a big AI coprocessor, itself containing:
-    * 2x Unpacker, for moving data from L1 into the coprocessor
+    * [2x Unpacker](TensixCoprocessor/Unpackers/README.md), for moving data from L1 into the coprocessor
     * [1x Matrix Unit (FPU)](TensixCoprocessor/MatrixUnit.md), for performing low precision matrix multiply-accumulate operations and some other matrix operations
     * [1x Vector Unit (SFPU)](TensixCoprocessor/VectorUnit.md), for performing 32-wide SIMD operations on 32-bit lanes, including FP32 multiply-accumulate operations
     * [1x Scalar Unit (ThCon)](TensixCoprocessor/ScalarUnit.md), for performing integer scalar operations and 128-bit memory operations against L1 (including atomics)
