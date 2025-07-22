@@ -66,7 +66,7 @@ In this mode, PCI Express ordering rules are followed, as are AXI ordering rules
 
 In this mode, most PCI Express ordering rules are followed, except that writes can reorder or interleave with other writes after they've passed through the NIU in the PCI Express tile. If the `static_vc` flag is set on the TLB, then ordering is maintained all the way through to the NIU in the recipient tile, and the recipient NIU will maintain ordering for each individual byte address. Two caveats remain:
 1. If the TLB is subsequently reconfigured to point at different target tile(s), writes from before the reconfiguration can still reorder with writes from after the reconfiguration, as `static_vc` can only enforce ordering when the path remains the same. Note that this risk only applies to packets once they are on the NoC; the reconfiguration process itself is safe (i.e. writes from before the reconfiguration will use the old configuration, and writes from after the reconfiguration will use the new configuration).
-2. The recipient NIU goes not guarantee to _always_ maintain ordering between writes to different addresses. See [NoC Ordering](../NoC/Ordering.md#ordering-properties-of-two-packets) for a description of the provided guarantees.
+2. The recipient NIU does not guarantee to _always_ maintain ordering between writes to different addresses. See [NoC Ordering](../NoC/Ordering.md#ordering-properties-of-two-packets) for a description of the provided guarantees.
 
 ### Posted Writes
 
