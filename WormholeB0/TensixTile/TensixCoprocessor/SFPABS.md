@@ -24,7 +24,7 @@ if (VD < 8 || VD == 16) {
       if (x >= 0x80000000u) {
         // Sign bit is set, i.e. value is negative.
         if (Mod1 & SFPABS_MOD1_FLOAT) {
-          if (x >= 0xff800000u) {
+          if (x > 0xff800000u) {
             // Value is -NaN; leave it as -NaN.
           } else {
             // Clear the sign bit, i.e. floating-point negation.
