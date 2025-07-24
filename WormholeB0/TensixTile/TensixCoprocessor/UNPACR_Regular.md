@@ -231,8 +231,8 @@ if (WhichUnpacker == 0) {
 auto& ADC_Out = ADCs[CurrentThread].Unpacker[WhichUnpacker].Channel[1];
 unsigned OutAddr = ConfigState.UNP[WhichUnpacker].ADDR_BASE_REG_1_Base
      + ADC_Out.Y * ConfigState.UNP[WhichUnpacker].ADDR_CTRL_XY_REG_1_Ystride
-     + ADC_Out.Z * ConfigState.UNP[WhichUnpacker].ADDR_CTRL_XY_REG_1_Zstride
-     + ADC_Out.W * ConfigState.UNP[WhichUnpacker].ADDR_CTRL_XY_REG_1_Wstride;
+     + ADC_Out.Z * ConfigState.UNP[WhichUnpacker].ADDR_CTRL_ZW_REG_1_Zstride
+     + ADC_Out.W * ConfigState.UNP[WhichUnpacker].ADDR_CTRL_ZW_REG_1_Wstride;
 if (OutDataFormat in {FP32, TF32, INT32}) {
   if (OutAddr & 3) UndefinedBehaviour();
   OutAddr >>= 2;
