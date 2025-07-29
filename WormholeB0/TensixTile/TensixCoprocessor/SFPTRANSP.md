@@ -3,7 +3,7 @@
 **Summary:** Viewing each vector register as a 4x8 grid of lanes, a group of four registers is stacked vertically to form a 16x8 grid, then a transpose is performed within each column: the 16 values in the column are reshaped to 4x4, transposed, then reshaped back. This is applied to `LReg[0:4]` and also to `LReg[4:8]`.
 
 > [!CAUTION]
-> This instruction is _not_ performing a transpose on a 4x8 grid, nor is it stacking two registers to form an 8x8 grid and then transposing that. Instead, it stacks four registers and then the data movement is purely column-wise. The "transpose" part of the name comes from viewing each column of 16 values as a 4x4 matrix and transposing _that_.
+> This instruction is _not_ performing a transpose on a 4x8 grid, nor is it stacking two registers to form an 8x8 grid and then transposing that. Instead, it stacks four registers and then the data movement is purely column-wise. The "transpose" part of the name comes from viewing each column of 16 values as a 4x4 matrix and transposing _that_. Alternatively, the stacked registers can be viewed as a 3D tensor of shape 4x4x8, with the instruction swapping the axes whose length is 4 (i.e. transposing the _leftmost_ two axes of that tensor, not the rightmost two as might be expected).
 
 **Backend execution unit:** [Vector Unit (SFPU)](VectorUnit.md), simple sub-unit
 
