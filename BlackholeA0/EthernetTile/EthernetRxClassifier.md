@@ -67,8 +67,8 @@ If an arbitrary EtherType or length is matched, then a tiny remapping step is pe
 * Otherwise, if the EtherType or length exactly equals the low 16 bits of `USER_DEFINED_ETHERTYPE[1]`, replace it with the high 16 bits of `USER_DEFINED_ETHERTYPE[1]`.
 
 The next part of the stage is extracting an S-Tag and a C-Tag:
-* If the EtherType or length exactly equals the low 16 bits of `USER_DEFINED_VLAN_TAG[0]`, and that register specifies to perform tag replacement, the S-Tag comes from `USER_DEFINED_STAG[0]` and the C-Tag comes fom `USER_DEFINED_CTAG[0]`.
-* Otherwise, if the EtherType or length exactly equals the low 16 bits of `USER_DEFINED_VLAN_TAG[1]`, and that register specifies to perform tag replacement, the S-Tag comes from `USER_DEFINED_STAG[1]` and the C-Tag comes fom `USER_DEFINED_CTAG[1]`.
+* If the EtherType or length exactly equals the low 16 bits of `USER_DEFINED_VLAN_TAG[0]`, and that register specifies to perform tag replacement, the S-Tag comes from `USER_DEFINED_STAG[0]` and the C-Tag comes from `USER_DEFINED_CTAG[0]`.
+* Otherwise, if the EtherType or length exactly equals the low 16 bits of `USER_DEFINED_VLAN_TAG[1]`, and that register specifies to perform tag replacement, the S-Tag comes from `USER_DEFINED_STAG[1]` and the C-Tag comes from `USER_DEFINED_CTAG[1]`.
 * Otherwise, the S-Tag is the recognised IEEE 802.1ad VLAN tag (if any) and the C-Tag is the recognised IEEE 802.1Q VLAN tag (if any).
 
 > [!IMPORTANT]
