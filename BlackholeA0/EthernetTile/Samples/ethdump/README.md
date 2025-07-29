@@ -56,7 +56,7 @@ Two major pieces of memory are allocated on the host and then pinned to make the
 * Host metadata buffer (64 bytes)
 
 The device's [Ethernet RX subsystem](../../EthernetTxRx.md) is configured to write all packets to the on-device receive ring. This ring is slightly awkward to work with, as:
-* Its size is limited by the size of the Ethernet tile's L1. This is 512 KiB, but some of that L1 needs be used to store RISCV machine code, so the largest possible power of two size is 256 KiB (the _RX subsystem_ doesn't require a power of two ring size, but requiring it makes `ethdump` simpler).
+* Its size is limited by the size of the Ethernet tile's L1. This is 512 KiB, but some of that L1 needs to be used to store RISCV machine code, so the largest possible power of two size is 256 KiB (the _RX subsystem_ doesn't require a power of two ring size, but requiring it makes `ethdump` simpler).
 * The RX subsystem doesn't _directly_ say how much of the ring contains valid data; this needs to be inferred by computing `ETH_RXQ_BUF_PTR - ETH_RXQ_OUTSTANDING_WR_CNT * 96`, and this computation isn't monotonic (e.g. as a write of 64 bytes is started, `ETH_RXQ_BUF_PTR` increases by 64 and `ETH_RXQ_OUTSTANDING_WR_CNT` increases by 1, so the computed value _decreases_ by 32). As a workaround, the on-device code restores monotonicity by keeping track of a high watermark.
 * If the ring _isn't_ configured to wrap, then we won't be able to receive more than the ring size in total. On the other hand, if the ring _is_ configured to wrap, the device might overwrite data before we've consumed it. As a workaround, the on-device code:
   * Enables wrap mode as the write pointer approaches the end of the ring.
