@@ -35,7 +35,7 @@ $ gcc -O2 ethdump.c -o ethdump && ./ethdump --device=0 --hwinfo
 * Have multiple Tenstorrent devices? Use `--device=N` to choose which one gets used.
 * Don't know which Ethernet tiles are which? `--hwinfo` will give you some information.
 * Want to choose which Ethernet tile to record from? `--ethernet-x=X` is the answer (where `X` is either a [NoC #0 X coordinate](../../../NoC/Coordinates.md) or logical X coordinate).
-* Don't have any other devices to connect to? Run with `--loopback-mode=2` to put the tile into loopback mode (and sometime later run with `--loopback-mode=0` to disable lookback mode). Then add `--generate-traffic` to ensure some packets are transmitted.
+* Don't have any other devices to connect to? Run with `--loopback-mode=2` to put the tile into loopback mode (and sometime later run with `--loopback-mode=0` to disable loopback mode). Then add `--generate-traffic` to ensure some packets are transmitted.
 * Want to change the output file? `--output=FILENAME.pcap`.
 * Not seeing any terminal output? No news is good news; output is only printed upon error or upon termination.
 * Need to terminate the program? CTRL+C (or anything else to cause a SIGINT)
