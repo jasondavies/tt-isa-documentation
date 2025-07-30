@@ -71,7 +71,3 @@ The `B` Extension for Bit Manipulation, Version 1.0.0, is comprised of "Zba" and
 * "Zbkx" (crossbar permutations): not implemented.
 
 The `B` Extension for Bit Manipulation, Version 1.0.0, does _not_ specify a `grevi` instruction. Such an instruction was present in draft versions of the standard (such as Bitmanip 0.94-draft), but did not make it to version 1.0.0 of the standard; the babies implement it as per the draft version. It provides a superset of the functionality of `rev8` and `brev8`. For the avoidance of doubt, there are some other instructions which didn't make it to version 1.0.0 of the standard, but `grevi` is the only such instruction implemented by the babies.
-
-## Floating Point
-
-TODO
