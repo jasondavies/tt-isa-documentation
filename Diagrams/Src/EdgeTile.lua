@@ -128,7 +128,7 @@ local function CDC(out, left, x, y, right)
   end
 end
 
-local function PCIe(direction)
+local function PCIe(direction, arch)
   local out = buffer.new()
   local nul = buffer.new()
   local dims = {w = 790, h = 535}
@@ -138,7 +138,7 @@ local function PCIe(direction)
   local nius, tiles, cdc_x = NIUs(out, nil, 85, 2, direction == "H2D" and "->" or "<-", "P")
 
   local mux_pad = 15
-  local mux = Drawing.Mux(out, {right = nius[1].x - 100, w = 10, y = nius[1].y_middle - mux_pad, bottom = nius.last.y_middle + mux_pad}, "<")
+  local mux = Drawing.Mux((arch == "BH" and direction == "H2D") and nul or out, {right = nius[1].x - 100, w = 10, y = nius[1].y_middle - mux_pad, bottom = nius.last.y_middle + mux_pad}, "<")
   for _, niu in ipairs(nius) do
     if direction == "H2D" then
       Drawing.ThickArrow(out, mux.right + 0.5, niu.y_middle, "->", niu.x - 1, niu.y_middle, "black", 1)
@@ -164,7 +164,7 @@ local function PCIe(direction)
     Drawing.MultiLineWithGaps(out, data)
   end
 
-  local tlbs = Drawing.RectText(out, {right = mux.x - 20, y_middle = mux.y_middle, w = 100, h = 55, color = xu_color}, {"Configurable", "TLBs"})
+  local tlbs = Drawing.RectText(out, {right = mux.x - 20, y_middle = mux.y_middle, w = 100, h = 55, color = xu_color}, {"Configurable", "TLBs" .. (arch == "BH" and ", H→N" or "")})
   Drawing.ThickArrow(out, tlbs.right + 0.5, tlbs.y_middle, "->", mux.x - 1, tlbs.y_middle, "black", 1)
 
   local apb0 = Drawing.RectText(out, {x = tlbs.x, y = tlbs.bottom + 20, w = 55, h = 55, color = xu_color}, {"AXI /", "/ APB"})
@@ -192,7 +192,12 @@ local function PCIe(direction)
     "<", 0,
     color = cdc_color, stroke_width = 3, head = false,
   })
-  CDC(out, "PCI Express Clock", pcie_ctrl.x_middle, pcie_ctrl.y - 25, "AXI Clock")
+  if arch == "BH" and direction == "H2D" then
+    CDC(out, "AXI Clock", pcie_ctrl.x_middle, pcie_ctrl.y - 70, nil)
+    CDC(out, "PCI Express Clock", pcie_ctrl.x_middle, pcie_ctrl.y - 25, nil)
+  else
+    CDC(out, "PCI Express Clock", pcie_ctrl.x_middle, pcie_ctrl.y - 25, "AXI Clock")
+  end
   if direction == "H2D" then
     CDC(out, "PCI Express Clock", pcie_ctrl.x_middle, pcie_ctrl.bottom + 25, "AXI Clock")
   end
@@ -216,6 +221,13 @@ local function PCIe(direction)
     Drawing.ThickArrow(out, iatu.right + 0.5, iatu.y_middle, "->", mux2.x - 1, iatu.y_middle, "black", 1)
     local x = math.floor((dma.right + iatu.right) * 0.5 + 0.5)
     Drawing.ThickArrow(out, x, dma.y - 0.5, "--", x, iatu.y_middle, "black", 1)
+
+    if arch == "BH" then
+      local msi = Drawing.RectText(out, {right = tlbs.right, x = pcie_ctrl.right - 70, bottom = tlbs.y - 20, h = 40, color = xu_color}, {"Interrupt Receiver (RP only)"})
+      Drawing.MultiLine(out, {(msi.x + pcie_ctrl.right) * 0.5, pcie_ctrl.y - 1, "^", msi.bottom + 2})
+      Drawing.ThickArrow(out, msi.right + 0.5, msi.y_middle, "->", mux.x - 1, msi.y_middle, "black", 1)
+      Drawing.Mux(out, {x = mux.x, w = mux.w, y = msi.y_middle - mux_pad - mux.w * 0.5, bottom = mux.bottom}, "<")
+    end
   else
     local x = pcie_ctrl.x - 32
     Drawing.ThickArrow(out, x, iatu.y_middle, "->", pcie_ctrl.x - 1, iatu.y_middle, resp_color, 1)
@@ -236,15 +248,41 @@ local function PCIe(direction)
 
     mux2 = Drawing.Mux(out, {x = apb0.right + 20, w = 10, y = mux.y_middle - mux_pad, bottom = oatu.y_middle + mux_pad + 5}, "<")
 
-    Drawing.ThickArrow(out, mux2.right + 1, mux.y_middle, "<-", mux.x - 0.5, mux.y_middle, "black", 1)
+    if arch ~= "BH" then
+      Drawing.ThickArrow(out, mux2.right + 1, mux.y_middle, "<-", mux.x - 0.5, mux.y_middle, "black", 1)
+    end
     Drawing.ThickArrow(out, apb0.right + 1, apb0.y_middle, "<-", mux2.x - 0.5, apb0.y_middle, "black", 1)
     Drawing.ThickArrow(out, oatu.right + 1, oatu.y_middle, "<-", mux2.x - 0.5, oatu.y_middle, "black", 1)
 
     to_arc_x = 280
-    Drawing.MultiLine(out, {to_arc_x, to_arc_y1, "^", pcie_ctrl.bottom + 20, ">", mux2.right + 20, "^", mux2.bottom - mux_pad * 3, "<", mux2.right + 1, thick = 1})
+    if arch == "BH" then
+      local arc_tlbs = Drawing.RectText(out, {x = mux2.right + 20, bottom = mux2.bottom, w = 100, h = 55, color = xu_color}, {"Configurable", "TLBs, H←A"})
+      local noc_tlbs = Drawing.RectText(out, {x = mux2.right + 20, bottom = arc_tlbs.y - 20, w = 100, h = 55, color = xu_color}, {"Configurable", "TLBs, H←N"})
+      for _, tlb in ipairs{arc_tlbs, noc_tlbs} do
+        Drawing.ThickArrow(out, mux2.right + 1, tlb.y_middle, "<-", tlb.x - 0.5, tlb.y_middle, "black", 1)
+      end
+
+      apb1 = Drawing.RectText(out, {x = pcie_ctrl.right + 20, y = mux2.y + mux2.w * 0.5, w = 55, h = 55, color = xu_color}, {"APB /", "/ AXI"})
+      Drawing.ThickArrow(out, apb1.right + 1, apb1.y_middle, "<-", mux2.x - 0.5, apb1.y_middle, "black", 1)
+      local to_serdes_y = 30
+      Drawing.MultiLine(out, {apb1.x_middle, apb1.y - 1, "^", to_serdes_y})
+      out:putf([[<text x="%d" y="%d" text-anchor="middle" dominant-baseline="auto">To Serdes Configuration</text>]],
+        apb1.x_middle, to_serdes_y - 7)
+
+      Drawing.MultiLineWithGaps(out, {apb0.x_middle, apb0.bottom + 1, "v", oatu.y_middle - 5, " v", oatu.y_middle + 5, "v", pcie_ctrl.bottom - 5, ">", arc_tlbs.x_middle, "^", arc_tlbs.bottom + 2})
+      Drawing.MultiLine(out, {to_arc_x, to_arc_y1, "^", pcie_ctrl.bottom + 20, ">", arc_tlbs.right + 20, "^", arc_tlbs.y_middle, "<", arc_tlbs.right + 1, thick = 1})
+      Drawing.MultiLineWithGaps(out, {apb0.x_middle, apb0.y - 1, "^", noc_tlbs.y - ((pcie_ctrl.bottom - 5) - arc_tlbs.bottom), ">", mux2.x - 4, " >", mux2.right + 4, ">", noc_tlbs.x_middle, "v", noc_tlbs.y - 2})
+
+      Drawing.MultiLine(out, {mux.x, mux.y_middle, "<", mux.x - 20, "v", (mux.bottom + noc_tlbs.y) * 0.5, ">", noc_tlbs.right + 20, "v", noc_tlbs.y_middle, "<", noc_tlbs.right + 1, thick = 1})
+    else
+      Drawing.MultiLine(out, {to_arc_x, to_arc_y1, "^", pcie_ctrl.bottom + 20, ">", mux2.right + 20, "^", mux2.bottom - mux_pad * 3, "<", mux2.right + 1, thick = 1})
+    end
   end
-  out:putf([[<text x="%d" y="%d" text-anchor="middle" dominant-baseline="hanging">%s ARC</text>]],
-    to_arc_x, to_arc_y1 + 5, direction == "H2D" and "To" or "From")
+  if arch == "BH" then
+    to_arc_x = to_arc_x + 35 + (direction == "D2H" and 10 or 0)
+  end
+  out:putf([[<text x="%d" y="%d" text-anchor="middle" dominant-baseline="hanging">%s ARC%s</text>]],
+    to_arc_x, to_arc_y1 + 5, direction == "H2D" and "To" or "From", arch == "BH" and " (PCIe 1 only)" or "")
 
   out:putf"</svg>\n"
   return tostring(out)
@@ -476,5 +514,8 @@ end
 assert(io.open(own_dir .."../Out/EdgeTile_ARC_H2D.svg", "w")):write(ARC"H2D")
 assert(io.open(own_dir .."../Out/EdgeTile_ARC_D2H.svg", "w")):write(ARC"D2H")
 assert(io.open(own_dir .."../Out/EdgeTile_GDDR.svg", "w")):write(GDDR{})
-assert(io.open(own_dir .."../Out/EdgeTile_PCIe_H2D.svg", "w")):write(PCIe"H2D")
-assert(io.open(own_dir .."../Out/EdgeTile_PCIe_D2H.svg", "w")):write(PCIe"D2H")
+assert(io.open(own_dir .."../Out/EdgeTile_PCIe_H2D.svg", "w")):write(PCIe("H2D", "WH"))
+assert(io.open(own_dir .."../Out/EdgeTile_PCIe_D2H.svg", "w")):write(PCIe("D2H", "WH"))
+
+assert(io.open(own_dir .."../Out/EdgeTile_BH_PCIe_H2D.svg", "w")):write(PCIe("H2D", "BH"))
+assert(io.open(own_dir .."../Out/EdgeTile_BH_PCIe_D2H.svg", "w")):write(PCIe("D2H", "BH"))
