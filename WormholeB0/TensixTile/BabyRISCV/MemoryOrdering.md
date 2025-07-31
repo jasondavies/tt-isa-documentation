@@ -101,7 +101,7 @@ Variations on this example can be used to probe the capacity of the queues withi
 li t0, 0xFFEC0000 # TENSIX_MAILBOX0_BASE. When running on RISCV B, this is the B to B mailbox.
 li t1, 123
 lw t2, 0(t0) # Pop from mailbox - will end up popping 123 even though it hasn't been pushed yet!
-mov t3, t0
+mv t3, t0
 addi t3, t3, 0
 addi t3, t3, 0
 addi t3, t3, 0
