@@ -115,6 +115,8 @@ for (unsigned Lane = 0; Lane < 32; ++Lane) {
 ApplyPartialAddrMod(AddrMod);
 ```
 
+See [RWCs](RWCs.md) for the definition of `ApplyPartialAddrMod`.
+
 Supporting definitions:
 ```c
 #define MOD0_FMT_SRCB      0

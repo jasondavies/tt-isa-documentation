@@ -117,6 +117,8 @@ if (VD < 8) {
 ApplyPartialAddrMod(AddrMod);
 ```
 
+See [RWCs](RWCs.md) for the definition of `ApplyPartialAddrMod`.
+
 Supporting definitions:
 ```c
 #define MOD0_FMT_SRCB      0
