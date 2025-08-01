@@ -71,3 +71,11 @@ The `B` Extension for Bit Manipulation, Version 1.0.0, is comprised of "Zba" and
 * "Zbkx" (crossbar permutations): not implemented.
 
 The `B` Extension for Bit Manipulation, Version 1.0.0, does _not_ specify a `grevi` instruction. Such an instruction was present in draft versions of the standard (such as Bitmanip 0.94-draft), but did not make it to version 1.0.0 of the standard; the babies implement it as per the draft version. It provides a superset of the functionality of `rev8` and `brev8`. For the avoidance of doubt, there are some other instructions which didn't make it to version 1.0.0 of the standard, but `grevi` is the only such instruction implemented by the babies.
+
+## `V` Standard Extension for Vector Operations
+
+RISCV T2 has some, but not all, of `V` Standard Extension for Vector Operations, Version 1.0. See [camel-cdr's RVV benchmark](https://camel-cdr.github.io/rvv-bench-results/tt_t2/index.html) for performance measurements. Some high-level findings from that benchmark include:
+* Most vector instructions suffer from a false dependency bug on the destination register (as if the instruction was masked with undisturbed semantics). This is especially visible when LMUL is 8, as then the dependency is on the entire destination group.
+* Fractional LMUL suffers from a false dependency bug (as if LMUL was greater than one), meaning that careful register assignment is required to avoid poor performance when using fractional LMUL.
+* LMUL greater than one is handled by splitting an instruction into multiple micro-ops.
+* Some instructions are then split _again_ into one micro-op per element.
