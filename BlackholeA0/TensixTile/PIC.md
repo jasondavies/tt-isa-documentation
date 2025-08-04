@@ -25,14 +25,16 @@ The four hardware IRQs are:
 |Index|Raised by|
 |--:|---|
 |0|NoC Overlay when [`STREAM_BLOB_AUTO_CFG_DONE_REG_INDEX`](../NoC/Overlay/LoadConfigurationFromL1.md) non-zero|
-|1|NoC #0 NIU when any `NIU_MST_REQS_OUTSTANDING_ID(i)` counter changes from positive to zero (subject to appropriate NIU configuration)|
-|2|NoC #1 NIU when any `NIU_MST_REQS_OUTSTANDING_ID(i)` counter changes from positive to zero (subject to appropriate NIU configuration)|
+|1|NoC #0 NIU when any `NIU_MST_REQS_OUTSTANDING_ID(i)` counter changes from positive to zero ([subject to appropriate NIU configuration](../NoC/Interrupts.md))|
+|2|NoC #1 NIU when any `NIU_MST_REQS_OUTSTANDING_ID(i)` counter changes from positive to zero ([subject to appropriate NIU configuration](../NoC/Interrupts.md))|
 |3|The watchdog timer, when it hits zero, or the ECC scrubber, when it detects a bit flip (in both cases subject to appropriate configuration)|
 
 Each of these hardware IRQs has a 32-bit MMIO register associated with it:
 * Writing to the register has no effect.
-* If the IRQ is raised, reading from the register will return `1`, and atomically clear the IRQ at the same time.
+* If the IRQ is raised, reading from the register will return `1`.
 * If the IRQ is cleared, reading from the register will return `0`.
+
+Each hardware IRQ has a different way of clearing it, which will involve software addressing the underlying reason for the hardware IRQ having been raised.
 
 ## Memory Map
 
@@ -45,7 +47,7 @@ Each of these hardware IRQs has a 32-bit MMIO register associated with it:
 |`NCRISC_HW_INT_EN`|`0xFFB1_3010`|Read / write|Bitmask of enabled hardware IRQs for RISCV NC (i.e. which IRQs cause interrupts)|
 |`NCRISC_INT_NO`|`0xFFB1_3014`|Read only|If RISCV NC has been interrupted, the index of the software IRQ responsible for that, or 32 plus the index of the hardware IRQ responsible for that|
 |`SW_INT[i]`|<code>0xFFB1_3018&nbsp;+&nbsp;i*4</code><br/>(for `0 ≤ i < 32`)|Read / write|One 32-bit register per software IRQ, used to raise or query/clear the IRQ|
-|`HW_INT[i]`|<code>0xFFB1_3098&nbsp;+&nbsp;i*4</code><br/>(for `0 ≤ i < 4`)|Read only (but with side effects)|One 32-bit register per hardware IRQ, used to query/clear the IRQ|
+|`HW_INT[i]`|<code>0xFFB1_3098&nbsp;+&nbsp;i*4</code><br/>(for `0 ≤ i < 4`)|Read only|One 32-bit register per hardware IRQ, used to query the IRQ|
 |`SW_INT_PC[i]`|<code>0xFFB1_30A8&nbsp;+&nbsp;i*4</code><br/>(for `0 ≤ i < 32`)|Read / write|One 32-bit register per software IRQ, containing the `pc` of the interrupt handler|
 |`HW_INT_PC[i]`|<code>0xFFB1_3128&nbsp;+&nbsp;i*4</code><br/>(for `0 ≤ i < 4`)|Read / write|One 32-bit register per hardware IRQ, containing the `pc` of the interrupt handler|
 

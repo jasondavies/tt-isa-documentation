@@ -21,7 +21,8 @@ The high-level contents at this address are:
 |`NIU_BASE + 0x0064`|`0xFFB2_0064` to `0xFFB2_006B`|NIU request FIFO status|Read only|
 |`NIU_BASE + 0x0100`|`0xFFB2_0100` to `0xFFB2_017F`|[NIU and NoC router configuration](#niu-and-noc-router-configuration)|Read / write|
 |`NIU_BASE + 0x0200`|`0xFFB2_0200` to `0xFFB2_02FF`|[NIU counters](Counters.md)|Read only|
-|`NIU_BASE + 0x0300`|`0xFFB2_0300` to `0xFFB2_037F`|NoC router debug information|Read only|
+|`NIU_BASE + 0x0300`|`0xFFB2_0300` to `0xFFB2_0377`|NoC router debug information|Read only|
+|`NIU_BASE + 0x0378`|`0xFFB2_0378` to `0xFFB2_037F`|[NIU interrupt status](#interrupt-status)|Read only|
 |`NIU_BASE + 0x0380`|`0xFFB2_0380` to `0xFFB2_03FF`|NIU debug information|Read only|
 |`NIU_BASE + 0x0400`|`0xFFB2_0400` to `0xFFB2_04FF`|NIU security fence configuration|Read / write|
 |`NIU_BASE + 0x0500`|`0xFFB2_0500` to `0xFFB2_05FF`|NoC router per-port per-VC packet counters|Read only|
@@ -67,7 +68,7 @@ This field contains the request type and some commonly set request flags:
 |--:|--:|---|---|
 |0|2|Request type|`NOC_CMD_RD` (`0`) for read requests or read+accumulate requests<br/>`NOC_CMD_AT` (`1`) for atomic requests<br/>`NOC_CMD_WR` (`2`) for write requests or write+accumulate requests<br/>The value `3` is reserved and should not be used<br/><br/>:warning: `NOC_CMD_AT` requires that the request be destined for the L1 of a Tensix tile or Ethernet tile|
 |2|1|`NOC_CMD_WR_BE`|For write requests, `true` if `NOC_AT_LEN_BE` contains a byte-enable mask (and hence the write is at most 32 bytes), or `false` if `NOC_AT_LEN_BE` contains a length (and hence the write is between 1 and 16384 bytes); ignored for other types of request|
-|3|1|`NOC_CMD_WR_INLINE`|For write requests, `true` if `NOC_AT_DATA` contains the data to be written, `false` otherwise (in which case `NOC_TARG_ADDR` contains the address of the data in the initiator's address space); ignored for other types of request<br/><br/>:warning: `NOC_CMD_WR_INLINE` requires that the request be destined for a Tensix tile or an Ethernet tile|
+|3|1|`NOC_CMD_WR_INLINE`|For write requests, `true` if `NOC_AT_DATA` contains the data to be written, `false` otherwise (in which case `NOC_TARG_ADDR` contains the address of the data in the initiator's address space); ignored for other types of request<br/><br/>:warning: `NOC_CMD_WR_INLINE` requires that the request be destined for a Tensix tile or an Ethernet tile<br/><br/>:warning: Due to a hardware bug in Blackhole, `NOC_CMD_WR_INLINE` should not be used when the destination is an L1 address (it remains safe to use for MMIO addresses)|
 |4|1|`NOC_CMD_RESP_MARKED`|For write requests and atomic requests, `false` if the request is posted (i.e. a response / acknowledgement will not be sent), `true` otherwise (i.e. a response / acknowledgement is desired); ignored for read requests (they always generate a response)|
 |5|1|`NOC_CMD_BRCST_PACKET`|`false` if the request is unicast, `true` if the request is broadcast; should always be `false` for read requests|
 |6|1|`NOC_CMD_VC_LINKED`|`false` if the request is the sole request in a transaction or the final request in a multi-request transaction; `true` if the request is part of a multi-request transaction but is not the final request in the transaction. If this flag is used, then: <ul><li>The next request issued by the NIU will be part of the same transaction as the request with `NOC_CMD_VC_LINKED` set on it.</li><li>All requests in the transaction must be to the same destination tile, or for broadcast, to the same destination rectangle (and using the same value of `NOC_CMD_BRCST_XY`). Failure to comply with this requirement will lead to complete NoC failure.</li><li>The NIU will be unable to initiate requests on any virtual channel number other than the one used for the transaction. Attempting to initiate a request with an incompatible virtual channel number will cause virtual channel number assignment to continuously fail, leaving the NIU unable to initiate any requests.</li><li>All NoC routers along the path (or, for broadcast, the tree) taken by the request will not allow the chosen virtual channel numbers to be used by any other transactions until the last request in the transaction has finished passing through them.</li><li>The NoC Overlay in the tile will be unable to initiate any requests until the last request in the transaction has been initiated. The converse is true when the NoC Overlay is in the middle of a multi-request transaction: the regular NIU request initiators will be unable to initiate any requests.</li></ul>Given all this, if software initiates a request with `NOC_CMD_VC_LINKED` set to `true`, it is responsible for promptly completing the transaction by initiating a request with it set to `false`.|
@@ -136,7 +137,7 @@ The meaning of `NOC_AT_LEN_BE` differs depending on the request type:
 |Read request|Number of bytes to read from `NOC_TARG_ADDR` and write to `NOC_RET_ADDR`; the maximum allowed value for a single request is 16384 bytes when `NOC_TARG_ADDR` and `NOC_RET_ADDR` are both L1 addresses, whereas the only allowed value is 4 bytes when either is an MMIO address|
 |Write request with `NOC_CMD_WR_BE=false` and `NOC_CMD_WR_INLINE=false`|Number of bytes to read from the memory address within `NOC_TARG_ADDR` and write to `NOC_RET_ADDR`; the maximum allowed value for a single request is 16384 bytes when `NOC_TARG_ADDR` and `NOC_RET_ADDR` are both L1 addresses, whereas the only allowed value is 4 bytes when either is an MMIO address (†)|
 |Write request with `NOC_CMD_WR_BE=true` and `NOC_CMD_WR_INLINE=false`|When `NOC_RET_ADDR` is an L1 address: at most 64 bytes will be read from `NOC_TARG_ADDR &~ 0xf` and written to `NOC_RET_ADDR &~ 0xf`; `NOC_AT_LEN_BE` contains a mask of which bytes<br/>When `NOC_RET_ADDR` is an MMIO address (†): `NOC_AT_LEN_BE` is ignored; a 32-bit store to `NOC_RET_ADDR` will be performed|
-|Write request with `NOC_CMD_WR_INLINE=true`|When `NOC_TARG_ADDR` is an L1 address: at most 16 bytes will be written to `NOC_TARG_ADDR &~ 0xf`; each byte address `i` in this range will be written using byte `i & 3` of `NOC_AT_DATA` when either bit `i & 15` or bit `16 + (i & 15)` of `NOC_AT_LEN_BE` is set (and left unchanged when neither such bit is set) - for maximum performance, either the low 16 bits or the high 16 bits of `NOC_AT_LEN_BE` should be entirely zero<br/>When `NOC_TARG_ADDR` is an MMIO address (†): `NOC_AT_LEN_BE` is ignored; a 32-bit store of `NOC_AT_DATA` to `NOC_TARG_ADDR` will be performed|
+|Write request with `NOC_CMD_WR_INLINE=true`|When `NOC_TARG_ADDR` is an L1 address: due to a hardware bug in Blackhole, write requests with `NOC_CMD_WR_INLINE=true` to L1 addresses are not safe and should be avoided<br/>When `NOC_TARG_ADDR` is an MMIO address (†): `NOC_AT_LEN_BE` is ignored; a 32-bit store of `NOC_AT_DATA` to `NOC_TARG_ADDR` will be performed|
 
 > (†) A handful of MMIO addresses within the NoC Overlay address range are special: they sit within the address range normally used for MMIO, and are wired to MMIO logic rather than to plain SRAM, but up to 64 bytes can be written to them at once, and rules similar to those of L1 writes are used to determine the length of the write.
 
@@ -222,8 +223,8 @@ Each NIU has a handful of configuration registers in its memory map. Some of the
 |[`DDR_COORD_TRANSLATE_TABLE_0`](Coordinates.md#translation-algorithm)|`0xFFB2_0158`|160-bit lookup table (plus 2 extra bits), split across 6x 32-bit registers|
 |[`DDR_COORD_TRANSLATE_COL_SWAP`](Coordinates.md#translation-algorithm)|`0xFFB2_0170`|All 32 bits have particular purpose|
 |`DEBUG_COUNTER_RESET`|`0xFFB2_0174`||
-|`NIU_TRANS_COUNT_RTZ_CFG`|`0xFFB2_0178`||
-|`NIU_TRANS_COUNT_RTZ_CLR`|`0xFFB2_017C`||
+|[`NIU_TRANS_COUNT_RTZ_CFG`](#niu_trans_count_rtz_cfg)|`0xFFB2_0178`|17 non-contiguous bits have particular purpose|
+|[`NIU_TRANS_COUNT_RTZ_CLR`](#niu_trans_count_rtz_clr)|`0xFFB2_017C`|Zero bits of storage, writes instead clear bits of [`NIU_TRANS_COUNT_RTZ_SOURCE`](#niu_trans_count_rtz_source)|
 
 ### `NIU_CFG_0`
 
@@ -271,3 +272,45 @@ Any given NIU will use one bit out of the first twelve bits, based on its Y coor
 |12|20|Available for general use|
 
 Upon initial ASIC power-on, this register will contain the [X and Y coordinates](Coordinates.md) of the NIU, in NoC coordinate space (i.e. between `0` and `16` for X and between `0` and `11` for Y). When firmware configures the coordinate translation tables, firmware will also update this register to contain the preferred X and Y coordinates of the NIU [in translated space](Coordinates.md#coordinate-translation).
+
+### `NIU_TRANS_COUNT_RTZ_CFG`
+
+|First&nbsp;bit|#&nbsp;Bits|Name|Purpose|
+|--:|--:|---|---|
+|0|16|`NIU_TRANS_COUNT_RTZ_CFG_INT_ENABLE`|Bitmask of which [`NIU_TRANS_COUNT_RTZ_SOURCE`](#niu_trans_count_rtz_source) bits cause an IRQ (and hence, if enabled at the [PIC](../TensixTile/PIC.md), an interrupt). Bit `i` relates to bit `i` of `NIU_TRANS_COUNT_RTZ_SOURCE`, which relates to the `NIU_MST_REQS_OUTSTANDING_ID(i)` [counter](Counters.md).|
+|16|12|Reserved|
+|28|1|`NIU_TRANS_COUNT_RTZ_CFG_RC_DISABLE`|Controls the semantics of reading from [`NIU_TRANS_COUNT_RTZ_NUM`](#niu_trans_count_rtz_num).|
+|29|3|Reserved|
+
+### `NIU_TRANS_COUNT_RTZ_CLR`
+
+Writing the value `X` to `NIU_TRANS_COUNT_RTZ_CLR` atomically performs `NIU_TRANS_COUNT_RTZ_SOURCE &= ~X`. In particular, software can clear [`NIU_TRANS_COUNT_RTZ_SOURCE`](#niu_trans_count_rtz_source) by reading from `NIU_TRANS_COUNT_RTZ_SOURCE` and then immediately writing the returned value to `NIU_TRANS_COUNT_RTZ_CLR`.
+
+Reading from `NIU_TRANS_COUNT_RTZ_CLR` always returns zero.
+
+## Interrupt status
+
+Two read-only registers in the memory map are useful for handling [NIU interrupts](Interrupts.md). They are closely related to the read/write [`NIU_TRANS_COUNT_RTZ_CFG`](#niu_trans_count_rtz_cfg) register and the write-only [`NIU_TRANS_COUNT_RTZ_CLR`](#niu_trans_count_rtz_clr) register which live together elsewhere in the memory map.
+
+|Name|Example Address|Purpose|
+|---|---|---|
+|[`NIU_TRANS_COUNT_RTZ_NUM`](#niu_trans_count_rtz_num)|`0xFFB2_0378`|Index of which counter caused an interrupt|
+|[`NIU_TRANS_COUNT_RTZ_SOURCE`](#niu_trans_count_rtz_source)|`0xFFB2_037C`|Bitmask of which `NIU_MST_REQS_OUTSTANDING_ID` [counters](Counters.md) have had a positive-to-zero transition (bits are sticky until explicitly cleared)|
+
+### `NIU_TRANS_COUNT_RTZ_SOURCE`
+
+Writing to `NIU_TRANS_COUNT_RTZ_SOURCE` has no effect. Instead, hardware will set bit `i` of `NIU_TRANS_COUNT_RTZ_SOURCE` whenever the `NIU_MST_REQS_OUTSTANDING_ID(i)` [counter](Counters.md) changes from positive to zero. Regardless of what subsequently happens to `NIU_MST_REQS_OUTSTANDING_ID(i)`, bit `i` will remain set until software clears it, which it can do by either:
+* Writing to [`NIU_TRANS_COUNT_RTZ_CLR`](#niu_trans_count_rtz_clr)
+* Reading from `NIU_TRANS_COUNT_RTZ_NUM` (when the `NIU_TRANS_COUNT_RTZ_CFG_RC_DISABLE` bit of [`NIU_TRANS_COUNT_RTZ_CFG`](#niu_trans_count_rtz_cfg) is clear)
+
+If `NIU_TRANS_COUNT_RTZ_SOURCE & NIU_TRANS_COUNT_RTZ_CFG_INT_ENABLE` is non-zero, the [PIC](../TensixTile/PIC.md)'s NoC NIU IRQ will be raised. See [NIU Interrupts](Interrupts.md) for a step-by-step walkthrough of setting this up.
+
+### `NIU_TRANS_COUNT_RTZ_NUM`
+
+If `NIU_TRANS_COUNT_RTZ_SOURCE & NIU_TRANS_COUNT_RTZ_CFG_INT_ENABLE` is non-zero, reading from `NIU_TRANS_COUNT_RTZ_NUM` will return the index of one of the bits set in that value. Otherwise, reading from `NIU_TRANS_COUNT_RTZ_NUM` will return zero.
+
+Reading from `NIU_TRANS_COUNT_RTZ_NUM` triggers an additional side effect:
+* If the `NIU_TRANS_COUNT_RTZ_CFG_RC_DISABLE` bit of [`NIU_TRANS_COUNT_RTZ_CFG`](#niu_trans_count_rtz_cfg) is clear: the bit in [`NIU_TRANS_COUNT_RTZ_SOURCE`](#niu_trans_count_rtz_source) corresponding to the returned value will be cleared.
+* If the `NIU_TRANS_COUNT_RTZ_CFG_RC_DISABLE` bit of [`NIU_TRANS_COUNT_RTZ_CFG`](#niu_trans_count_rtz_cfg) is set: the bit in [`NIU_TRANS_COUNT_RTZ_SOURCE`](#niu_trans_count_rtz_source) corresponding to the returned value will be left unchanged, but the next read from `NIU_TRANS_COUNT_RTZ_NUM` might return a different bit index.
+
+Writing to `NIU_TRANS_COUNT_RTZ_NUM` has no effect.
