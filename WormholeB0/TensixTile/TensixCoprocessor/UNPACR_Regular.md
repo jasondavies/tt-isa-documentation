@@ -203,9 +203,9 @@ InAddr_Deltas = WrapAddr(InAddr_Deltas);
 
 bool DiscontiguousInputRows = ConfigState.THCON_SEC[WhichUnpacker].Tileize_mode;
 if (DiscontiguousInputRows) {
-  RowStride = (ConfigState.UNP[WhichUnpacker].Shift_amount_cntx[0] <<  4)
-            | (ConfigState.UNP[WhichUnpacker].Shift_amount_cntx[1] <<  8)
-            | (ConfigState.UNP[WhichUnpacker].Shift_amount_cntx[2] << 12);
+  RowStride = (ConfigState.THCON_SEC[WhichUnpacker].Shift_amount_cntx[0] <<  4)
+            | (ConfigState.THCON_SEC[WhichUnpacker].Shift_amount_cntx[1] <<  8)
+            | (ConfigState.THCON_SEC[WhichUnpacker].Shift_amount_cntx[2] << 12);
   // Note that each Shift_amount_cntx is a 4-bit field, so there's 12 bits of
   // precision here, and therefore the maximum RowStride is 65520 bytes.
 } else {
@@ -255,7 +255,7 @@ uint4_t ColShift;
 if (DiscontiguousInputRows || WhichUnpacker == 1) {
   ColShift = 0;
 } else {
-  ColShift = ConfigState.UNP[WhichUnpacker].Shift_amount_cntx[WhichContext & 3];
+  ColShift = ConfigState.THCON_SEC[WhichUnpacker].Shift_amount_cntx[WhichContext & 3];
 }
 
 // Check that various settings are compatible with each other:
