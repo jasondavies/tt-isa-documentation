@@ -1340,7 +1340,7 @@ local diagrams = {
     return Bits32{
       {0, 2, "Ofs"},
       {2, 5, "IntWidth"},
-      {12, 3, "1"},
+      {12, 4, "1"},
     }
   end,
   NOC_AT_LEN_BE_CAS = function()
@@ -1348,26 +1348,47 @@ local diagrams = {
       {0, 2, "Ofs"},
       {2, 4, "CmpVal"},
       {6, 4, "SetVal"},
-      {12, 3, "4"},
+      {12, 4, "4"},
     }
   end,
   NOC_AT_LEN_BE_SwapMask = function()
     return Bits32{
       {2, 8, "Mask"},
-      {12, 3, "3"},
+      {12, 4, "3"},
     }
   end,
   NOC_AT_LEN_BE_SwapIndex6 = function()
     return Bits32{
       {0, 2, "Ofs"},
       {2, 1, "1"},
-      {12, 3, "6"},
+      {12, 4, "6"},
     }
   end,
   NOC_AT_LEN_BE_SwapIndex7 = function()
     return Bits32{
       {2, 2, "Ofs"},
-      {12, 3, "7"},
+      {12, 4, "7"},
+    }
+  end,
+  NOC_AT_LEN_BE_SwapIndex10 = function()
+    return Bits32{
+      {0, 2, "Ofs"},
+      {8, 4, "3"},
+      {12, 4, "0xA"},
+    }
+  end,
+  NOC_AT_LEN_BE_Zaamo = function()
+    return Bits32{
+      {0, 2, "Ofs"},
+      {8, 3, "Op"},
+      {11, 1, "1"},
+      {12, 4, "0xA"},
+    }
+  end,
+  NOC_AT_LEN_BE_Acc = function()
+    return Bits32{
+      {0, 4, "Fmt"},
+      {12, 4, "9"},
     }
   end,
 }
