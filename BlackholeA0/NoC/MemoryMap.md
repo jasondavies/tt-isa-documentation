@@ -54,7 +54,6 @@ Each NIU has four request initiators, starting at addresses `NIU_BASE + i * NOC_
 |`NOC_AT_LEN_BE_1`|`0xFFB2_0024`|High 32 bits of `NOC_AT_LEN_BE`, to form either a 64-bit length or a 64-bit byte-enable mask|
 |`NOC_AT_DATA`|`0xFFB2_0028`|For inline writes, and most types of atomics, contains the 32 bits of immediate data|
 |`NOC_BRCST_EXCLUDE`|`0xFFB2_002C`|For broadcast requests, additional configuration allowing for non-rectangular broadcasts|
-|`NOC_L1_ACC_AT_INSTRN`|`0xFFB2_0030`|Additional opcode and operands for read+accumulate or write+accumulate requests|
 |[`NOC_CMD_CTRL`](#noc_cmd_ctrl)|`0xFFB2_0040`|Writing `1` to the low bit indicates that software wishes to initiate a request using the fields of this initiator; hardware will transition the bit back to `0` once the request has been initiated|
 
 > [!WARNING]
@@ -66,7 +65,7 @@ This field contains the request type and some commonly set request flags:
 
 |First&nbsp;bit|#&nbsp;Bits|Name|Purpose|
 |--:|--:|---|---|
-|0|2|Request type|`NOC_CMD_RD` (`0`) for read requests or read+accumulate requests<br/>`NOC_CMD_AT` (`1`) for atomic requests<br/>`NOC_CMD_WR` (`2`) for write requests or write+accumulate requests<br/>The value `3` is reserved and should not be used<br/><br/>:warning: `NOC_CMD_AT` requires that the request be destined for the L1 of a Tensix tile or Ethernet tile|
+|0|2|Request type|`NOC_CMD_RD` (`0`) for read requests or read requests<br/>`NOC_CMD_AT` (`1`) for atomic requests<br/>`NOC_CMD_WR` (`2`) for write requests or write requests<br/>The value `3` is reserved and should not be used<br/><br/>:warning: `NOC_CMD_AT` requires that the request be destined for the L1 of a Tensix tile or Ethernet tile|
 |2|1|`NOC_CMD_WR_BE`|For write requests, `true` if `NOC_AT_LEN_BE` contains a byte-enable mask (and hence the write is at most 32 bytes), or `false` if `NOC_AT_LEN_BE` contains a length (and hence the write is between 1 and 16384 bytes); ignored for other types of request|
 |3|1|`NOC_CMD_WR_INLINE`|For write requests, `true` if `NOC_AT_DATA` contains the data to be written, `false` otherwise (in which case `NOC_TARG_ADDR` contains the address of the data in the initiator's address space); ignored for other types of request<br/><br/>:warning: `NOC_CMD_WR_INLINE` requires that the request be destined for a Tensix tile or an Ethernet tile<br/><br/>:warning: Due to a hardware bug in Blackhole, `NOC_CMD_WR_INLINE` should not be used when the destination is an L1 address (it remains safe to use for MMIO addresses)|
 |4|1|`NOC_CMD_RESP_MARKED`|For write requests and atomic requests, `false` if the request is posted (i.e. a response / acknowledgement will not be sent), `true` otherwise (i.e. a response / acknowledgement is desired); ignored for read requests (they always generate a response)|
@@ -82,7 +81,7 @@ This field contains the request type and some commonly set request flags:
 |17|1|`NOC_CMD_BRCST_SRC_INCLUDE`|When `NOC_CMD_BRCST_PACKET` is set and the initiating NIU is part of the recipient rectangle, `true` if the NIU should indeed be a recipient of the packet, or `false` if the initiating NIU should be excluded from the recipient rectangle; ignored in other cases|
 |18|9|Reserved|Software should always write `0` to these bits, but hardware might subsequently change them|
 |27|4|`NOC_CMD_ARB_PRIORITY`|When set to value `i`, if this request is at a router and contending for virtual channel number assignment against some other request, and that other request has priority `j`, then this request will always have priority if `0 < j < i`. When set to a value other than `0`, software is responsible for ensuring that its traffic patterns do not cause deadlocks|
-|31|1|`NOC_CMD_L1_ACC_AT_EN`|For read requests and write requests, `true` if the request's eventual L1 write should be an accumulate rather than a plain write<br/><br/>:warning: `NOC_CMD_L1_ACC_AT_EN` requires that the request's eventual write be destined for the L1 of a Tensix tile or Ethernet tile|
+|31|1|`NOC_CMD_L1_ACC_AT_EN`|For read requests and write requests, `true` if the request's eventual L1 write should be an atomic accumulate rather than a plain write<br/><br/>:warning: Due to a hardware bug, this functionality cannot be safely used, meaning that this bit should always be set to `false`|
 
 ### `NOC_TARG_ADDR` and `NOC_RET_ADDR`
 

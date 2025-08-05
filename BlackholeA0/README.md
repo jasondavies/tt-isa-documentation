@@ -7,9 +7,9 @@ Each Blackhole ASIC contains:
 * [14x Ethernet tile](EthernetTile/README.md), each one with bidirectional 400 GbE connectivity. Depending on the particular product, either 0 or 12 will be available, with the others fused off. A pair of Ethernet tiles is connected to each QSFP-DD port, and then these bidirectional 800 GbE ports are intended for connecting multiple ASICs together using QSFP-DD cables. On p150 boards, there are four QSFP-DD ports, meaning that 8 Ethernet tiles are connected; the remaining 4 Ethernet tiles are not connected to anything - they can still be used for their RISCVs and their L1, but they cannot be used to transmit or receive Ethernet packets.
 * [2x PCI Express tile](PCIExpressTile/README.md), for PCI Express 5.0 x16 connectivity with a host system. One of these tiles will be in use; the other will be permanently idle (at least in current products).
 * 1x ARC tile and 1x Security tile, for chip and board management purposes. Customers can mostly ignore these tiles, as they do not execute customer workloads, nor are they involved in dispatching customer workloads.
-* 2x NoC (Network on Chip), for communication between different tiles on the same ASIC.
+* [2x NoC (Network on Chip)](NoC/README.md), for communication between different tiles on the same ASIC.
 
-The NoCs connect the various tiles to form a 2D torus. The 2D torus is usually visualised as a 2D grid:
+The [NoCs](NoC/README.md) connect the various tiles to form a 2D torus. The 2D torus is usually visualised as a 2D grid:
 
 ![](../Diagrams/Out/NoC_BH_Layout.svg)
 

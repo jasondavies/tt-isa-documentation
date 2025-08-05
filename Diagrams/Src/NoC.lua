@@ -227,13 +227,13 @@ local function NoC(noc_id, args)
     if noc_id == 1 then
       plot_unicast_path(7, 8, 4, 2)
     else
-      plot_unicast_path(8, 10, 1, 2)
+      plot_unicast_path(8 + (arch == "bh" and 2 or 0), 10, 1, 2)
     end
     plot_unicast_path(1, 5, 1, 7, noc_id == 1)
     plot_unicast_path(3, 9, 5, 9, noc_id == 1)
   end
   if args.plot_broadcast then
-    plot_broadcast_path(2, 2, args.plot_broadcast, 3, 5, 7, 9)
+    plot_broadcast_path(2, 2, args.plot_broadcast, 3, 5, 7 + (arch == "bh" and 3 or 0), 9)
   end
 
   local noc_active_color = noc_color
