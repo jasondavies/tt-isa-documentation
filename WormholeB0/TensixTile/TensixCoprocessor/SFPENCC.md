@@ -20,7 +20,7 @@ TT_SFPENCC(/* u2 */ Imm2, 0, /* u4 */ VD, /* u4 */ Mod1)
 lanewise {
   if (VD < 12 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
     if (Mod1 & SFPENCC_MOD1_EI) {
-      UseLaneFlagsForLaneEnable = (Mod1 & SFPENCC_IMM12_E) != 0;
+      UseLaneFlagsForLaneEnable = (Imm2 & SFPENCC_IMM12_E) != 0;
     } else if (Mod1 & SFPENCC_MOD1_EC) {
       UseLaneFlagsForLaneEnable = !UseLaneFlagsForLaneEnable;
     } else {
@@ -28,7 +28,7 @@ lanewise {
     }
 
     if (Mod1 & SFPENCC_MOD1_RI) {
-      LaneFlags = (Mod1 & SFPENCC_IMM12_R) != 0;
+      LaneFlags = (Imm2 & SFPENCC_IMM12_R) != 0;
     } else {
       LaneFlags = true;
     }
