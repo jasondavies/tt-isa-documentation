@@ -254,14 +254,14 @@ end
 function MultiLineWithGaps(out, data)
   local x = data[1]
   local y = data[2]
-  local sub_data = {x, y}
+  local sub_data = {x, y, color = data.color}
   for i = 3, #data, 2 do
     local cmd = data[i]
     local val = data[i + 1]
     if cmd:sub(1, 1) == " " then
       sub_data.head = false
       MultiLine(out, sub_data)
-      sub_data = {}
+      sub_data = {color = data.color}
       cmd = cmd:sub(2, 2)
     end
     if cmd == ">" or cmd == "<" then

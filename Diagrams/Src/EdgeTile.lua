@@ -14,6 +14,7 @@ local Drawing = require"Drawing"
 local tile_colors = {
   P = "#ffd3e2",
   A = "#f2fad3",
+  C = "#d2fad2",
   D = "#d6fff8",
 }
 local cdc_color0 = "#A0A0A0"
@@ -511,6 +512,148 @@ local function GDDR()
   return tostring(out)
 end
 
+local function L2CPU(direction)
+  local out = buffer.new()
+  local nul = buffer.new()
+  local dims = {w = 790, h = 715}
+  out:putf([[<svg version="1.1" width="%u" height="%u" xmlns="http://www.w3.org/2000/svg">]], dims.w, dims.h)
+  out:putf([[<rect width="%u" height="%u" rx="15" stroke="transparent" fill="white"/>]], dims.w, dims.h)
+
+  local tl_color = "#6889E9"
+
+  local function Hart(hart_i)
+    local y0 = 40 + 160 * hart_i
+    local x280 = Drawing.RectText(out, {x = 5.5, y = y0, w = 60, h = 140, color = xu_color}, {"x280", "Hart ".. hart_i})
+    local l1d = Drawing.RectText(out, {x = x280.right + 20, y = x280.y, w = 62, h = 50, color = data_color}, {"L1 D$", "32 KiB"})
+    local l1i = Drawing.RectText(out, {x = l1d.x, y = l1d.bottom + 10, w = l1d.w, h = l1d.h, color = data_color}, {"L1 I$", "32 KiB"})
+    local mmu = Drawing.RectText(out, {x = l1d.right + 20, y = x280.y, w = 58, h = x280.h, color = xu_color}, {"MMU", "and", "BEU"})
+    local l2 = Drawing.RectText(out, {x = mmu.right + 20, y_middle = (l1d.y_middle + l1i.y_middle) * 0.5, w = 70, h = 70, color = data_color}, {"L2 $", "128 KiB"})
+
+    for _, l1 in ipairs{l1d, l1i} do
+      Drawing.ThickArrow(out, x280.right + 0.5, l1.y_middle, "--", l1.x - 0.5, l1.y_middle, tl_color, 1)
+      Drawing.ThickArrow(out, l1.right + 0.5, l1.y_middle, "--", mmu.x - 0.5, l1.y_middle, tl_color, 1)
+    end
+
+    return {x280 = x280, mmu = mmu, l2 = l2}
+  end
+
+  local nius, tiles, cdc_x = NIUs(out, nil, 85, 2, direction == "H2D" and "->" or "<-", "C")
+  local mux_pad = 15
+  local niu_mux = Drawing.Mux(out, {right = nius[1].x - 40, w = 10, y = nius[1].y_middle - mux_pad, bottom = nius.last.y_middle + mux_pad}, "<")
+  for _, niu in ipairs(nius) do
+    if direction == "H2D" then
+      Drawing.ThickArrow(out, niu_mux.right + 0.5, niu.y_middle, "->", niu.x - 1, niu.y_middle, "black", 1)
+    else
+      Drawing.ThickArrow(out, niu_mux.right + 1, niu.y_middle, "<-", niu.x - 0.5, niu.y_middle, "black", 1)
+    end
+  end
+  local mux3 = Drawing.Mux(out, {x = nius[2].x, w = mux_pad * 3, y = nius.last.bottom + 30, h = 10}, "v")
+  do
+    local x = mux3.x + mux_pad
+    local y = mux3.y - 1
+    local niu_lines = {
+      {x, y, "^", nius[2].bottom + 2},
+      {x, y, "^", nius[2].bottom + 3, " ^", nius[2].y - 3, "^", nius[1].bottom + 2},
+    }
+    for i, data in ipairs(niu_lines) do
+      x = math.floor(mux3.right - mux_pad - (mux3.w - mux_pad * 2) * ((i - 1) / 1) + 0.5)
+      data[1] = x
+      Drawing.MultiLineWithGaps(out, data)
+    end
+  end
+
+  local harts = {}
+  for i = 0, 3 do
+    harts[i] = Hart(i)
+  end
+  local main_mux = Drawing.Mux(out, {x = harts[1].l2.right + 20, w = 10, y = 36, bottom = harts[#harts].x280.bottom}, ">")
+  for i = 0, 3 do
+    local x280 = harts[i].x280 
+    local mmu = harts[i].mmu
+    local l2 = harts[i].l2
+    Drawing.ThickArrow(out, mmu.right + 0.5, l2.y_middle, "--", l2.x - 0.5, l2.y_middle, tl_color, 1)
+    Drawing.ThickArrow(out, l2.right + 0.5, l2.y_middle, "->", main_mux.x - 1, l2.y_middle, tl_color, 1)
+    local uc_y = mmu.bottom - 10
+    Drawing.ThickArrow(out, x280.right + 0.5, uc_y, "--", mmu.x - 0.5, uc_y, tl_color, 1)
+    Drawing.ThickArrow(out, mmu.right + 0.5, uc_y, "->", main_mux.x - 1, uc_y, tl_color, 1)
+
+    local y = l2.y_middle + 16
+    local spacing = 10
+    Drawing.MultiLineWithGaps(out, {main_mux.right, y, ">", main_mux.right + 10, "v", y + spacing, "<", main_mux.right + 3, " <", main_mux.x - 3, "<", l2.right + 2, color = tl_color})
+    y = y + spacing * 2
+    Drawing.MultiLineWithGaps(out, {main_mux.right, y, ">", main_mux.right + 10, "v", y + spacing, "<", main_mux.right + 3, " <", main_mux.x - 3, "<", mmu.right + 2, color = tl_color})
+    y = y + spacing * 2
+    Drawing.MultiLineWithGaps(out, {main_mux.right, y, ">", main_mux.right + 10, "v", y + spacing, "<", main_mux.right + 3, " <", main_mux.x - 3, "<", mmu.right + 3, " <", mmu.x - 3, "<", x280.right + 2, color = tl_color})
+  end
+  local l3 = Drawing.RectText(out, {x = main_mux.right + 20, y = 100, w = 60, h = 380, color = data_color}, {"L3 $", "2 MiB"})
+  local dma = Drawing.RectText(out, {x = l3.x, bottom = l3.y - 20, w = l3.w, h = 60, color = xu_color}, {"DMA", "Engine"})
+  local post_l3_mux = Drawing.Mux(direction == "D2H" and nul or out, {x = l3.right + 20, w = 10, y = dma.y_middle - mux_pad, bottom = l3.bottom + 50}, ">")
+  do
+    local l3_y = (harts[1].mmu.bottom + harts[2].mmu.y) * 0.5
+    Drawing.ThickArrow(out, main_mux.right + 0.5, l3_y, "->", l3.x - 1, l3_y, tl_color, 1)
+  end
+  Drawing.MultiLine(out, {main_mux.right, dma.bottom - 8, ">", dma.x - 2})
+  if direction == "H2D" then
+    Drawing.ThickArrow(out, dma.right + 0.5, dma.y_middle, "->", post_l3_mux.x - 1, dma.y_middle, "black", 1)
+    Drawing.MultiLine(out, {dma.x, dma.y + 8, "<", main_mux.x - 20, "v", harts[0].l2.y - 10, ">", main_mux.x - 1, thick = 1})
+
+    Drawing.ThickArrow(out, l3.right + 0.5, l3.y_middle, "->", post_l3_mux.x - 1, l3.y_middle, "black", 1)
+    do
+      local uc_y = post_l3_mux.bottom - mux_pad - 2
+      Drawing.ThickArrow(out, main_mux.right + 0.5, uc_y, "->", post_l3_mux.x - 1, uc_y, "black", 1)
+    end
+  end
+  Drawing.MultiLine(out, {main_mux.right, post_l3_mux.bottom - mux_pad - 16, ">", l3.x_middle, "^", l3.bottom + 2, color = tl_color})
+
+  local tlbs = Drawing.RectText(out, {x = post_l3_mux.right + 20, right = niu_mux.x - 20, y_middle = niu_mux.y_middle, h = 36, color = xu_color}, "TLBs")
+  if direction == "H2D" then
+    Drawing.ThickArrow(out, post_l3_mux.right + 0.5, tlbs.y_middle, "->", tlbs.x - 1, tlbs.y_middle, "black", 1)
+    Drawing.ThickArrow(out, tlbs.right + 0.5, tlbs.y_middle, "->", niu_mux.x - 1, tlbs.y_middle, "black", 1)
+  end
+  local peripherals = Drawing.RectText(out, {x = l3.x, y = post_l3_mux.bottom + 10, w = 240, h = 36, color = xu_color}, {"External Peripherals"})
+  local msi_catcher = Drawing.RectText(out, {right = peripherals.right, y = peripherals.bottom + 20, w = 80, h = 52, color = xu_color}, {"MSI", "Catcher"})
+  local scratch = Drawing.RectText(out, {right = msi_catcher.x - 20, y = peripherals.bottom + 20, w = 80, h = msi_catcher.h, color = data_color}, {"Scratch", "64 Bytes"})
+  for _, box in ipairs{msi_catcher, scratch} do
+    Drawing.MultiLine(out, {box.x_middle, peripherals.bottom, "v", box.y - 2})
+  end
+  Drawing.ThickArrow(out, main_mux.right + 0.5, peripherals.y_middle, "->", peripherals.x - 1, peripherals.y_middle, "black", 1)
+  Drawing.MultiLine(out, {tlbs.x_middle, peripherals.y, "^", tlbs.bottom + 2})
+  Drawing.MultiLine(out, {peripherals.right, peripherals.y_middle, ">", mux3.x_middle, "^", mux3.bottom + 2})
+  for i = 0, 3 do
+    local segments = {peripherals.x + 10 + i * 12, peripherals.bottom, "v", main_mux.bottom + 15 + 10 * i, "<", harts[1].x280.right - 10 - 14 * i}
+    for j = 0, 3 do
+      local x280 = harts[3 - j].x280
+      segments[#segments + 1] = "^"
+      if i == j then
+        segments[#segments + 1] = x280.bottom + 2
+        break
+      end
+      segments[#segments + 1] = x280.bottom + 3
+      segments[#segments + 1] = " ^"
+      segments[#segments + 1] = x280.y - 3
+    end
+    Drawing.MultiLineWithGaps(out, segments)
+  end
+
+  if direction == "D2H" then
+    Drawing.MultiLine(out, {niu_mux.x, nius[1].y_middle + 8, "<", niu_mux.x - 34, "^", 5.5, "<", main_mux.x - 40, "v", harts[0].l2.y - 10, ">", main_mux.x - 1, thick = 1})
+    Drawing.MultiLine(out, {niu_mux.x, nius[2].y_middle - 8, "<", niu_mux.x - 34, "v", peripherals.y - 1, thick = 1})
+  else
+    local y0 = post_l3_mux.bottom - (tlbs.y_middle - post_l3_mux.y)
+    local dx = peripherals.right + 60
+    local dy = msi_catcher.bottom + 25
+    out:putf([[<rect x="%g" y="%g" width="%g" height="%g" stroke="transparent" fill="white"/>]], tlbs.x_middle - 3, y0 - 5, mux3.x_middle - tlbs.x_middle + 6, 10)
+    Drawing.MultiLine(out, {post_l3_mux.right, y0, ">", dx, "v", dy, thick = 1})
+    out:putf([[<text x="%d" y="%d" text-anchor="end" dominant-baseline="hanging">To DRAM tile</text>]], dx + 18, dy + 7)
+  end
+
+  CDC(out, "L2SYS", cdc_x, 350, nil)
+  CDC(out, "Clock", cdc_x, 370, "AI Clock")
+
+  out:putf"</svg>\n"
+  return tostring(out)
+end
+
 assert(io.open(own_dir .."../Out/EdgeTile_ARC_H2D.svg", "w")):write(ARC"H2D")
 assert(io.open(own_dir .."../Out/EdgeTile_ARC_D2H.svg", "w")):write(ARC"D2H")
 assert(io.open(own_dir .."../Out/EdgeTile_GDDR.svg", "w")):write(GDDR{})
@@ -519,3 +662,5 @@ assert(io.open(own_dir .."../Out/EdgeTile_PCIe_D2H.svg", "w")):write(PCIe("D2H",
 
 assert(io.open(own_dir .."../Out/EdgeTile_BH_PCIe_H2D.svg", "w")):write(PCIe("H2D", "BH"))
 assert(io.open(own_dir .."../Out/EdgeTile_BH_PCIe_D2H.svg", "w")):write(PCIe("D2H", "BH"))
+assert(io.open(own_dir .."../Out/EdgeTile_BH_L2CPU_H2D.svg", "w")):write(L2CPU"H2D")
+assert(io.open(own_dir .."../Out/EdgeTile_BH_L2CPU_D2H.svg", "w")):write(L2CPU"D2H")

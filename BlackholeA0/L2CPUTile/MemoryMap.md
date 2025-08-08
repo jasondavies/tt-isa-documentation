@@ -25,18 +25,18 @@ All four x280 cores see the same 47-bit physical address space:
 |`0x0000_2010_0000` to `0x0000_2FFF_FFFF`|255x 1 MiB|Reserved, though in practice 255 copies of previous (512 KiB + 4 KiB + 127x 4 KiB)|
 |`0x0000_3000_0000` to `0x0001_2FFF_FFFF`|4 GiB|Contents of local GDDR6 tile, uncached|
 |`0x0001_3000_0000` to `0x0004_2FFF_FFFF`|3x 4 GiB|Reserved, though in practice 3 copies of previous 4 GiB|
-|`0x0004_3000_0000` to `0x0004_3DFF_FFFF`|224x 2 MiB|Small TLB windows to NoC, uncached|
+|`0x0004_3000_0000` to `0x0004_3DFF_FFFF`|224x 2 MiB|[Small TLB windows to NoC](TLBWindows.md), uncached|
 |`0x0004_3E00_0000` to `0x0004_3FFF_FFFF`|32x 2 MiB|Undefined|
 |`0x0004_4000_0000` to `0x0804_2FFF_FFFF`|16383x&nbsp;512&nbsp;MiB|Reserved, though in practice 16,383 copies of previous (224x 2 MiB + 32x 2 MiB)|
-|`0x0804_3000_0000` to `0x0C04_2FFF_FFFF`|32x 128 GiB|Large TLB windows to NoC, uncached|
+|`0x0804_3000_0000` to `0x0C04_2FFF_FFFF`|32x 128 GiB|[Large TLB windows to NoC](TLBWindows.md), uncached|
 |`0x0C04_3000_0000` to `0x1004_2FFF_FFFF`|32x 128 GiB|Reserved, though in practice copy of previous 32x 128 GiB|
 |`0x1004_3000_0000` to `0x4000_2FFF_FFFF`|~3x 16 TiB|Reserved, though in practice 3 copies of previous 16 TiB (albeit final copy is 16 GiB short)|
-|`0x4000_3000_0000` to `0x4001_2FFF_FFFF`|4 GiB|Contents of local GDDR6 tile, cached|
+|`0x4000_3000_0000` to `0x4001_2FFF_FFFF`|4 GiB|Contents of local GDDR6 tile, [cached](Caches.md)|
 |`0x4001_3000_0000` to `0x4004_2FFF_FFFF`|3x 4 GiB|Reserved, though in practice 3 copies of previous 4 GiB|
-|`0x4004_3000_0000` to `0x4004_3DFF_FFFF`|224x 2 MiB|Small TLB windows to NoC, cached|
+|`0x4004_3000_0000` to `0x4004_3DFF_FFFF`|224x 2 MiB|[Small TLB windows to NoC](TLBWindows.md), [cached](Caches.md)|
 |`0x4004_3E00_0000` to `0x4004_3FFF_FFFF`|32x 2 MiB|Undefined|
 |`0x4004_4000_0000` to `0x4804_2FFF_FFFF`|16383x 512 MiB|Reserved, though in practice 16,383 copies of previous (224x 2 MiB + 32x 2 MiB)|
-|`0x4804_3000_0000` to `0x4C04_2FFF_FFFF`|32x 128 GiB|Large TLB windows to NoC, cached|
+|`0x4804_3000_0000` to `0x4C04_2FFF_FFFF`|32x 128 GiB|[Large TLB windows to NoC](TLBWindows.md), [cached](Caches.md)|
 |`0x4C04_3000_0000` to `0x5004_2FFF_FFFF`|32x 128 GiB|Reserved, though in practice copy of previous 32x 128 GiB|
 |`0x5004_3000_0000`&nbsp;to&nbsp;`0x7FFF_FFFF_FFFF`|~3x 16 TiB|Reserved, though in practice 3 copies of previous 16 TiB (albeit final copy is 16¾ GiB short)|
 
@@ -72,18 +72,18 @@ Part of the x280 physical address space is used for various internal devices. Fo
 |`0x0000_0170_3000` to `0x0000_0170_3FFF`|4 KiB|Hart 3 Bus-Error Unit|
 |`0x0000_0170_4000` to `0x0000_01FF_FFFF`|8.98 MiB|Unmapped|
 |`0x0000_0200_0000` to `0x0000_0200_FFFF`|64 KiB|Core-local interruptor (CLINT)|
-|`0x0000_0201_0000` to `0x0000_0201_3FFF`|16 KiB|L3 cache configuration and explicit flush|
+|`0x0000_0201_0000` to `0x0000_0201_3FFF`|16 KiB|[L3 cache configuration and explicit flush](Caches.md#l3-cache)|
 |`0x0000_0201_4000` to `0x0000_0202_FFFF`|112 KiB|Unmapped|
-|`0x0000_0203_0000` to `0x0000_0203_1FFF`|8 KiB|Hart 0 L2 prefetcher configuration|
-|`0x0000_0203_2000` to `0x0000_0203_3FFF`|8 KiB|Hart 1 L2 prefetcher configuration|
-|`0x0000_0203_4000` to `0x0000_0203_5FFF`|8 KiB|Hart 2 L2 prefetcher configuration|
-|`0x0000_0203_6000` to `0x0000_0203_7FFF`|8 KiB|Hart 3 L2 prefetcher configuration|
+|`0x0000_0203_0000` to `0x0000_0203_1FFF`|8 KiB|[Hart 0 L2 prefetcher configuration](Caches.md#l2-cache)|
+|`0x0000_0203_2000` to `0x0000_0203_3FFF`|8 KiB|[Hart 1 L2 prefetcher configuration](Caches.md#l2-cache)|
+|`0x0000_0203_4000` to `0x0000_0203_5FFF`|8 KiB|[Hart 2 L2 prefetcher configuration](Caches.md#l2-cache)|
+|`0x0000_0203_6000` to `0x0000_0203_7FFF`|8 KiB|[Hart 3 L2 prefetcher configuration](Caches.md#l2-cache)|
 |`0x0000_0203_8000` to `0x0000_0300_7FFF`|15.81 MiB|Unmapped|
 |`0x0000_0300_8000` to `0x0000_0300_8FFF`|4 KiB|All harts `wfi` / `cease` status (SLPC)|
 |`0x0000_0300_9000` to `0x0000_07FF_FFFF`|79.96 MiB|Unmapped|
-|`0x0000_0800_0000` to `0x0000_081F_FFFF`|2 MiB|L3 as uncached scratchpad (LIM)|
+|`0x0000_0800_0000` to `0x0000_081F_FFFF`|2 MiB|[L3 as uncached scratchpad (LIM)](Caches.md#l3-cache)|
 |`0x0000_0820_0000` to `0x0000_09FF_FFFF`|30 MiB|Unmapped|
-|`0x0000_0A00_0000` to `0x0000_0A1F_FFFF`|2 MiB|Zero Device, cached|
+|`0x0000_0A00_0000` to `0x0000_0A1F_FFFF`|2 MiB|[Zero Device, cached](Caches.md#l3-cache)|
 |`0x0000_0A20_0000` to `0x0000_0BFF_FFFF`|30 MiB|Unmapped|
 |`0x0000_0C00_0000` to `0x0000_0FFF_FFFF`|64 MiB|Platform-level interrupt controller (PLIC)|
 |`0x0000_1000_0000` to `0x0000_1000_0FFF`|4 KiB|Hart 0 trace encoder configuration|
@@ -93,10 +93,10 @@ Part of the x280 physical address space is used for various internal devices. Fo
 |`0x0000_1000_4000` to `0x0000_1001_7FFF`|80 KiB|Unmapped|
 |`0x0000_1001_8000` to `0x0000_1001_8FFF`|4 KiB|Trace funnel configuration|
 |`0x0000_1001_9000` to `0x0000_1010_3FFF`|940 KiB|Unmapped|
-|`0x0000_1010_4000` to `0x0000_1010_7FFF`|16 KiB|Hart 0 L2 cache configuration and explicit flush|
-|`0x0000_1010_8000` to `0x0000_1010_BFFF`|16 KiB|Hart 1 L2 cache configuration and explicit flush|
-|`0x0000_1010_C000` to `0x0000_1010_FFFF`|16 KiB|Hart 2 L2 cache configuration and explicit flush|
-|`0x0000_1011_0000` to `0x0000_1011_3FFF`|16 KiB|Hart 3 L2 cache configuration and explicit flush|
+|`0x0000_1010_4000` to `0x0000_1010_7FFF`|16 KiB|[Hart 0 L2 cache configuration and explicit flush](Caches.md#l2-cache)|
+|`0x0000_1010_8000` to `0x0000_1010_BFFF`|16 KiB|[Hart 1 L2 cache configuration and explicit flush](Caches.md#l2-cache)|
+|`0x0000_1010_C000` to `0x0000_1010_FFFF`|16 KiB|[Hart 2 L2 cache configuration and explicit flush](Caches.md#l2-cache)|
+|`0x0000_1011_0000` to `0x0000_1011_3FFF`|16 KiB|[Hart 3 L2 cache configuration and explicit flush](Caches.md#l2-cache)|
 |`0x0000_1011_4000`&nbsp;to&nbsp;`0x0000_1FFF_FFFF`|254.92&nbsp;MiB|Unmapped|
 
 ## External peripherals
@@ -105,17 +105,17 @@ When coming from the NoC, external peripherals can be accessed either through th
 
 |Address range (x280 physical)|Size|Contents|
 |---|--:|---|
-|`0x0000_2000_0000` to `0x0000_2000_0DFF`|224x 16 B|Small TLB window configuration|
-|`0x0000_2000_0E00` to `0x0000_2000_0F7F`|32x 12 B|Large TLB window configuration|
+|`0x0000_2000_0000` to `0x0000_2000_0DFF`|224x 16 B|[Small TLB window configuration](TLBWindows.md#configuration)|
+|`0x0000_2000_0E00` to `0x0000_2000_0F7F`|32x 12 B|[Large TLB window configuration](TLBWindows.md#configuration)|
 |`0x0000_2000_0F80` to `0x0000_2000_FFFF`|60.1 KiB|Reserved|
 |`0x0000_2001_0000` to `0x0000_2001_001F`|4x 8 B|Per-hart reset handler address (initial `pc` when coming out of reset)|
 |`0x0000_2001_0020` to `0x0000_2001_00FF`|224 B|Reserved|
 |`0x0000_2001_0100` to `0x0000_2001_013F`|64 B|General purpose scratch memory|
 |`0x0000_2001_0140` to `0x0000_2001_03FF`|704 B|Reserved|
 |`0x0000_2001_0400` to `0x0000_2001_0401`|2 B|All harts `cease` / `halt` / `wfi` / `debug` status|
-|`0x0000_2001_0402` to `0x0000_2001_0403`|2 B|All harts suppress instruction fetch flags (only applicable when coming out of reset)|
+|`0x0000_2001_0402` to `0x0000_2001_0403`|2 B|All harts suppress instruction fetch flags (1 bit per hart, then 12 reserved bits, only applicable when coming out of reset)|
 |`0x0000_2001_0404` to `0x0000_2001_0413`|16 B|Global interrupt signals (connected to the PLIC)|
-|`0x0000_2001_0414` to `0x0000_2001_0417`|4 B|All harts RNMI interrupt signals|
+|`0x0000_2001_0414` to `0x0000_2001_0417`|4 B|All harts RNMI interrupt signals (1 bit per hart, then 28 reserved bits)|
 |`0x0000_2001_0418` to `0x0000_2001_0457`|4x 16 B|Per-hart RNMI trap handler address and RNMI exception trap handler address|
 |`0x0000_2001_0458` to `0x0000_2005_5FFF`|278.9 KiB|Reserved|
 |`0x0000_2005_6000` to `0x0000_2005_6FFF`|4 KiB|[NIU #0 configuration / status](../NoC/MemoryMap.md)|
