@@ -9,7 +9,7 @@
 ```c
 TT_DOTPV(((/* bool */ FlipSrcB) << 1) +
            /* bool */ FlipSrcA,
-           true,
+           false,
            0,
            /* u2 */ AddrMod,
            /* u10 */ DstRow)
