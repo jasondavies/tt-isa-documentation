@@ -115,10 +115,10 @@ When coming from the NoC, external peripherals can be accessed either through th
 |`0x0000_2001_0400` to `0x0000_2001_0401`|2 B|All harts `cease` / `halt` / `wfi` / `debug` status|
 |`0x0000_2001_0402` to `0x0000_2001_0403`|2 B|All harts suppress instruction fetch flags (1 bit per hart, then 12 reserved bits, only applicable when coming out of reset)|
 |`0x0000_2001_0404` to `0x0000_2001_0413`|16 B|Global interrupt signals (connected to the PLIC)|
-|`0x0000_2001_0414` to `0x0000_2001_0417`|4 B|All harts RNMI interrupt signals (1 bit per hart, then 28 reserved bits)|
-|`0x0000_2001_0418` to `0x0000_2001_0457`|4x 16 B|Per-hart RNMI trap handler address and RNMI exception trap handler address|
+|`0x0000_2001_0414` to `0x0000_2001_0417`|4 B|All harts [RNMI](RNMIs.md) interrupt signals (1 bit per hart, then 28 reserved bits)|
+|`0x0000_2001_0418` to `0x0000_2001_0457`|4x 16 B|Per-hart [RNMI](RNMIs.md) trap handler address and RNMI exception trap handler address|
 |`0x0000_2001_0458` to `0x0000_2005_5FFF`|278.9 KiB|Reserved|
 |`0x0000_2005_6000` to `0x0000_2005_6FFF`|4 KiB|[NIU #0 configuration / status](../NoC/MemoryMap.md)|
 |`0x0000_2005_7000` to `0x0000_2005_7FFF`|4 KiB|[NIU #1 configuration / status](../NoC/MemoryMap.md)|
-|`0x0000_2006_0000` to `0x0000_2006_000F`|16 B|MSI catcher (memory-mapped FIFO with an interrupt wire to the PLIC)|
+|`0x0000_2006_0000` to `0x0000_2006_000F`|16 B|[MSI catcher](MSICatcher.md) (memory-mapped FIFO with an interrupt wire to the PLIC)|
 |`0x0000_2006_0010`&nbsp;to&nbsp;`0x0000_2007_FFFF`|127.98&nbsp;KiB|Reserved|

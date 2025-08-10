@@ -27,7 +27,7 @@ This tile is slightly too complex to show on a single diagram, though most compo
 ## Reset
 
 > [!CAUTION]
-> Due to a hardware bug, the harts within each L2CPU tile can only be brought out of reset once. Once running, putting them back into reset requires resetting the entire Blackhole ASIC (e.g. with `tt-smi -r`). As such, software is encouraged to build a mechanism for seizing control away from a running hart and parking it in an idle state in machine mode. One viable approach is to use RNMIs, with the RNMI trap handler set to the external peripherals general purpose scratch memory, and said memory populated with code to execute `fence.i` and then load the per-hart reset handler address and jump to it.
+> Due to a hardware bug, the harts within each L2CPU tile can only be brought out of reset once. Once running, putting them back into reset requires resetting the entire Blackhole ASIC (e.g. with `tt-smi -r`). As such, software is encouraged to build a mechanism for seizing control away from a running hart and parking it in an idle state in machine mode. One viable approach is to use [RNMIs](RNMIs.md), with the RNMI trap handler set to the external peripherals general purpose scratch memory, and said memory populated with code to execute `fence.i` and then load the per-hart reset handler address and jump to it.
 
 > [!CAUTION]
 > The harts within each L2CPU tile should be brought out of reset with the L2SYS clock set to a low speed. See [tt-bh-linux's `clock.py`](https://github.com/tenstorrent/tt-bh-linux/blob/c1484a0f0f10fa35c8c7cb4e33b49ba6d2a5e0d2/clock.py) for an example of how to do this, which involves directly manipulating the PLLs via MMIO addresses in the ARC tile. Once out of reset, the clock speed can be raised.
