@@ -54,7 +54,7 @@ If any input is NaN or ±Infinity, then the result will be NaN or ±Infinity, fo
 
 The multiply and the add are _partially_ fused, but not _completely_ fused: the result of the multiplication is kept in higher precision than FP32, but is not kept in the infinite precision required to be a completely fused operation. A single rounding step is performed, with the rounding mode always round to nearest with ties to even. If multiplying by one or adding zero, then the partially fused operation is equivalent to a standalone add or standalone multiply (handling of denormals and negative zero notwithstanding).
 
-If the output is denormal or negative zero, it'll be flushed to positive zero.
+If the output (before rounding) is denormal or negative zero, it'll be flushed to positive zero.
 
 ## Instruction scheduling
 

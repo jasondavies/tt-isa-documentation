@@ -1042,10 +1042,28 @@ local diagrams = {
       {24, 8, "0x7E"},
     }
   end,
+  SFPAND_BH = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {12, 4, "VB"},
+      {24, 8, "0x7E"},
+    }
+  end,
   SFPOR = function()
     return Bits32{
       {4, 4, "VD"},
       {8, 4, "VC"},
+      {24, 8, "0x7F"},
+    }
+  end,
+  SFPOR_BH = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {12, 4, "VB"},
       {24, 8, "0x7F"},
     }
   end,
@@ -1165,6 +1183,25 @@ local diagrams = {
       {4, 4, "VD"},
       {8, 4, "VC"},
       {24, 8, "0x90"},
+    }
+  end,
+  SFPMUL24 = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {12, 4, "VB"},
+      {16, 4, "VA"},
+      {24, 8, "0x98"},
+    }
+  end,
+  SFPARECIP = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {12, 4, "VB"},
+      {24, 8, "0x99"},
     }
   end,
   UNPACR_Regular = function()
