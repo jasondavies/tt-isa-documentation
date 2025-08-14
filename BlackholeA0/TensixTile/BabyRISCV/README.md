@@ -143,7 +143,7 @@ Stores to L1 cause the containing cache line to be flushed if it was previously 
 
 Each baby RISCV has either 8 KiB (B, NC) or 4 KiB (T0, T1, T2) of local data RAM. Each of these RAMs is present in the address space at two locations:
 * At `MEM_LOCAL_BASE`, which is only accessible using load or store instructions from the one RISCV associated with it. Access to the RAM through this address is low latency, and never suffers from contention. A load from local RAM through this address has a latency of two cycles, meaning that so long as the one instruction immediately after the load is independent of the load result, the latency of the load is entirely hidden.
-* At some address between `0xFFB1_4000` and `0xFFB1_DFFF`, which is accessible from any RISCV and accessible over the NoC. Access to the RAM through this address is higher latency, and does suffer from contention. A load from local RAM through this address has a latency of at eight seven cycles (which is the same latency as loading from L1), meaning that seven independent instructions are required to fully hide the latency.
+* At some address between `0xFFB1_4000` and `0xFFB1_DFFF`, which is accessible from any RISCV and accessible over the NoC. Access to the RAM through this address is higher latency, and does suffer from contention. A load from local RAM through this address has a latency of at least eight cycles (which is the same latency as loading from L1), meaning that seven independent instructions are required to fully hide the latency.
 
 Software is _strongly_ encouraged to place the call stack in this RAM, along with any thread-local variables and any frequently-used read-only global variables, and access it through the `MEM_LOCAL_BASE` address.
 
