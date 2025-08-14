@@ -45,7 +45,7 @@ The contents of `noc_properties_lo` is identical for both sizes of window:
 |18|6|`y_start`|When <code>mcast</code> is set, the <a href="../NoC/Coordinates.md">Y coordinate</a> of the start of the multicast rectangle. Ignored otherwise.|
 |24|1|`mcast`|Equivalent to <code>NOC_CMD_BRCST_PACKET</code>; <code>true</code> causes <code>(x_start, y_start)</code> through <code>(x_end, y_end)</code> to specify a rectangle of target Tensix tiles, whereas <code>false</code> causes <code>(x_end, y_end)</code> to specify a single tile target.|
 |25|2|`ordering`|Four possible ordering modes:<ul><li><code>0</code> - Default</li><li><code>1</code> - Strict AXI</li><li><code>2</code> - Posted Writes</li><li><code>3</code> - Counted Writes</li></ul>|
-|27|1|`linked`|Similar to <a href="../NoC/MemoryMap.md#noc_ctrl"><code>NOC_CMD_VC_LINKED</code></a>. When using cached semantics, it is hard to safely to set this to <code>true</code>, as software cannot easily control when NoC requests are made.|
+|27|1|`linked`|Similar to <a href="../NoC/MemoryMap.md#noc_ctrl"><code>NOC_CMD_VC_LINKED</code></a>. When using cached semantics, it is hard to safely set this to <code>true</code>, as software cannot easily control when NoC requests are made.|
 |28|1|`static_vc`|Equivalent to <a href="../NoC/MemoryMap.md#noc_ctrl"><code>NOC_CMD_VC_STATIC</code></a>|
 |29|2|Reserved|Software should write as zero.|
 |31|1|`noc_sel`|<code>0</code> to select NoC #0, <code>1</code> to select NoC #1.|
