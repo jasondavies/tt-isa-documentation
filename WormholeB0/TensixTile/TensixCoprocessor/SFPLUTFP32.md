@@ -69,11 +69,11 @@ lanewise {
                  : b < 2.0 ? 1
                  :           2;
       if (Mod1 & SFPLUTFP32_MOD1_FP16_6ENTRY_TABLE1) {
-        if (Mod1 & SFPLUTFP32_MOD1_FP16_3ENTRY_TABLE) {
+        if ((Mod1 & SFPLUTFP32_MOD1_FP16_3ENTRY_TABLE) == SFPLUTFP32_MOD1_FP16_3ENTRY_TABLE) {
           a = Lut16ToFp32((LReg[i].u32 >> 16) & 0xffff);
           c = Lut16ToFp32( LReg[i].u32        & 0xffff);
         } else {
-          float cut = (Mod1 & SFPLUTFP32_MOD1_FP16_6ENTRY_TABLE2) ? 4.0 : 3.0;
+          float cut = ((Mod1 & SFPLUTFP32_MOD1_FP16_6ENTRY_TABLE2) == SFPLUTFP32_MOD1_FP16_6ENTRY_TABLE2) ? 4.0 : 3.0;
           uint32_t j = b < 0.5 ?  0
                      : b < 1.0 ? 16
                      : b < 1.5 ?  0
