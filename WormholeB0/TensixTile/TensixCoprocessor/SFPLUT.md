@@ -63,10 +63,7 @@ float Lut8ToFp32(uint8_t x) {
   uint32_t Sign = x >> 7;
   uint32_t Exp = (x >> 4) & 7;
   uint32_t Man = x & 0xf;
-  uint32_t FP32Bits = (Sign << 31) | ((127 - Exp) << 23) | (Man << 19);
-  float Result;
-  memcpy(&Result, &FP32Bits, 4);
-  return Result;
+  return std::bit_cast<float>((Sign << 31) | ((127 - Exp) << 23) | (Man << 19));
 }
 ```
 

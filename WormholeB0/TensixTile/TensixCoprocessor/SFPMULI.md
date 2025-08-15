@@ -43,10 +43,7 @@ Supporting definitions:
 #define SFPMAD_MOD1_INDIRECT_VD 8
 
 float BF16ToFP32(uint16_t x) {
-  float result;
-  uint32_t y = uint32_t(x) << 16;
-  memcpy(&result, &y, 4);
-  return result;
+  return std::bit_cast<float>(uint32_t(x) << 16);
 }
 ```
 
