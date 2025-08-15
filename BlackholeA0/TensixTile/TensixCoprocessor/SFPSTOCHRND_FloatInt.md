@@ -1,6 +1,6 @@
 # `SFPSTOCHRND` (Vectorised convert floating-point to bounded sign-magnitude integer)
 
-**Summary:** Operating lanewise, starts with FP32, rounds that to an integer (can be either stochastic or round to nearest with ties away from zero), then does one of:
+**Summary:** Operating lanewise, starts with FP32, rounds that to an integer (can be stochastic or round to nearest with ties away from zero or round to zero †), then does one of:
 * Clamp to -127 through +127.
 * Clamp to -32767 through +32767.
 * Take absolute value, then clamp to 0 through 255.
@@ -15,21 +15,26 @@ The result is a 32-bit sign-magnitude integer, though if the absolute value was 
 |`SFPSTOCHRND_MOD1_FP32_TO_INT16`|±32767|`MOD0_FMT_INT16`|
 |`SFPSTOCHRND_MOD1_FP32_TO_UINT16`|0 - 65535|`MOD0_FMT_UINT16` or `MOD0_FMT_LO16_ONLY`|
 
-Due to a hardware bug, inputs in range `|x| < 0.5` are always rounded deterministically (and thus to zero), even when stochastic rounding is requested. Due to a hardware bug, stochastic rounding of inputs in range `|x| ≥ 0.5` has a slight bias towards increasing the magnitude rather than being 50:50, and can even sometimes increase the magnitude of values which do not require rounding.
+> (†) Due to a hardware bug, inputs in range `|x| < 0.5` are always rounded deterministically (and thus to zero), even when stochastic rounding is requested. Due to a hardware bug, stochastic rounding of inputs in range `|x| ≥ 0.5` has a slight bias towards increasing the magnitude rather than being 50:50, and can even sometimes increase the magnitude of values which do not require rounding. The latter bug also means that round to zero does not always round to zero. The functional model faithfully describes all the buggy behaviours.
 
 **Backend execution unit:** [Vector Unit (SFPU)](VectorUnit.md), round sub-unit
+
+> [!TIP]
+> The round to zero mode is new in Blackhole, though a hardware bug means that the three FP32 values `0.9999998807907` / `0.9999999403954` / `1.999999880791` incorrectly round away from zero rather than toward zero.
 
 ## Syntax
 
 ```c
-TT_SFP_STOCH_RND(/* bool */ StochasticRounding,
-                 0, 0,
+TT_SFP_STOCH_RND(/* u2 */ RoundingMode, 0, /* u4 */ VC,
                  /* u4 */ VC, /* u4 */ VD, /* u3 */ Mod1)
 ```
 
+> [!NOTE]
+> `VC` is specified twice in the syntax to work around a false dependency bug in the automatic stalling logic of some other instructions. If instead looking at the encoding diagam (below), the mitigation is to set `VB` equal to `VC`.
+
 ## Encoding
 
-![](../../../Diagrams/Out/Bits32_SFPSTOCHRND.svg)
+![](../../../Diagrams/Out/Bits32_SFPSTOCHRND_BH.svg)
 
 ## Functional model
 
@@ -50,7 +55,10 @@ lanewise {
   if (VD < 12 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
     if (LaneEnabled) {
       uint32_t PRNGBits = AdvancePRNG() & 0x7fffff;
-      if (!StochasticRounding) PRNGBits = 0x400000;
+      switch (RoundingMode) {
+      case SFPSTOCHRND_RND_NEAREST: PRNGBits = 0x400000; break;
+      case SFPSTOCHRND_RND_ZERO:    PRNGBits = 0x7fffff; break;
+      }
       uint32_t c = LReg[VC].u32; // FP32.
       uint32_t Sign = KeepSign ? (c & 0x80000000u) : 0;
       int32_t Exp = ((c >> 23) & 0xff) - 127;
@@ -83,4 +91,8 @@ Supporting definitions:
 #define SFPSTOCHRND_MOD1_FP32_TO_INT8   3
 #define SFPSTOCHRND_MOD1_FP32_TO_UINT16 6
 #define SFPSTOCHRND_MOD1_FP32_TO_INT16  7
+
+#define SFPSTOCHRND_RND_NEAREST 0
+#define SFPSTOCHRND_RND_STOCH 1
+#define SFPSTOCHRND_RND_ZERO 2
 ```

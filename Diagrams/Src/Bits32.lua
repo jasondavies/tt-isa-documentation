@@ -1171,6 +1171,28 @@ local diagrams = {
       {24, 8, "0x8E"},
     }
   end,
+  SFPSTOCHRND_BH = function()
+    return Bits32{
+      {0, 3, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {12, 4, "VB"},
+      {21, 2, "RoundingMode", y=1},
+      {24, 8, "0x8E"},
+    }
+  end,
+  SFPSTOCHRNDi_BH = function()
+    return Bits32{
+      {0, 3, "Mod1"},
+      {3, 1, "UseImm5", y=1},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {12, 4, "VB"},
+      {16, 5, "Imm5"},
+      {21, 2, "RoundingMode", y=1},
+      {24, 8, "0x8E"},
+    }
+  end,
   SFPNOP = function()
     return Bits32{
       {7, 1, "0"},
@@ -1183,6 +1205,22 @@ local diagrams = {
       {4, 4, "VD"},
       {8, 4, "VC"},
       {24, 8, "0x90"},
+    }
+  end,
+  SFPLE = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {24, 8, "0x96"},
+    }
+  end,
+  SFPGT = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {8, 4, "VC"},
+      {24, 8, "0x97"},
     }
   end,
   SFPMUL24 = function()

@@ -1,6 +1,11 @@
 # `SFPSTOCHRND` (Vectorised reduce floating-point precision)
 
-**Summary:** Operating lanewise, reduces mantissa precision of an FP32 value down from 23 bits to either 7 bits or 10 bits. The discarded mantissa bits are used for rounding, which can be either stochastic or round to nearest with ties away from zero. Various extreme floating-point values are also normalised away:
+**Summary:** Operating lanewise, reduces mantissa precision of an FP32 value down from 23 bits to either 7 bits or 10 bits. The discarded mantissa bits are used for rounding, which can be:
+* Stochastic rounding (†).
+* Round to nearest with ties away from zero.
+* Round to zero.
+
+Various extreme floating-point values are also normalised away:
 * Denormals become positive zero.
 * Negative zero becomes positive zero.
 * -NaN becomes negative infinity.
@@ -11,21 +16,26 @@ This flavour of `SFPSTOCHRND` is intended to be used prior to an [`SFPSTORE`](SF
 * `SFPSTORE` with `MOD0_FMT_FP16`: If the mantissa precision is reduced to either 7 or 10 bits, a store with `MOD0_FMT_FP16` will suffer no loss of mantissa precision (though there will be loss of exponent range, with out of range values clamped to positive or negative infinity).
 * `SFPSTORE` with `MOD0_FMT_FP32`: If the mantissa precision is reduced to either 7 or 10 bits, a store with `MOD0_FMT_FP32` will be exact, and any subsequent conversion to TF32 will also be exact.
 
-Due to a hardware bug, stochastic rounding has a slight bias towards increasing the magnitude rather than being 50:50, and can even sometimes increase the magnitude of values which do not require rounding.
+> (†) Due to a hardware bug, stochastic rounding has a slight bias towards increasing the magnitude rather than being 50:50, and can even sometimes increase the magnitude of values which do not require rounding. The functional model faithfully describes the buggy behaviour; the corrected logic would have `> PRNGBits` instead of `>= PRNGBits`.
 
 **Backend execution unit:** [Vector Unit (SFPU)](VectorUnit.md), round sub-unit
+
+> [!TIP]
+> The round to zero mode is new in Blackhole.
 
 ## Syntax
 
 ```c
-TT_SFP_STOCH_RND(/* bool */ StochasticRounding,
-                 0, 0,
+TT_SFP_STOCH_RND(/* u2 */ RoundingMode, 0, /* u4 */ VC,
                  /* u4 */ VC, /* u4 */ VD, /* u3 */ Mod1)
 ```
 
+> [!NOTE]
+> `VC` is specified twice in the syntax to work around a false dependency bug in the automatic stalling logic of some other instructions. If instead looking at the encoding diagam (below), the mitigation is to set `VB` equal to `VC`.
+
 ## Encoding
 
-![](../../../Diagrams/Out/Bits32_SFPSTOCHRND.svg)
+![](../../../Diagrams/Out/Bits32_SFPSTOCHRND_BH.svg)
 
 ## Functional model
 
@@ -40,7 +50,10 @@ lanewise {
   if (VD < 12 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
     if (LaneEnabled) {
       uint32_t PRNGBits = AdvancePRNG() & 0x7fffff;
-      if (!StochasticRounding) PRNGBits = 0x400000;
+      switch (RoundingMode) {
+      case SFPSTOCHRND_RND_NEAREST: PRNGBits = 0x400000; break;
+      case SFPSTOCHRND_RND_ZERO:    PRNGBits = 0x7fffff; break;
+      }
       uint32_t x = LReg[VC].u32; // FP32.
       uint32_t Exp = (x >> 23) & 0xff;
       if (Exp == 0) {
@@ -73,4 +86,8 @@ Supporting definitions:
 ```c
 #define SFPSTOCHRND_MOD1_FP32_TO_FP16A  0
 #define SFPSTOCHRND_MOD1_FP32_TO_FP16B  1
+
+#define SFPSTOCHRND_RND_NEAREST 0
+#define SFPSTOCHRND_RND_STOCH 1
+#define SFPSTOCHRND_RND_ZERO 2
 ```

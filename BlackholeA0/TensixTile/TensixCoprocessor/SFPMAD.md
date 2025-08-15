@@ -77,6 +77,9 @@ If the output (after rounding) is denormal, it'll be flushed to sign-preserved z
 > * `SFPIADD`: the stalling logic does not realise that `SFPIADD` reads from `VD`.
 > * `SFPSHFT`: the stalling logic does not realise that `SFPSHFT` reads from `VD`.
 > * `SFPCONFIG`: the stalling logic does not realise that `SFPCONFIG` can read from `LReg[0]`.
+> * `SFPSWAP` in all modes _except_ `SFPSWAP_MOD1_SWAP`: these modes read from `VC` and `VD` during their 1<sup>st</sup> cycle to compare them, and then read them _again_ during their 2<sup>nd</sup> cycle if they need to be swapped, but the stalling logic does not realise that any reads are performed during the 1<sup>st</sup> cycle.
+> * `SFPSHFT2` when `SFPSHFT2_MOD1_SUBVEC_SHFLROR1_AND_COPY4` or `SFPSHFT2_MOD1_SUBVEC_SHFLROR1` or `SFPSHFT2_MOD1_SUBVEC_SHFLSHR1` are used: the stalling logic does not realise that these modes of `SFPSHFT2` read anything.
+> * `SFPSHFT2` when `SFPSHFT2_MOD1_SHFT_LREG` or `SFPSHFT2_MOD1_SHFT_IMM` are used: the stalling logic thinks that these modes of `SFPSHFT2` read from `VD` whereas they actually read from `VB`.
 >
 > If `SFPMAD` is followed by one of the above cases, with `SFPMAD` writing to a location which is not detected by the automatic stalling logic, software must ensure a gap of at least one cycle between `SFPMAD` and the consuming instruction. An [`SFPNOP`](SFPNOP.md) instruction can be inserted to ensure this.
 

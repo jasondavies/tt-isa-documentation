@@ -197,6 +197,21 @@ local diagrams = {
       end
     end}
   end,
+  SHFLSHR1_BH = function(ctx)
+    ctx:LReg{label = "LReg[VC]", lane_transform = function(r, c)
+      if c ~= 7 then
+        return r, c
+      end
+    end}
+    ctx:To()
+    ctx:LReg{label = "LReg[VD]", lane_transform = function(r, c)
+      if c == 0 then
+        return "0"
+      else
+        return r, (c - 1) % 8
+      end
+    end}
+  end,
   COPY4 = function(ctx)
     local s_scale = 0.5
     ctx:LReg{label = "LReg[0]", transp = true, s_scale = s_scale, lane_transform = function() return "" end}
