@@ -41,7 +41,7 @@ NoC hardware ensures deadlock freedom for most common types of transaction; howe
   * Arbitration priorities other than `0` (c.f. `NOC_CMD_ARB_PRIORITY`)
 
 > [!TIP]
-> Compared to Wormhole, some of the major upgrades to the NoC in Blackhole are: higher clock speed (1 Ghz → 1.35 Ghz), doubling of bandwidth per clock cycle (256 bits per flit → 512 bits per flit), and widening of addresses (36 bits → 64 bits). An unfortunate regression means that `NOC_CMD_WR_INLINE` can no longer safely be used to write to L1 addresses.
+> Compared to Wormhole, some of the major upgrades to the NoC in Blackhole are: higher clock speed (1 GHz → 1.35 GHz), doubling of bandwidth per clock cycle (256 bits per flit → 512 bits per flit), and widening of addresses (36 bits → 64 bits). An unfortunate regression means that `NOC_CMD_WR_INLINE` can no longer safely be used to write to L1 addresses.
 
 ## Virtual channels
 
