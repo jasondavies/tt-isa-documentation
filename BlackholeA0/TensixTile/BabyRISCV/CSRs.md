@@ -52,7 +52,7 @@ The baby RISCV cores recognise the following CSRs:
 
 |First&nbsp;bit|#&nbsp;Bits|Name|Purpose|
 |--:|--:|---|---|
-|0|1|`DisLdBufByp`||
+|0|1|`DisLdBufByp`|If set, load instructions will wait (in EX1) for the store queue to be empty before entering the Load/Store Unit (if the tail of the store queue is a store to L1, the duration of this wait can depend on `StMergeTimer`)|
 |1|1|`DisBp`|If set, the branch predictor is disabled|
 |2|1|`DisIcPrefetch`|If set, the instruction cache prefetchers are disabled|
 |3|1|`DisLowCash`|If set, the L0 data cache is disabled|
