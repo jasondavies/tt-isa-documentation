@@ -211,6 +211,14 @@ local diagrams = {
       {24, 8, "0x95"},
     }
   end,
+  SFPLUTFP32_BH = function()
+    return Bits32{
+      {0, 4, "Mod1"},
+      {4, 4, "VD"},
+      {16, 4, "Mod1Mirror", y=1},
+      {24, 8, "0x95"},
+    }
+  end,
   REG2FLOP_Configuration = function()
     return Bits32{
       {0, 6, "InputReg"},
@@ -1103,6 +1111,13 @@ local diagrams = {
   SFPPUSHC = function()
     return Bits32{
       {0, 4, "0"},
+      {4, 4, "VD"},
+      {24, 8, "0x87"},
+    }
+  end,
+  SFPPUSHC_BH = function()
+    return Bits32{
+      {0, 4, "Mod1"},
       {4, 4, "VD"},
       {24, 8, "0x87"},
     }
