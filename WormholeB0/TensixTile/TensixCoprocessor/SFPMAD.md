@@ -56,6 +56,8 @@ The multiply and the add are _partially_ fused, but not _completely_ fused: the 
 
 If the output (before rounding) is denormal or negative zero, it'll be flushed to positive zero.
 
+A [bit-perfect software model](../../../Miscellaneous/FMA/README.md) is provided for anyone either trying to exactly reproduce the hardware behaviour or trying to understand exactly where and how it diverges from IEEE754.
+
 ## Instruction scheduling
 
 If `SFPMAD` is used, software must ensure that on the next cycle, the Vector Unit (SFPU) does not execute an instruction which reads from any location written to by the `SFPMAD`. An [`SFPNOP`](SFPNOP.md) instruction can be inserted to ensure this.

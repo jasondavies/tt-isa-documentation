@@ -20,7 +20,7 @@ The "baby" RISCV cores implement 32-bit RISCV with some extensions:
   * `fflags` and `frm` CSRs are not implemented (though `fcsr` _is_, and contains all the relevant bits)
   * `fdiv.s` and `fsqrt.s` are not implemented
   * `fadd.s` / `fsub.s` / `fmul.s` _are_ implemented, but treat denormal inputs as zero, and flush denormals to zero on output
-  * `fmadd.s` / `fmsub.s` / `fnmsub.s` / `fnmadd.s` _will execute_, but treat denormal inputs as zero, and flush denormals to zero on output, and have semantics somewhere between separate multiply/add and fused multiply/add (i.e. even aside from denormals, they do _not_ conform to the IEEE754 definition of fused multiply/add)
+  * `fmadd.s` / `fmsub.s` / `fnmsub.s` / `fnmadd.s` _will execute_, but treat denormal inputs as zero, and flush denormals to zero on output, [and have semantics somewhere between separate multiply/add and fused multiply/add](../../../Miscellaneous/FMA/README.md) (i.e. even aside from denormals, they do _not_ conform to the IEEE754 definition of fused multiply/add)
 * Some, but not all, of "Zfh" Extension for Half-Precision Floating-Point, Version 1.0:
   * Same caveats as for `F` Extension above (for `.h` instructions as for `.s` instructions)
   * Also a custom CSR bit for switching these instructions to operate on BF16 values rather than FP16 values
@@ -32,7 +32,7 @@ The "baby" RISCV cores implement 32-bit RISCV with some extensions:
   * No `vill` bit in `vtype`
   * `vdiv` / `vdivu` / `vrem` / `vremu` are not implemented (i.e. no integer division / remainder)
   * `vfdiv` / `vfrdiv` / `vfsqrt` / `vfrsqrt7` / `vfrec7` are not implemented (i.e. no floating-point division / square root / reciprocal)
-  * Floating-point vector instructions have the same caveats as their scalar equivalents regarding rounding, denormals, and FMA semantics.
+  * Floating-point vector instructions have the same caveats as their scalar equivalents regarding rounding, denormals, and [FMA semantics](../../../Miscellaneous/FMA/README.md).
 
 ## Base Instruction Set
 

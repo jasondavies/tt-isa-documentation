@@ -63,6 +63,8 @@ The multiply and the add are _partially_ fused, but not _completely_ fused: the 
 
 If the output (after rounding) is denormal, it'll be flushed to sign-preserved zero.
 
+A [bit-perfect software model](../../../Miscellaneous/FMA/README.md) is provided for anyone either trying to exactly reproduce the hardware behaviour or trying to understand exactly where and how it diverges from IEEE754.
+
 ## Instruction scheduling
 
 `SFPMAD` requires two cycles to compute its result. If `SFPMAD` is used, hardware will ensure that on the next cycle, the Vector Unit (SFPU) does not execute an instruction which reads from any location written to by the `SFPMAD`. If a thread presents a Vector Unit (SFPU) instruction which wants to read from such a location, then hardware will automatically stall the thread for one cycle. If `SFPMAD_MOD1_INDIRECT_VA` is used, the stalling logic conservatively assumes that `SFPMAD` reads from every `LReg`. Similarly, if `SFPMAD_MOD1_INDIRECT_VD` is used, the stalling logic conservatively assumes that `SFPMAD` writes to every `LReg`. This can lead to decreased performance when these modifiers are used.
