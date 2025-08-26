@@ -48,8 +48,8 @@ The Vector Unit (SFPU) performs arithmetic and manipulation on 32-bit floating-p
 <thead><tr><th colspan="4" align="left">Sign-magnitude integer arithmetic instructions, operating lanewise</th></tr></thead>
 <thead><tr><th>Instruction</th><th>IPC</th><th>Latency</th><th>Approximate semantics (see instruction page for full details)</th></tr></thead>
 <tr><td><a href="SFPMUL24.md"><code>SFPMUL24</code></a>&nbsp;(†)</td><td>1</td><td>2 cycles</td><td><code>VD = (Abs(VA) * Abs(VB)) &amp; 0x7fffff</code> or<br/><code>VD = ((Abs(VA) &amp; 0x7fffff) * (Abs(VB) &amp; 0x7fffff)) &gt;&gt; 23</code></td></tr>
-<tr><td><a href="SFPGT.md"><code>SFPGT</code></a>&nbsp;(†)</td><td>1</td><td>1 cycle</td><td><code>VD = VD &gt;  VC ? -2<sup>31</sup>-1 : +0</code>, where -0 < +0 (‡)</td></tr>
-<tr><td><a href="SFPLE.md"><code>SFPLE</code></a>&nbsp;(†)</td><td>1</td><td>1 cycle</td><td><code>VD = VD &lt;= VC ? -2<sup>31</sup>-1 : +0</code>, where -0 < +0 (‡)</td></tr>
+<tr><td><a href="SFPGT.md"><code>SFPGT</code></a>&nbsp;(†)</td><td>1</td><td>1 cycle</td><td><code>VD = VD &gt;  VC ? -(2<sup>31</sup>-1) : +0</code>, where -0 < +0 (‡)</td></tr>
+<tr><td><a href="SFPLE.md"><code>SFPLE</code></a>&nbsp;(†)</td><td>1</td><td>1 cycle</td><td><code>VD = VD &lt;= VC ? -(2<sup>31</sup>-1) : +0</code>, where -0 < +0 (‡)</td></tr>
 <tr><td><a href="SFPMOV.md"><code>SFPMOV</code></a>&nbsp;(†)</td><td>1</td><td>1 cycle</td><td><code>VD = -VC</code></td></tr>
 <tr><td><a href="SFPSETSGN.md"><code>SFPSETSGN</code></a>&nbsp;(†)</td><td>1</td><td>1 cycle</td><td><code>VD = Abs(VC)</code> or <code>VD = -Abs(VC)</code></td></tr>
 <tr><td><a href="SFPSTOCHRND_IntInt.md"><code>SFPSTOCHRND</code></a>&nbsp;(†)</td><td>1</td><td>1 cycle</td><td><code>VD = Min(Round(Abs(VC) &gt;&gt; (VB % 32)), 255)</code> or<br/><code>VD = Min(Round(Abs(VC) &gt;&gt; Imm5), 255)</code></td></tr>
