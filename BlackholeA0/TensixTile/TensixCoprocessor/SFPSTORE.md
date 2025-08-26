@@ -178,7 +178,7 @@ uint16_t ToBF16(uint32_t x) {
   return (Sign | Exp | Man) >> 16;
 }
 
-uint16_t ToFP32(uint32_t x) {
+uint32_t ToFP32(uint32_t x) {
   // Flush denormals to signed zero.
   uint32_t Sign = x & 0x80000000;
   uint32_t Exp  = x & 0x7f800000;
