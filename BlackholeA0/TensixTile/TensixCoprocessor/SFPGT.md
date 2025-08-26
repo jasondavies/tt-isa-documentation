@@ -58,7 +58,7 @@ bool SignMagIsSmaller(uint32_t C, uint32_t D) {
   // still determines whether C is less than D, using the total
   // order where -NaN < -Inf < ... < -0 < +0 < ... < +Inf < +NaN.
 
-  // For purposes of exposition, remap sign-mag -0 ... -2^31-1
+  // For purposes of exposition, remap sign-mag -0 ... -(2^31-1)
   // to two's-comp -1 ... -2^31, then perform two's-comp comparison.
   C ^= (uint32_t)((int32_t)C >> 30) >> 1;
   D ^= (uint32_t)((int32_t)D >> 30) >> 1;
