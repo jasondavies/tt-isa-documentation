@@ -30,7 +30,7 @@ TT_SFP_STOCH_RND(/* u2 */ RoundingMode, 0, /* u4 */ VC,
 ```
 
 > [!NOTE]
-> `VC` is specified twice in the syntax to work around a false dependency bug in the automatic stalling logic of some other instructions. If instead looking at the encoding diagam (below), the mitigation is to set `VB` equal to `VC`.
+> `VC` is specified twice in the syntax to work around a false dependency bug in the automatic stalling logic of some other instructions. If instead looking at the encoding diagram (below), the mitigation is to set `VB` equal to `VC`.
 
 ## Encoding
 
