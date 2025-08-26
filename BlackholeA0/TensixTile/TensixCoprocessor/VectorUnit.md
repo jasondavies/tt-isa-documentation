@@ -3,7 +3,7 @@
 The Vector Unit (SFPU) performs arithmetic and manipulation on 32-bit floating-point values or 32-bit integers in [`LReg`](LReg.md). It can be considered as a general-purpose SIMD engine, consisting of 32 lanes of 32 bits.
 
 > [!TIP]
-> Compared to Wormhole, the Vector Unit (SFPU) in Blackhole gains new `SFPARECIP`, `SFPGT`, `SFPLE`, `SFPMUL24` instructions, new modes of the existing `SFPCAST`, `SFPPUSHC`, and `SFPSTOCHRND` instructions, small enhancements to the existing `SFPAND`, `SFPMAD`, `SFPOR`, and `SFPSHFT` instructions, small changes to the existing `SFPLOAD` and `SFPSTORE` instructions, and bugfixes to the existing `SFPPOPC` and `SFPSHFT2` instructions. It also clocks at 1.35 GHz rather than 1 Ghz.
+> Compared to Wormhole, the Vector Unit (SFPU) in Blackhole gains new `SFPARECIP`, `SFPGT`, `SFPLE`, `SFPMUL24` instructions, new modes of the existing `SFPCAST`, `SFPPUSHC`, and `SFPSTOCHRND` instructions, small enhancements to the existing `SFPAND`, `SFPMAD`, `SFPOR`, and `SFPSHFT` instructions, small changes to the existing `SFPLOAD` and `SFPSTORE` instructions, and bugfixes to the existing `SFPPOPC` and `SFPSHFT2` instructions. It also clocks at 1.35 GHz rather than 1 GHz.
 
 ## Instructions
 
