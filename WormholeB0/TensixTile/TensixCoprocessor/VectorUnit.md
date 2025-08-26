@@ -79,9 +79,9 @@ The Vector Unit (SFPU) performs arithmetic and manipulation on 32-bit floating-p
 <thead><tr><th>Instruction</th><th>IPC</th><th>Latency</th><th>Approximate semantics (see instruction page for full details)</th></tr></thead>
 <tr><td><a href="SFPENCC.md"><code>SFPENCC</code></a></td><td>1</td><td>1 cycle</td><td>Enable or disable conditional execution</td></tr>
 <tr><td><a href="SFPSETCC.md"><code>SFPSETCC</code></a>&nbsp;(†)</td><td>1</td><td>1 cycle</td><td>Set per-lane flags based on <code>VC &lt; 0</code> or <code>VC != 0</code> or <code>VC &gt;= 0</code> or <code>VC == 0</code></td></tr>
-<tr><td><a href="SFPPUSHC.md"><code>SFPPUSHC</code></a></td><td>1</td><td>1 cycle</td><td>Push flags onto flag stack</code></td></tr>
+<tr><td><a href="SFPPUSHC.md"><code>SFPPUSHC</code></a></td><td>1</td><td>1 cycle</td><td>Push flags onto flag stack</td></tr>
 <tr><td><a href="SFPCOMPC.md"><code>SFPCOMPC</code></a></td><td>1</td><td>1 cycle</td><td>SIMT mapping of <code>else</code> in context of <code>if</code> / <code>else</code></td></tr>
-<tr><td><a href="SFPPOPC.md"><code>SFPPOPC</code></a></td><td>1</td><td>1 cycle</td><td>Pop or peek flag stack</code></td></tr>
+<tr><td><a href="SFPPOPC.md"><code>SFPPOPC</code></a></td><td>1</td><td>1 cycle</td><td>Pop or peek flag stack</td></tr>
 <thead><tr><th colspan="4" align="left">Other instructions</th></tr></thead>
 <thead><tr><th>Instruction</th><th>IPC</th><th>Latency</th><th>Approximate semantics (see instruction page for full details)</th></tr></thead>
 <tr><td><a href="SFPCONFIG.md"><code>SFPCONFIG</code></a>&nbsp;(†)</td><td>1</td><td>≤&nbsp;2&nbsp;cycles</td><td><code>Configuration = Broadcast(LReg[0][0:8])</code> or <code>Configuration = Imm16</code></td></tr>
