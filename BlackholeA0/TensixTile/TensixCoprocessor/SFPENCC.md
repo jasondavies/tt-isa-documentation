@@ -20,7 +20,7 @@ TT_SFPENCC(/* u2 */ Imm2, 0, /* u4 */ VD, /* u4 */ Mod1)
 lanewise {
   if (VD < 12 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
     if (Mod1 & SFPENCC_MOD1_EI) {
-      UseLaneFlagsForLaneEnable = (Imm2 & SFPENCC_IMM12_E) != 0;
+      UseLaneFlagsForLaneEnable = (Imm2 & SFPENCC_IMM2_E) != 0;
     } else if (Mod1 & SFPENCC_MOD1_EC) {
       UseLaneFlagsForLaneEnable = !UseLaneFlagsForLaneEnable;
     } else {
@@ -28,7 +28,7 @@ lanewise {
     }
 
     if (Mod1 & SFPENCC_MOD1_RI) {
-      LaneFlags = (Imm2 & SFPENCC_IMM12_R) != 0;
+      LaneFlags = (Imm2 & SFPENCC_IMM2_R) != 0;
     } else {
       LaneFlags = true;
     }
@@ -39,9 +39,9 @@ lanewise {
 Supporting definitions:
 ```c
 #define SFPENCC_MOD1_EC 1 // Invert UseLaneFlagsForLaneEnable
-#define SFPENCC_MOD1_EI 2 // Set UseLaneFlagsForLaneEnable from SFPENCC_IMM12_E 
-#define SFPENCC_MOD1_RI 8 // Set LaneFlags from SFPENCC_IMM12_R
+#define SFPENCC_MOD1_EI 2 // Set UseLaneFlagsForLaneEnable from SFPENCC_IMM2_E 
+#define SFPENCC_MOD1_RI 8 // Set LaneFlags from SFPENCC_IMM2_R
 
-#define SFPENCC_IMM12_E 1 // Immediate bit for UseLaneFlagsForLaneEnable
-#define SFPENCC_IMM12_R 2 // Immediate bit for LaneFlags
+#define SFPENCC_IMM2_E 1 // Immediate bit for UseLaneFlagsForLaneEnable
+#define SFPENCC_IMM2_R 2 // Immediate bit for LaneFlags
 ```
