@@ -43,4 +43,4 @@ Note that these condition bits coincide _exactly_ with the low four bits of [`ST
 
 ## Performance
 
-The instruction occupies the Scalar Unit (ThCon) for at least two cycles, and for as many additional cycles are required for the selected conditions to be met.
+The instruction occupies the Scalar Unit (ThCon) for at least two cycles, and for as many additional cycles as required for the selected conditions to be met.
