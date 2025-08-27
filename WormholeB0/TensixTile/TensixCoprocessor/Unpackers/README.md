@@ -32,7 +32,7 @@ See [packer compression](../Packers/Compression.md#in-memory--on-disk-format) fo
 
 To perform decompression during unpacking, one of either `ConfigState.THCON_SEC[WhichUnpacker].Disable_zero_compress_cntx[WhichContext]` or  `ConfigDescriptor.IsUncompressed` needs to be set to `false` (which one depends on the value of `MultiContextMode`; see the [`UNPACR` functional model](../UNPACR_Regular.md#functional-model) for details).
 
-If decompressing, then an unpacker will consume both a datum stream and an RLE stream: the RLE stream stream specifies how many zeros to insert after every datum (which can be between 0 and 15). It expects these two streams to be interleaved in L1: 32 datums, then 32 RLE values, then 32 datums, then 32 RLE values, and so forth.
+If decompressing, then an unpacker will consume both a datum stream and an RLE stream: the RLE stream specifies how many zeros to insert after every datum (which can be between 0 and 15). It expects these two streams to be interleaved in L1: 32 datums, then 32 RLE values, then 32 datums, then 32 RLE values, and so forth.
 
 If decompressing, then the input address generator is also modified: it will consume either one or two row start indices from the `RSI` array produced by the packer. To aid sequential unpack instructions which consume adjacent compressed data, unpackers maintain a little cache of RSI data.
 

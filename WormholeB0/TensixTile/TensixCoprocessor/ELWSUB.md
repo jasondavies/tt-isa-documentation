@@ -1,6 +1,6 @@
 # `ELWSUB` (`Dst = SrcA - SrcB` or `Dst += SrcA - SrcB`)
 
-**Summary:** An aligned 8x16 block of `SrcB` is subtracted element-wise from an aligned 8x16 block of `SrcA`, and the result either assigned to an aligned 8x16 block of `Dst` or added element-wise to an aligned 8x16 block of `Dst`. Broadcasting is supported on the `SrcB` operand; any 1x16 row can broadcasted up to 8x16 and/or column 0 can be broadcasted to all columns.
+**Summary:** An aligned 8x16 block of `SrcB` is subtracted element-wise from an aligned 8x16 block of `SrcA`, and the result either assigned to an aligned 8x16 block of `Dst` or added element-wise to an aligned 8x16 block of `Dst`. Broadcasting is supported on the `SrcB` operand; any 1x16 row can be broadcasted up to 8x16 and/or column 0 can be broadcasted to all columns.
 
 The supported data type combinations are:
 
