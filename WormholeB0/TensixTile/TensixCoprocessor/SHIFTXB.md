@@ -41,7 +41,7 @@ Once dispatched to the Matrix Unit (FPU):
 SrcRow = (SrcRow + RWCs[CurrentThread].SrcB) & 0x3f;
 
 uint19_t Column0 = SrcB[MatrixUnit.SrcBBank][SrcRow][0];
-for (unsigned Column = 0; Column < 14; ++Column) {
+for (unsigned Column = 0; Column < 15; ++Column) {
   SrcB[MatrixUnit.SrcBBank][SrcRow][Column] = SrcB[MatrixUnit.SrcBBank][SrcRow][Column + 1];
 }
 SrcB[MatrixUnit.SrcBBank][SrcRow][15] = ShiftInZero ? 0 : Column0;
