@@ -12,22 +12,22 @@ The application can also print some information about the various Ethernet tiles
 
 ```
 $ gcc -O2 ethdump.c -o ethdump && ./ethdump --device=0 --hwinfo
-|Tile|NoC #0  |Logical  |Port   |Training    |Serdes          |
-|----|--------|---------|-------|------------|----------------|
-|E0  |X=1 ,Y=1|X=20,Y=25|No     |Skipped     |N/A             |
-|E2  |X=2 ,Y=1|X=22,Y=25|No     |Skipped     |N/A             |
-|E4  |X=3 ,Y=1|X=24,Y=25|Down   |Timeout (AN)|#2 lanes 0,1,2,3|
-|E6  |X=4 ,Y=1|X=25,Y=25|Down   |Timeout (AN)|#2 lanes 4,5,6,7|
-|E8  |X=5 ,Y=1|Harvested|N/A    |N/A         |N/A             |
-|E10 |X=6 ,Y=1|X=28,Y=25|Down   |Timeout (AN)|#4 lanes 4,5,6,7|
-|E12 |X=7 ,Y=1|X=30,Y=25|Down   |Timeout (AN)|#3 lanes 4,5,6,7|
-|E13 |X=10,Y=1|X=31,Y=25|Down   |Timeout (AN)|#3 lanes 0,1,2,3|
-|E11 |X=11,Y=1|X=29,Y=25|Down   |Timeout (AN)|#4 lanes 0,1,2,3|
-|E9  |X=12,Y=1|X=27,Y=25|Down   |Timeout (AN)|#5 lanes 0,1,2,3|
-|E7  |X=13,Y=1|X=26,Y=25|Down   |Timeout (AN)|#5 lanes 4,5,6,7|
-|E5  |X=14,Y=1|Harvested|N/A    |N/A         |N/A             |
-|E3  |X=15,Y=1|X=23,Y=25|No     |Skipped     |N/A             |
-|E1  |X=16,Y=1|X=21,Y=25|No     |Skipped     |N/A             |
+|Tile|NoC #0  |Logical  |Port   |Training    |Serdes          |MAC Address      |
+|----|--------|---------|-------|------------|----------------|-----------------|
+|E0  |X=1 ,Y=1|X=20,Y=25|No     |Skipped     |N/A             |N/A              |
+|E2  |X=2 ,Y=1|X=22,Y=25|No     |Skipped     |N/A             |N/A              |
+|E4  |X=3 ,Y=1|X=24,Y=25|Up     |Ext Loopback|#2 lanes 0,1,2,3|20:8c:47:05:2b:c0|
+|E6  |X=4 ,Y=1|X=25,Y=25|Down   |Timeout (AN)|#2 lanes 4,5,6,7|20:8c:47:05:2b:c1|
+|E8  |X=5 ,Y=1|Harvested|N/A    |N/A         |N/A             |N/A              |
+|E10 |X=6 ,Y=1|X=28,Y=25|Down   |Timeout (AN)|#4 lanes 4,5,6,7|20:8c:47:05:2b:c4|
+|E12 |X=7 ,Y=1|X=30,Y=25|Down   |Timeout (AN)|#3 lanes 4,5,6,7|20:8c:47:05:2b:c6|
+|E13 |X=10,Y=1|X=31,Y=25|Up     |Ext Loopback|#3 lanes 0,1,2,3|20:8c:47:05:2b:c7|
+|E11 |X=11,Y=1|X=29,Y=25|Up     |Ext Loopback|#4 lanes 0,1,2,3|20:8c:47:05:2b:c5|
+|E9  |X=12,Y=1|X=27,Y=25|Down   |Timeout (AN)|#5 lanes 0,1,2,3|20:8c:47:05:2b:c3|
+|E7  |X=13,Y=1|X=26,Y=25|Up     |Ext Loopback|#5 lanes 4,5,6,7|20:8c:47:05:2b:c2|
+|E5  |X=14,Y=1|Harvested|N/A    |N/A         |N/A             |N/A              |
+|E3  |X=15,Y=1|X=23,Y=25|No     |Skipped     |N/A             |N/A              |
+|E1  |X=16,Y=1|X=21,Y=25|No     |Skipped     |N/A             |N/A              |
 ```
 
 ## Usage notes

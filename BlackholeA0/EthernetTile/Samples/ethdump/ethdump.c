@@ -412,6 +412,7 @@ static void allocate_host_buffer(bh_pcie_device_t* device, pinned_host_buffer_t*
 // Offsets from TXPKT_CFG_ADDR:
 #define TXPKT_CFG_INSERT_CTL_OFFSET    0x00
 #define TXPKT_CFG_MAC_SA_OFFSET        0x10
+#define TXPKT_CFG_MAC_DA_OFFSET        0x18
 #define TXPKT_CFG_USE_ETHERTYPE_OFFSET 0x20
 #define TXPKT_CFG_L3_HEADER_OFFSET     0x30
 #define TXPKT_CFG_L4_HEADER_OFFSET     0x60
@@ -456,8 +457,8 @@ static bool is_endpoint_id_ethernet(uint32_t endpoint_id) {
 }
 
 static void print_hwinfo(bh_pcie_device_t* device) {
-  printf("|Tile|NoC #0  |Logical  |Port   |Training    |Serdes          |\n");
-  printf("|----|--------|---------|-------|------------|----------------|\n");
+  printf("|Tile|NoC #0  |Logical  |Port   |Training    |Serdes          |MAC Address      |\n");
+  printf("|----|--------|---------|-------|------------|----------------|-----------------|\n");
   for (unsigned x = 1, y = 1; x <= 16; ++x) {
     if (x == 8 || x == 9) continue;
     set_tlb_xy(device, x, y);
@@ -466,7 +467,7 @@ static void print_hwinfo(bh_pcie_device_t* device) {
     uint32_t niu_cfg_0 = tlb_read_u32(device, NIU_ADDR(0) + NIU_CFG_0_OFFSET);
     printf("|E%-3u|X=%-2u,Y=%u|", (unsigned)(endpoint_id & 0xff), x, y);
     if (niu_cfg_0 & NIU_CFG_0_HARVESTED) {
-      printf("Harvested|N/A    |N/A         |N/A             |\n");
+      printf("Harvested|N/A    |N/A         |N/A             |N/A              |\n");
       continue;
     }
     unsigned noc_id_logical_xy = tlb_read_u32(device, NIU_ADDR(0) + NOC_ID_LOGICAL_OFFSET) & 0xfff;
@@ -498,10 +499,64 @@ static void print_hwinfo(bh_pcie_device_t* device) {
           lanes_prefix = ",";
         }
       }
-      printf("|\n");
+      printf("|");
     } else {
-      printf("N/A             |\n");
+      printf("N/A             |");
     }
+    if (port_status == 3) {
+      // No port -> no MAC address.
+      printf("N/A              |");
+    } else {
+      uint32_t mac_major;
+      uint32_t mac_minor;
+      if (boot_results[247] == 1) {
+        // Tile has attempted chip info exchange with its peer, and we can snoop
+        // the MAC address from said information buffer.
+        mac_major = boot_results[243];
+        mac_minor = boot_results[244];
+      } else {
+        // Copy of the current firmware logic for choosing a MAC address.
+        volatile uint32_t* boot_params = (volatile uint32_t*)set_tlb_addr(device, ETH_BOOT_PARAMS_ADDR);
+        uint32_t logical_id = __builtin_popcount(boot_params[0] & ((1u << (endpoint_id & 0x1f)) - 1));
+        mac_major = boot_params[36];
+        mac_minor = boot_params[37] + logical_id;
+      }
+      printf("%02x:%02x:%02x:%02x:%02x:%02x|",
+        (uint8_t)(mac_major >> 16), (uint8_t)(mac_major >> 8), (uint8_t)(mac_major >> 0),
+        (uint8_t)(mac_minor >> 16), (uint8_t)(mac_minor >> 8), (uint8_t)(mac_minor >> 0));
+    }
+    printf("\n");
+  }
+}
+
+static void print_tx_headers(bh_pcie_device_t* device) {
+  printf("|#|Destination MAC  |Source MAC       |Ethertype|\n");
+  printf("|-|-----------------|-----------------|---------|\n");
+  for (unsigned i = 0; i < 10; ++i) {
+    uint32_t addr = TXPKT_CFG_ADDR(i);
+    printf("|%u", i);
+    for (unsigned j = 0; j < 2; ++j) {
+      volatile uint32_t* ptr = (uint32_t*)set_tlb_addr(device, addr + (j ? TXPKT_CFG_MAC_SA_OFFSET : TXPKT_CFG_MAC_DA_OFFSET));
+      uint32_t words[2] = {ptr[0], ptr[1]};
+      uint8_t bytes[6] = {
+        (uint8_t)(words[1] >>  8),
+        (uint8_t)(words[1] >>  0),
+        (uint8_t)(words[0] >> 24),
+        (uint8_t)(words[0] >> 16),
+        (uint8_t)(words[0] >>  8),
+        (uint8_t)(words[0] >>  0)
+      };
+      for (unsigned k = 0; k < 6; ++k) {
+        printf("%c%02x", k ? ':' : '|', bytes[k]);
+      }
+    }
+    uint32_t ethertype = tlb_read_u32(device, addr + TXPKT_CFG_USE_ETHERTYPE_OFFSET);
+    if (ethertype & 1) {
+      printf("|0x%04x   ", ethertype >> 16);
+    } else {
+      printf("|Length   ");
+    }
+    printf("|\n");
   }
 }
 
@@ -1103,6 +1158,9 @@ reentry:;
 
 // Command line parsing:
 
+#define PRINT_HW_INFO     0x01
+#define PRINT_TX_HEADERS  0x02
+
 typedef struct ethdump_args_t {
   const char* device;
   const char* output;
@@ -1111,7 +1169,7 @@ typedef struct ethdump_args_t {
   uint8_t ethernet_x;
   uint8_t loopback_mode;
   bool apply_loopback_mode;
-  bool print_hwinfo;
+  uint8_t to_print;
   bool generate_traffic;
 } ethdump_args_t;
 
@@ -1194,7 +1252,12 @@ static uintptr_t action_set_host_ring_size(ethdump_args_t* args, uintptr_t parse
 }
 
 static uintptr_t action_print_hwinfo(ethdump_args_t* args, uintptr_t parsed) {
-  args->print_hwinfo = true;
+  args->to_print |= PRINT_HW_INFO;
+  return parsed;
+}
+
+static uintptr_t action_print_txheaders(ethdump_args_t* args, uintptr_t parsed) {
+  args->to_print |= PRINT_TX_HEADERS;
   return parsed;
 }
 
@@ -1229,6 +1292,7 @@ static const cmdline_def_t g_cmdline_actions[] = {
   {"--loopback-mode",    action_set_loopback_mode,    parse_small_int},
   {"--out",              action_set_output_path,      parse_str},
   {"--output",           action_set_output_path,      parse_str},
+  {"--txheaders",        action_print_txheaders,      NULL},
 };
 
 static void parse_args(ethdump_args_t* args, int argc, const char** argv) {
@@ -1288,15 +1352,19 @@ int main(int argc, const char** argv) {
   args.device_ring_size = 256 << 10;
   args.host_ring_size = 2 << 20; 
   parse_args(&args, argc, argv);
-  bool capturing_traffic = !args.print_hwinfo || args.output || args.generate_traffic;
+  bool capturing_traffic = !args.to_print || args.output || args.generate_traffic;
 
   bh_pcie_device_t* device = open_bh_pcie_device(args.device);
-  if (args.print_hwinfo) {
+  if (args.to_print & PRINT_HW_INFO) {
     print_hwinfo(device);
   }
   if (capturing_traffic || args.apply_loopback_mode) {
     set_ethernet_x(device, args.ethernet_x);
     wait_for_ethernet_training_complete(device, args.apply_loopback_mode ? &args.loopback_mode : NULL);
+  }
+  if (args.to_print & PRINT_TX_HEADERS) {
+    set_ethernet_x(device, args.ethernet_x);
+    print_tx_headers(device);
   }
   if (capturing_traffic) {
     char output_filename_buf[12];
