@@ -1,3 +1,5 @@
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/tenstorrent/tt-isa-documentation)
+
 # Tenstorrent ISA Documentation
 
 This repository contains low-level documentation about Tenstorrent AI architectures.
