@@ -260,7 +260,7 @@ void Store16(uint32_t Addr, uint16_t Value) {
     break;
   }
   Addr = (Addr - 0xFFBD8000) / 2;
-  Dst32b[Addr / 16][Addr % 16] = Value;
+  Dst16b[Addr / 16][Addr % 16] = Value;
 }
 
 void Store8(uint32_t Addr, uint8_t Value) {
