@@ -864,6 +864,15 @@ local diagrams = {
       {24, 8, "0x70"},
     }
   end,
+  SFPLOAD_BH = function()
+    return Bits32{
+      {0, 10, "Imm10"},
+      {13, 3, "AddrMod", y=1},
+      {16, 4, "Mod0"},
+      {20, 4, "VD"},
+      {24, 8, "0x70"},
+    }
+  end,
   SFPLOADMACRO = function()
     return Bits32{
       {0, 1, "VDHi", y=1, edge="right"},
@@ -875,10 +884,30 @@ local diagrams = {
       {24, 8, "0x93"},
     }
   end,
+  SFPLOADMACRO_BH = function()
+    return Bits32{
+      {0, 1, "VDHi", y=1, edge="right"},
+      {1, 9, "Imm9"},
+      {13, 3, "AddrMod", y=1},
+      {16, 4, "Mod0"},
+      {20, 2, "VDLo"},
+      {22, 2, "MacroIndex", y=1},
+      {24, 8, "0x93"},
+    }
+  end,
   SFPSTORE = function()
     return Bits32{
       {0, 10, "Imm10"},
       {14, 2, "AddrMod", y=1},
+      {16, 4, "Mod0"},
+      {20, 4, "VD"},
+      {24, 8, "0x72"},
+    }
+  end,
+  SFPSTORE_BH = function()
+    return Bits32{
+      {0, 10, "Imm10"},
+      {13, 3, "AddrMod", y=1},
       {16, 4, "Mod0"},
       {20, 4, "VD"},
       {24, 8, "0x72"},

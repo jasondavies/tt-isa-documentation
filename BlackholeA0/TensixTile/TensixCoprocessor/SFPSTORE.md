@@ -11,16 +11,18 @@
 > * `MOD0_FMT_SRCB`: Resolves to one of `MOD0_FMT_FP16` or `MOD0_FMT_BF16` or `MOD0_FMT_FP32` in the same way as before, but `MOD0_FMT_FP32` has changed and is no longer equivalent to `MOD0_FMT_INT32`, so software will need to explicitly specify `MOD0_FMT_INT32` if that is what it wants.
 > * `MOD0_FMT_INT8_COMP`: Deprecated, and no longer performs a data type conversion.
 > * `MOD0_FMT_INT32_SM`: Deprecated, and no longer performs a data type conversion.
+>
+> There is also a minor change to the encoding of `AddrMod`, though this is invisible to the programmer if using the `TT_SFPLOAD` macro (or one of its siblings).
 
 ## Syntax
 
 ```c
-TT_SFPSTORE(/* u4 */ VD, /* u4 */ Mod0, /* u2 */ AddrMod, /* u10 */ Imm10)
+TT_SFPSTORE(/* u4 */ VD, /* u4 */ Mod0, /* u3 */ AddrMod, /* u10 */ Imm10)
 ```
 
 ## Encoding
 
-![](../../../Diagrams/Out/Bits32_SFPSTORE.svg)
+![](../../../Diagrams/Out/Bits32_SFPSTORE_BH.svg)
 
 ## Data type conversions
 

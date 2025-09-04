@@ -10,16 +10,18 @@
 > * `MOD0_FMT_INT8`: Range increased from ±127 to ±255.
 > * `MOD0_FMT_INT8_COMP`: Deprecated, and no longer performs a data type conversion.
 > * `MOD0_FMT_INT32_SM`: Deprecated, and no longer performs a data type conversion.
+>
+> There is also a minor change to the encoding of `AddrMod`, though this is invisible to the programmer if using the `TT_SFPLOAD` macro (or one of its siblings).
 
 ## Syntax
 
 ```c
-TT_SFPLOAD(/* u4 */ VD, /* u4 */ Mod0, /* u2 */ AddrMod, /* u10 */ Imm10)
+TT_SFPLOAD(/* u4 */ VD, /* u4 */ Mod0, /* u3 */ AddrMod, /* u10 */ Imm10)
 ```
 
 ## Encoding
 
-![](../../../Diagrams/Out/Bits32_SFPLOAD.svg)
+![](../../../Diagrams/Out/Bits32_SFPLOAD_BH.svg)
 
 ## Data type conversions
 

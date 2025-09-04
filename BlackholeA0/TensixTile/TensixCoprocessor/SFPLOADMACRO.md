@@ -20,14 +20,14 @@ The Vector Unit (SFPU) is capable of executing up to five instructions per cycle
 TT_SFPLOADMACRO(((/* u2 */ MacroIndex) << 2) +
                   /* u2 */ VDLo,
                   /* u4 */ Mod0,
-                  /* u2 */ AddrMod,
+                  /* u3 */ AddrMod,
                 ((/* u9 */ Imm9) << 1) +
                   /* u1 */ VDHi)
 ```
 
 ## Encoding
 
-![](../../../Diagrams/Out/Bits32_SFPLOADMACRO.svg)
+![](../../../Diagrams/Out/Bits32_SFPLOADMACRO_BH.svg)
 
 ## Cross-lane data movement pattern
 
