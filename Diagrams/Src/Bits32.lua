@@ -271,6 +271,25 @@ local diagrams = {
       {24, 8, "0xB2"},
     }
   end,
+  STREAMWRCFG = function()
+    return Bits32{
+      {0, 11, "CfgIndex"},
+      {11, 10, "RegIndex"},
+      {21, 2, "StreamSelect", y = 1},
+      {24, 8, "0xB7"},
+    }
+  end,
+  CFGSHIFTMASK = function()
+    return Bits32{
+      {0, 8, "CfgIndex"},
+      {8, 2, "ScratchIndex", y = 1},
+      {10, 5, "RotateAmt"},
+      {15, 5, "MaskWidth"},
+      {20, 3, "AluMode", y = 2},
+      {23, 1, "MaskMode", y = 1},
+      {24, 8, "0xB8"},
+    }
+  end,
   SETADC = function()
     return Bits32{
       {0, 18, "NewValue"},
