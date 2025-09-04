@@ -402,7 +402,7 @@ There is one 32-bit register per TCAM row, with simple read/write semantics.
 |First&nbsp;bit|#&nbsp;Bits|Purpose|
 |--:|--:|---|
 |0|3|Match priority (larger values win)|
-|13|3|Reserved|
+|3|13|Reserved|
 |16|6|Flow table index|
 |22|10|Reserved|
 
