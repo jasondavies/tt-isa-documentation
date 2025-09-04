@@ -12,7 +12,7 @@
 > * `MOD0_FMT_INT8_COMP`: Deprecated, and no longer performs a data type conversion.
 > * `MOD0_FMT_INT32_SM`: Deprecated, and no longer performs a data type conversion.
 >
-> There is also a minor change to the encoding of `AddrMod`, though this is invisible to the programmer if using the `TT_SFPLOAD` macro (or one of its siblings).
+> There is also a minor change to the encoding of `AddrMod`, though this is invisible to the programmer if using the `TT_SFPSTORE` macro (or one of its siblings).
 
 ## Syntax
 
