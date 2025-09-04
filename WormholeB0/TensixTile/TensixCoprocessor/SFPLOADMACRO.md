@@ -6,9 +6,9 @@
 |---|---|---|---|
 |`SFPABS`<br/>`SFPAND`<br/>`SFPCAST`<br/>`SFPCOMPC`<br/>`SFPCONFIG`<br/>`SFPDIVP2`<br/>`SFPENCC`<br/>`SFPEXEXP`<br/>`SFPEXMAN`<br/>`SFPIADD`<br/>`SFPLZ`<br/>`SFPMOV`<br/>`SFPNOP`<br/>`SFPNOT`<br/>`SFPOR`<br/>`SFPPOPC`<br/>`SFPPUSHC`<br/>`SFPSETCC`<br/>`SFPSETEXP`<br/>`SFPSETMAN`<br/>`SFPSETSGN`<br/>`SFPSHFT`<br/>`SFPSWAP` (‡)<br/>`SFPTRANSP`<br/>`SFPXOR`|`SFPADD`<br/>`SFPADDI`<br/>`SFPLUT`<br/>`SFPLUTFP32`<br/>`SFPMAD`<br/>`SFPMUL`<br/>`SFPMULI`<br/>`SFPNOP`|`SFPNOP`<br/>`SFPSHFT2`<br/>`SFPSTOCHRND`|`SFPSTORE`|
 
-(†) If a Simple instruction and a Round instruction execute on the same cycle, then one of them needs to have `VD == 16` and the other needs to have `VD != 16`, or one needs to have `VD < 4` and the other needs to have `4 <= VD < 8`.
+(†) If a Simple instruction and a Round instruction execute on the same cycle, then one of them needs to have `VD == 16` and the other needs to have `VD != 16`.
 
-(‡) If `SFPSWAP` is scheduled to the Simple sub-unit, then `SFPNOP` needs to be scheduled to the MAD sub-unit for the same time.
+(‡) If `SFPSWAP` is scheduled to the Simple sub-unit, then `SFPNOP` needs to be scheduled to the MAD sub-unit for the same time, and both of the Simple and Round sub-units either need to be idle on the next cycle or have `SFPNOP` scheduled for then.
 
 The Vector Unit (SFPU) is capable of executing up to five instructions per cycle: one load-style instruction (`SFPLOAD` or `SFPLOADI` or `SFPLOADMACRO` or `SFPNOP`), and then one instruction from each of the above four columns. However, `SFPLOADMACRO` is the only mechanism for attaining more than one instruction per cycle, and some pre-configuration is required (via [`SFPCONFIG`](SFPCONFIG.md)).
 
