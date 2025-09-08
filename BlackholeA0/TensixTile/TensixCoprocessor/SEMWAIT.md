@@ -24,7 +24,7 @@ if (ConditionMask) {
   WaitGate[CurrentThread].LatchedWaitInstruction.SemaphoreMask = SemaphoreMask;
 } else {
   WaitGate[CurrentThread].LatchedWaitInstruction.Opcode = STALLWAIT;
-  WaitGate[CurrentThread].LatchedWaitInstruction.ConditionMask = 0x7F;
+  WaitGate[CurrentThread].LatchedWaitInstruction.ConditionMask = 0x0F;
   WaitGate[CurrentThread].LatchedWaitInstruction.SemaphoreMask = 0;
 }
 WaitGate[CurrentThread].LatchedWaitInstruction.BlockMask = BlockMask ? BlockMask : (1u << 6);
@@ -35,8 +35,6 @@ The Wait Gate will then continuously re-evaluate the latched wait instruction un
 ## Block mask
 
 The block mask consists of nine bits, named B0 (least significant bit) through B8 (most significant bit). Their meaning is exactly the same [as for `STALLWAIT`](STALLWAIT.md#block-mask).
-
-If _any_ `SEMWAIT` instructions are used, it is highly recommended that _all_ `STALLWAIT` and `SEMWAIT` instructions include bit B1 ("Block thread from starting new Sync Unit instructions") in their block mask. Otherwise, a `SEMWAIT` instruction can execute whilst there is still a latched wait instruction in place, and latching of the new `SEMWAIT` will cause the previous wait to be forgotten.
 
 ## Condition mask
 

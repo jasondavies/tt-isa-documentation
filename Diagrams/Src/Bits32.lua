@@ -138,12 +138,28 @@ local diagrams = {
       {24, 8, "0xA2"},
     }
   end,
+  STALLWAIT_BH = function()
+    return Bits32{
+      {0, 13, "ConditionMask"},
+      {15, 9, "BlockMask"},
+      {24, 8, "0xA2"},
+    }
+  end,
   SEMWAIT = function()
     return Bits32{
       {0, 2, "ConditionMask", y = 1, edge = "right"},
       {2, 8, "SemaphoreMask"},
       {15, 9, "BlockMask"},
       {24, 8, "0xA6"},
+    }
+  end,
+  STREAMWAIT = function()
+    return Bits32{
+      {0, 2, "StreamSelect", y = 2, edge = "right"},
+      {3, 1, "ConditionIndex", y = 1, edge = "right"},
+      {4, 10, "TargetValueLo"},
+      {15, 9, "BlockMask"},
+      {24, 8, "0xA7"},
     }
   end,
   SEMINIT = function()
