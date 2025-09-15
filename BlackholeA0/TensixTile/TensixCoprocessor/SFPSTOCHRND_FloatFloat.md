@@ -3,7 +3,7 @@
 **Summary:** Operating lanewise, reduces mantissa precision of an FP32 value down from 23 bits to either 7 bits or 10 bits. The discarded mantissa bits are used for rounding, which can be:
 * Stochastic rounding (†).
 * Round to nearest with ties away from zero.
-* Round to zero.
+* Round to zero (†).
 
 Various extreme floating-point values are also normalised away:
 * Denormals become positive zero.
@@ -16,12 +16,12 @@ This flavour of `SFPSTOCHRND` is intended to be used prior to an [`SFPSTORE`](SF
 * `SFPSTORE` with `MOD0_FMT_FP16`: If the mantissa precision is reduced to either 7 or 10 bits, a store with `MOD0_FMT_FP16` will suffer no loss of mantissa precision (though there will be loss of exponent range, with out of range values clamped to positive or negative infinity).
 * `SFPSTORE` with `MOD0_FMT_FP32`: If the mantissa precision is reduced to either 7 or 10 bits, a store with `MOD0_FMT_FP32` will be exact, and any subsequent conversion to TF32 will also be exact.
 
-> (†) Due to a hardware bug, stochastic rounding has a slight bias towards increasing the magnitude rather than being 50:50, and can even sometimes increase the magnitude of values which do not require rounding. The functional model faithfully describes the buggy behaviour; the corrected logic would have `> PRNGBits` instead of `>= PRNGBits`.
+> (†) Due to a hardware bug, stochastic rounding has a slight bias towards increasing the magnitude rather than being 50:50, and can even sometimes increase the magnitude of values which do not require rounding. Due to another hardware bug, rounding toward zero sometimes incorrectly rounds away from zero. The functional model faithfully describes all the buggy behaviours; the corrected logic would have `>` instead of `>=` when comparing `DiscardedBits` and `PRNGBits` (and thus also initialise `PRNGBits` with `0x3fffff` rather than `0x400000` for the `SFPSTOCHRND_RND_NEAREST` case).
 
 **Backend execution unit:** [Vector Unit (SFPU)](VectorUnit.md), round sub-unit
 
 > [!TIP]
-> The round to zero mode is new in Blackhole.
+> The round to zero mode is new in Blackhole, though a hardware bug means it sometimes incorrectly rounds away from zero. 
 
 ## Syntax
 
@@ -49,7 +49,7 @@ if (Mod1 != SFPSTOCHRND_MOD1_FP32_TO_FP16A
 lanewise {
   if (VD < 12 || LaneConfig.DISABLE_BACKDOOR_LOAD) {
     if (LaneEnabled) {
-      uint32_t PRNGBits = AdvancePRNG() & 0x7fffff;
+      uint32_t PRNGBits = AdvancePRNG() & 0x7fffff; // 23 bits
       switch (RoundingMode) {
       case SFPSTOCHRND_RND_NEAREST: PRNGBits = 0x400000; break;
       case SFPSTOCHRND_RND_ZERO:    PRNGBits = 0x7fffff; break;
@@ -67,12 +67,12 @@ lanewise {
         // Keep 10 bits of mantissa precision, discard 13 bits (use them for rounding).
         uint32_t DiscardedBits = x & 0x1fff;
         x -= DiscardedBits;
-        if ((DiscardedBits << 10) >= PRNGBits) x += 0x2000;
+        if (DiscardedBits >= (PRNGBits >> 10)) x += 0x2000;
       } else /* Mod1 == SFPSTOCHRND_MOD1_FP32_TO_FP16B */ {
         // Keep 7 bits of mantissa precision, discard 16 bits (use them for rounding).
         uint32_t DiscardedBits = x & 0xffff;
         x -= DiscardedBits;
-        if ((DiscardedBits << 7) >= PRNGBits) x += 0x10000;
+        if (DiscardedBits >= (PRNGBits >> 7)) x += 0x10000;
       }
       if (VD < 8 || VD == 16) {
         LReg[VD].u32 = x; // FP32.
