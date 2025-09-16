@@ -59,7 +59,7 @@ uint32_t fma_model_ieee(uint32_t x, uint32_t y, uint32_t z) { // Compute x * y +
 #define sticky_shift(var, amount) \
     do { \
       int32_t s = amount; \
-      if (s >= sizeof(var)*__CHAR_BIT__) { \
+      if (s >= (int32_t)(sizeof(var)*__CHAR_BIT__)) { \
         var = (var != 0); \
       } else { \
         uint64_t orig = var; \
@@ -145,7 +145,7 @@ uint32_t fma_model_bh(uint32_t x, uint32_t y, uint32_t z) { // Compute x * y + z
 #define semi_sticky_shift(var, amount) \
     do { \
       int32_t s = amount; \
-      if (s >= sizeof(var)*__CHAR_BIT__) { \
+      if (s >= (int32_t)(sizeof(var)*__CHAR_BIT__)) { \
         var = 0; \
       } else { \
         uint64_t orig = var; \
@@ -244,7 +244,7 @@ uint32_t fma_model_wh(uint32_t x, uint32_t y, uint32_t z) { // Compute x * y + z
 #define semi_sticky_shift(var, amount) \
     do { \
       int32_t s = amount; \
-      if (s >= sizeof(var)*__CHAR_BIT__) { \
+      if (s >= (int32_t)(sizeof(var)*__CHAR_BIT__)) { \
         var = 0; \
       } else { \
         uint64_t orig = var; \
