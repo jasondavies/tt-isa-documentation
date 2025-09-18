@@ -57,7 +57,7 @@ When `2 ≤ Y < 12`, the Tensix rows are selected. If any Tensix columns are fus
 
 ![](../../Diagrams/Out/NoC_BH_1_Y211Coords.svg)
 
-When `12 ≤ Y < 23` and `17 ≤ X < 18`, the DRAM tiles are selected. If any DRAM is fused off (as 4 GiB is on p100 boards), then the exact numbering will depend upon which DRAM is fused off. As an example, one possible numbering for a p100 board with D2 fused off is:
+When `12 ≤ Y < 24` and `17 ≤ X < 19`, the DRAM tiles are selected. If any DRAM is fused off (as 4 GiB is on p100 boards), then the exact numbering will depend upon which DRAM is fused off. As an example, one possible numbering for a p100 board with D2 fused off is:
 
 ![](../../Diagrams/Out/NoC_BH_0_Y1223Coords.svg)
 
