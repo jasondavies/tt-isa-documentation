@@ -13,14 +13,15 @@ local own_dir = debug.getinfo(1, "S").source:match"@?(.*/)" or ""
 package.path = own_dir .."?.lua;".. package.path
 local Drawing = require"Drawing"
 
-local function TensixFrontend()
+local function TensixFrontend(opts)
+  local arch = opts.arch
   local out = buffer.new()
   local nul = buffer.new()
-  local dims = {w = 1030, h = 910}
+  local dims = arch == "WH" and {w = 1030, h = 910} or {w = 1035, h = 996}
   out:putf([[<svg version="1.1" width="%u" height="%u" xmlns="http://www.w3.org/2000/svg">]], dims.w, dims.h)
   out:putf([[<rect width="%u" height="%u" rx="15" stroke="transparent" fill="white"/>]], dims.w, dims.h)
 
-  local x = 5.5
+  local x = arch == "WH" and 5.5 or 10.5
   local fifo1_size = {32, 16, 16}
   local x_spacing = 6
   local y_spacing = 36
@@ -28,7 +29,14 @@ local function TensixFrontend()
   local wait_gates = {}
   local wait_cfgs = {}
   for i = 1, 3 do
-    local fifo1 = Drawing.RectText(out, {x = x, y = 85, w = 155, h = 30, color = data_color}, {"FIFO; ".. fifo1_size[i] .."x 32b"})
+    local fifo1_y = 85
+    local fifo1
+    local auto_ttsync
+    if arch ~= "WH" then
+      auto_ttsync = Drawing.RectText(out, {x = x, y = fifo1_y, w = 155, h = 50, color = xu_color}, {"T".. (i-1), "Auto TTSync"})
+      fifo1_y = auto_ttsync.bottom + y_spacing
+    end
+    fifo1 = Drawing.RectText(out, {x = x, y = fifo1_y, w = 155, h = 30, color = data_color}, {"FIFO; ".. (arch == "WH" and fifo1_size[i] or "29-32") .."x 32b"})
 
     local mop_expander = Drawing.RectText(out, {x = fifo1.x, y = fifo1.bottom + y_spacing, right = fifo1.right, h = 50, color = xu_color}, {"T".. (i - 1), "MOP Expander"})
     local mop_cfg = Drawing.RectText(out, {x = mop_expander.right + x_spacing, y = mop_expander.y, w = 155, h = mop_expander.h, color = data_color}, {"Instructions and", "counts; 9x 32b"})
@@ -37,9 +45,9 @@ local function TensixFrontend()
     y = mop_expander.y + mop_expander.h * 0.7
     Drawing.ThickArrow(out, mop_expander.right - 15, y, "<-", mop_cfg.x + 10, y, insn_color, 1.5)
     
-    local text_y = fifo1.y - y_spacing
-    for j, box in ipairs{fifo1, mop_cfg} do
-      for k, text in ipairs{'<tspan font-family="monospace">'.. (box == fifo1 and "INSTRN_BUF_BASE" or "TENSIX_MOP_CFG_BASE").. "</tspan>", "RISCV T".. (i - 1)} do
+    local text_y = (auto_ttsync or fifo1).y - y_spacing
+    for j, box in ipairs{auto_ttsync or fifo1, mop_cfg} do
+      for k, text in ipairs{'<tspan font-family="monospace">'.. (box ~= mop_cfg and "INSTRN_BUF_BASE" or "TENSIX_MOP_CFG_BASE").. "</tspan>", "RISCV T".. (i - 1)} do
         out:putf([[<text x="%d" y="%d" text-anchor="middle" dominant-baseline="auto">%s</text>]], box.x_middle, text_y - 5 - (k - 1) * line_spacing, text)
       end
     end
@@ -75,8 +83,12 @@ local function TensixFrontend()
     wait_gates[i] = wait_gate
     wait_cfgs[i] = wait_cfg
 
+    local main_insn_pipeline = {x = fifo1.x_middle, text_y, fifo1, mop_expander, b_mux, fifo2, replay_expander, fifo3, wait_gate}
+    if auto_ttsync then
+      table.insert(main_insn_pipeline, 2, auto_ttsync)
+    end
     for j, insn_pipeline in ipairs{
-      {x = fifo1.x_middle, text_y, fifo1, mop_expander, b_mux, fifo2, replay_expander, fifo3, wait_gate},
+      main_insn_pipeline,
       {x = b_text_x,       b_text_y, b_mux},
       {x = dbg_text_x,     b_text_y, b_mux},
     } do
@@ -91,14 +103,19 @@ local function TensixFrontend()
           elseif from == b_mux then
             head = "->"
           end
+          local label = (to == auto_ttsync or from == auto_ttsync) and "4 Instructions" or "1 Instruction"
           if type(from) ~= "number" then from = from.bottom + (head:sub(1, 1) == ">" and 1 or 0.5) end
           if type(to) ~= "number" then to = to.y - (head:sub(2,2) == ">" and 1 or 0.5) end
           Drawing.ThickArrow(out, x, from, head, x, to, insn_color, 1.5)
           if head ~= ">-" then
-            out:putf([[<text x="%d" y="%d" text-anchor="start" dominant-baseline="middle">%s</text>]], x + 5, (from + to) * 0.5, "1 Instruction")
+            out:putf([[<text x="%d" y="%d" text-anchor="start" dominant-baseline="middle">%s</text>]], x + 5, (from + to) * 0.5, label)
           end
         end
       end
+    end
+
+    if auto_ttsync then
+      Drawing.MultiLine(out, {auto_ttsync.x + 8, auto_ttsync.y_middle, "<", auto_ttsync.x - 5, "v", wait_gate.y_middle, ">", wait_gate.x + 8, head = "both"})
     end
 
     x = mop_cfg.right + x_spacing * 2
@@ -112,7 +129,7 @@ local function TensixFrontend()
     {"Matrix Unit", "(FPU)", cfg = "<-"},
     {"Packers", "", cfg = "<-"},
     {"Vector Unit", "(SFPU)"},
-    {"Scalar Unit", "(ThCon)", cfg = "->"},
+    {"Scalar Unit", "(ThCon)", cfg = arch == "WH" and "->" or nil},
     {"Configuration", "Unit", cfg = "<>", uops = 3},
     {"Mover", "", cfg = "<>"},
     {"Miscellaneous", "Unit", uops = 3, tall = true},
@@ -141,7 +158,7 @@ local function TensixFrontend()
     out:putf([[<text x="%d" y="%d" text-anchor="start" dominant-baseline="middle">%s</text>]], x + 5, (xu_mux.bottom + xu.y) * 0.5, uops .." Instruction".. (uops > 1 and "s" or ""))
   end
 
-  local backend_cfg = Drawing.RectText(out, {x = xus[2].x, right = xus[8].right, y = xus[2].bottom + x_spacing, h = 50, color = data_color}, {"Backend Configuration", "354x 32b"})
+  local backend_cfg = Drawing.RectText(out, {x = xus[2].x, right = xus[8].right, y = xus[2].bottom + x_spacing, h = 50, color = data_color}, {"Backend Configuration", arch == "WH" and "354x 32b" or "398x 32b"})
   for i, xu in ipairs(xus) do
     local cfg_head = xu_labels[i].cfg
     if cfg_head then
@@ -159,7 +176,7 @@ local function TensixFrontend()
     Drawing.MultiLine(out, {cfg_xu.x + 8 * i, cfg_xu.y, "^", xu_mux.y - 8 * (4 - i), ">", wait_cfgs[i].x_middle, "^", wait_cfgs[i].bottom + 2})
   end
   local semaphores = Drawing.RectText(out, {x = cfg_xu.x + 3, right = cfg_xu.right - 3, bottom = cfg_xu.bottom - 3, h = 42, color = data_color}, {"Semaphores", "8x 4b"})
-  local mutexes = Drawing.RectText(out, {x = semaphores.x, right = semaphores.right, bottom = semaphores.y - 3, h = 42, color = data_color}, {"Mutexes", "7x 2b"})
+  local mutexes = Drawing.RectText(out, {x = semaphores.x, right = semaphores.right, bottom = semaphores.y - 3, h = 42, color = data_color}, {"Mutexes", arch == "WH" and "7x 2b" or "4x 2b"})
 
   for i, wg in ipairs(wait_gates) do
     local x = wg.x_middle
@@ -181,4 +198,5 @@ local function TensixFrontend()
   return tostring(out)
 end
 
-assert(io.open(own_dir .."../Out/TensixFrontend.svg", "w")):write(TensixFrontend{})
+assert(io.open(own_dir .."../Out/TensixFrontend.svg", "w")):write(TensixFrontend{arch = "WH"})
+assert(io.open(own_dir .."../Out/TensixFrontend_BH.svg", "w")):write(TensixFrontend{arch = "BH"})
